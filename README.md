@@ -4,7 +4,7 @@
 The members of the team are:
 - *<name of team member 1>*
 - Stav Armoni-Friedmann
-- *<name of team member 3>*
+- Caroline Smith
 - *<name of team member 4>*
 - *<name of team member 5>*
 
