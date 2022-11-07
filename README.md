@@ -2,7 +2,7 @@
 
 ## Team members
 The members of the team are:
-- *<name of team member 1>*
+- Mudassir Ahmad
 - Stav Armoni-Friedmann
 - Caroline Smith
 - *<name of team member 4>*
