@@ -1,9 +1,9 @@
-# Team *<enter team name here>* Small Group project
+# Team Hornet Small Group project
 
 ## Team members
 The members of the team are:
 - *<name of team member 1>*
-- *<name of team member 2>*
+- Stav Armoni-Friedmann
 - *<name of team member 3>*
 - *<name of team member 4>*
 - *<name of team member 5>*
