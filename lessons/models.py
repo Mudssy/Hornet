@@ -7,7 +7,7 @@ from django.db import models
 class Student(AbstractUser):
     username = models.CharField(
         max_length=30,
-        unique=True,
+        unique=True
     )
 
     email = models.EmailField()
@@ -16,4 +16,4 @@ class Student(AbstractUser):
 
     last_name = models.CharField(max_length=50)
 
-    password = models.CharField()
+    password = models.CharField(max_length=100)
