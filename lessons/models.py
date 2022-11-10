@@ -19,13 +19,13 @@ class Student(AbstractUser):
     password = models.CharField(max_length=100)
 
 class Request(models.Model):
-    availability = models.CharField(max_length=100)
+    availability = models.CharField(max_length=100, blank=False)
     #^string stating the days and times available for lessons
-    num_lessons = models.IntegerField()
+    num_lessons = models.PositiveIntegerField(blank=False)
     #^integer representing the number of lessons to be booked in the request
-    lesson_gap = models.IntegerField()
+    lesson_gap = models.PositiveIntegerField(blank=False)
     #^integer representing the requested minimum days between lessons
-    duration = models.IntegerField()
+    duration = models.PositiveIntegerField(blank=False)
     #^integer representing the desired length of booked lessons in minutes
     requestor = models.ForeignKey(
         Student,
