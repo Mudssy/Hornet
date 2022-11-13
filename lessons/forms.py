@@ -1,7 +1,18 @@
 from django import forms
 from lessons.models import Student
+from django.urls import reverse_lazy
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 class SignUpForm(forms.ModelForm):
+
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_action = reverse_lazy('sign_up')
+        self.helper.form_method = "POST"
+        self.helper.add_input(Submit('submit','Sign up'))
+
     class Meta:
         model = Student
         fields = ['first_name', 'last_name', 'email', 'username']

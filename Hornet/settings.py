@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'lessons',
 ]
 
@@ -125,3 +126,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # user model for authentication
 AUTH_USER_MODEL = 'lessons.Student'
+
+# gui 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
