@@ -1,5 +1,6 @@
-{% extends 'base_content.html' %}
-{%load crispy_forms_tags%}
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content%}
 <div class="container">
@@ -10,11 +11,11 @@
                     <h1>Login</h1>
                 </div>
                 <div class= "card-body">
-                    {%crispy form %}
+                    {% crispy form %}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-{%endblock%}
+{% endblock %}
