@@ -6,11 +6,15 @@ from crispy_forms.layout import Layout,Field,HTML,Submit
 
 
 class StandardForm(forms.ModelForm): #this class is the standard form that all forms should be the child of
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_action = ""
+        self.form_method = ""
     @property
     def helper(self):
         helper = FormHelper()
-        helper.form_action = reverse_lazy('sign_up')
-        helper.form_method = "POST"
+        helper.form_action = reverse_lazy(self.form_action)
+        helper.form_method = self.form_method
 
         helper.layout = Layout()
 
@@ -23,6 +27,10 @@ class StandardForm(forms.ModelForm): #this class is the standard form that all f
 
 
 class SignUpForm(StandardForm):
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_action = "sign_up"
+        self.form_method = "POST"
 
     class Meta:
         model = Student
@@ -49,3 +57,15 @@ class SignUpForm(StandardForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+
+class LoginForm(StandardForm):
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_action = "log_in"
+        self.form_method = "GET"
+    
+    class Meta:
+        model = Student
+        fields = ['username','password']
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
