@@ -15,6 +15,6 @@ class UserModelTestCase(TestCase):
     def test_valid_user(self):
         try:
             self.student.full_clean()
-        except(ValidationError):
+        except ValidationError:
             self.fail()
 
