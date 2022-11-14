@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm,LoginForm
 
@@ -38,3 +38,7 @@ def log_in(request):
         form = LoginForm()
     
     return render(request,'log_in.html',{'form':form})
+
+def log_out(request):
+    logout(request)
+    return redirect('home')
