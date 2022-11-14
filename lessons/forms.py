@@ -5,32 +5,26 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Field,HTML,Submit
 
 
-class StandardForm(forms.ModelForm): #this class is the standard form that all forms should be the child of
-    def __init__(self,*args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.form_action = ""
-        self.form_method = ""
-    @property
-    def helper(self):
+class StandardForm(): 
+    def helper(fields, submitName, submitValue,form_action,form_method):
         helper = FormHelper()
-        helper.form_action = reverse_lazy(self.form_action)
-        helper.form_method = self.form_method
+        helper.form_action = reverse_lazy(form_action)
+        helper.form_method = form_method
 
         helper.layout = Layout()
 
-        for field in self.Meta().fields:
+        for field in fields:
             helper.layout.append(
                 Field(field)
             )
-        helper.layout.append(Submit('submit','Sign up'))
+        helper.layout.append(Submit(submitName,submitValue))
         return helper
 
 
-class SignUpForm(StandardForm):
+class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.form_action = "sign_up"
-        self.form_method = "POST"
+        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Sign up", "sign_up", "POST")
 
     class Meta:
         model = Student
@@ -58,14 +52,14 @@ class SignUpForm(StandardForm):
         )
         return user
 
-class LoginForm(StandardForm):
+class LoginForm(forms.Form):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.form_action = "log_in"
-        self.form_method = "POST"
+        self.helper = StandardForm.helper(self.Meta.fields,"submit","Log In","log_in","POST")
+        
     
     class Meta:
-        model = Student
         fields = ['username','password']
+    username = forms.CharField(label="Username")
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
