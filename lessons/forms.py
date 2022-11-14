@@ -2,20 +2,31 @@ from django import forms
 from lessons.models import Student
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Layout,Field,HTML,Submit
 
-class SignUpForm(forms.ModelForm):
 
-    def __init__(self,*args,**kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.form_action = reverse_lazy('sign_up')
-        self.helper.form_method = "POST"
-        self.helper.add_input(Submit('submit','Sign up'))
+class StandardForm(forms.ModelForm): #this class is the standard form that all forms should be the child of
+    @property
+    def helper(self):
+        helper = FormHelper()
+        helper.form_action = reverse_lazy('sign_up')
+        helper.form_method = "POST"
+
+        helper.layout = Layout()
+
+        for field in self.Meta().fields:
+            helper.layout.append(
+                Field(field)
+            )
+        helper.layout.append(Submit('submit','Sign up'))
+        return helper
+
+
+class SignUpForm(StandardForm):
 
     class Meta:
         model = Student
-        fields = ['first_name', 'last_name', 'email', 'username']
+        fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password']
 
     new_password = forms.CharField(label='New Password', widget=forms.PasswordInput)
     confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
