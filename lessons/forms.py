@@ -62,7 +62,7 @@ class LoginForm(StandardForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_action = "log_in"
-        self.form_method = "GET"
+        self.form_method = "POST"
     
     class Meta:
         model = Student
