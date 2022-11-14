@@ -18,3 +18,7 @@ class UserModelTestCase(TestCase):
         except(ValidationError):
             self.fail()
 
+
+    def test_user_is_not_staff(self):
+        self.assertFalse(self.student.is_staff)
+        self.assertFalse(self.student.is_superuser)
