@@ -5,23 +5,6 @@ from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Field,HTML,Submit
 
-
-class StandardForm(): 
-    def helper(fields, submitName, submitValue,form_action,form_method):
-        helper = FormHelper()
-        helper.form_action = reverse_lazy(form_action)
-        helper.form_method = form_method
-
-        helper.layout = Layout()
-
-        for field in fields:
-            helper.layout.append(
-                Field(field)
-            )
-        helper.layout.append(Submit(submitName,submitValue))
-        return helper
-
-
 class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,7 +44,7 @@ class SignUpForm(forms.ModelForm):
         )
         return user
 
-class LoginForm(forms.Form):
+class LogInForm(forms.Form):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = StandardForm.helper(self.Meta.fields,"submit","Log In","log_in","POST")
@@ -71,4 +54,19 @@ class LoginForm(forms.Form):
         fields = ['username','password']
     username = forms.CharField(label="Username")
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+class StandardForm():
+    def helper(fields, submitName, submitValue,form_action,form_method):
+        helper = FormHelper()
+        helper.form_action = reverse_lazy(form_action)
+        helper.form_method = form_method
+
+        helper.layout = Layout()
+
+        for field in fields:
+            helper.layout.append(
+                Field(field)
+            )
+        helper.layout.append(Submit(submitName,submitValue))
+        return helper
 
