@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
-from lessons.forms import SignUpForm,LoginForm
+from lessons.forms import SignUpForm,LogInForm
 
 # Create your views here.
 def home(request):
@@ -25,7 +25,7 @@ def sign_up(request):
 
 def log_in(request):
     if request.method == "POST":
-        form = LoginForm(request.POST)
+        form = LogInForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
@@ -33,9 +33,9 @@ def log_in(request):
             if user is not None:
                 login(request, user)
                 return redirect('feed')
-        form.add_error(None,"The credentials provided were incorrect")
+        form.add_error(None, "The credentials provided were incorrect")
     else:
-        form = LoginForm()
+        form = LogInForm()
     
     return render(request,'log_in.html',{'form':form})
 
