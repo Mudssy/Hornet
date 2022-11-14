@@ -33,6 +33,7 @@ def log_in(request):
             if user is not None:
                 login(request, user)
                 return redirect('feed')
+        form.add_error(None,"The credentials provided were incorrect")
     else:
         form = LoginForm()
     
