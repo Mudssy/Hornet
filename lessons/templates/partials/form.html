@@ -1,16 +1,11 @@
-{% extends 'base_content.html' %}
-
 {% load crispy_forms_tags %}
 
-{%block content%}
 <div class="container">
     <div class="row">
         <div class = "col-12">
             <div class = "card bg-black bg-opacity-50 border-0">
                 <div class = "card-header border-0">
-                    {% block title %}
-
-                    {% endblock %}
+                    <h1>{{form.title}}</h1>
                 </div>
                 <div class= "card-body">
                     {% crispy form %}
@@ -20,4 +15,3 @@
     </div>
 </div>
 
-{% endblock %}

@@ -9,6 +9,7 @@ class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = StandardForm.helper(self.Meta.fields, "submit", "Sign up", "sign_up", "POST")
+        self.title = "Sign up" 
 
     class Meta:
         model = User
@@ -49,6 +50,7 @@ class LogInForm(forms.Form):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = StandardForm.helper(self.Meta.fields,"submit","Log In","log_in","POST")
+        self.title = "Login"
         
     
     class Meta:
