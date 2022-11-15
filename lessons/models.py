@@ -40,3 +40,5 @@ class Request(models.Model):
     #^the date and time the request was made
     extra_requests = models.CharField(max_length=250)
     #^string containing any extra requests, such as teachers
+    request_fulfilled = models.BooleanField(default = False)
+    #^boolean flag for whether the request has been fulfilled
