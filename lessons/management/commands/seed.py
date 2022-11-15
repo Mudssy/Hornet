@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from faker import Faker
-from lessons.models import Student
+from lessons.models import User
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
@@ -18,8 +18,37 @@ class Command(BaseCommand):
                 user_count += 1
             print('User seeding complete')
 
+
+        first_name = 'Teacher'
+        last_name = 'FirstTeacher'
+        email = self._email(first_name, last_name)
+        username = self._username(first_name, last_name)
+
+        # Seed data handbook accounts
+        User.objects.create_user(
+            username=self._username(first_name, last_name),
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=Command.PASSWORD,
+            account_type=2
+        )
+
+        # Administrator
+        staff = User.objects.create_user(
+            username='@petrapickles',
+            first_name="Petra",
+            last_name="Pickles",
+            email="petra.pickles@example.org",
+            password=Command.PASSWORD,
+            is_staff=True
+        )
+
+
         print("The seed command has not been implemented yet!")
         print("TO DO: Create a seed command following the instructions of the assignment carefully.")
+
+
 
     # seeder creating student accounts
     def _create_student(self):
@@ -27,7 +56,7 @@ class Command(BaseCommand):
         last_name = self.faker.last_name()
         email = self._email(first_name, last_name)
         username = self._username(first_name, last_name)
-        Student.objects.create_user(
+        User.objects.create_user(
             username,
             first_name=first_name,
             last_name=last_name,

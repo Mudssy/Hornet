@@ -1,6 +1,6 @@
 [
   {
-    "model": "lessons.Student",
+    "model": "lessons.User",
     "pk": 1,
     "fields": {
       "first_name": "John",

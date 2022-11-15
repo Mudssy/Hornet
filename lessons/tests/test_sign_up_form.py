@@ -2,7 +2,8 @@ from django.contrib.auth.hashers import check_password
 from django import forms
 from django.test import TestCase
 from lessons.forms import SignUpForm
-from lessons.models import Student
+from lessons.models import User
+
 
 class SignUpFormTestCase(TestCase):
     """Unit tests of the sign up form."""
@@ -64,13 +65,20 @@ class SignUpFormTestCase(TestCase):
 
     def test_form_must_save_correctly(self):
         form = SignUpForm(data=self.form_input)
-        before_count = Student.objects.count()
+        before_count = User.objects.count()
         form.save()
-        after_count = Student.objects.count()
+        after_count = User.objects.count()
         self.assertEqual(after_count, before_count+1)
-        user = Student.objects.get(username='@janedoe')
+        user = User.objects.get(username='@janedoe')
         self.assertEqual(user.first_name, 'Jane')
         self.assertEqual(user.last_name, 'Doe')
         self.assertEqual(user.email, 'janedoe@example.org')
         is_password_correct = check_password('Password123', user.password)
         self.assertTrue(is_password_correct)
+
+    def test_default_account_is_student(self):
+        form = SignUpForm(data=self.form_input)
+        form.save()
+        user = User.objects.get(username="@janedoe")
+        self.assertEqual(user.account_type, 1)
+

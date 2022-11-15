@@ -129,7 +129,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # user model for authentication
-AUTH_USER_MODEL = 'lessons.Student'
+AUTH_USER_MODEL = 'lessons.User'
 
 # gui 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

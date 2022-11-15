@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import RegexValidator
-from lessons.models import Student
+from lessons.models import User
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Field,HTML,Submit
@@ -11,7 +11,8 @@ class SignUpForm(forms.ModelForm):
         self.helper = StandardForm.helper(self.Meta.fields, "submit", "Sign up", "sign_up", "POST")
 
     class Meta:
-        model = Student
+        model = User
+
         fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password']
 
     new_password = forms.CharField(
@@ -35,7 +36,7 @@ class SignUpForm(forms.ModelForm):
 
     def save(self):
         super().save(commit=False)
-        user = Student.objects.create_user(
+        user = User.objects.create_user(
             username=self.cleaned_data.get('username'),
             first_name=self.cleaned_data.get('first_name'),
             last_name=self.cleaned_data.get('last_name'),
