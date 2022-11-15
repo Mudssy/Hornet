@@ -1,14 +1,19 @@
-<html>
-<head>
-    <title>Hornet Music School</title>
-</head>
-<body>
-<h1>Sign up</h1>
-<p>Here goes the signup form</p>
-<form action="{% url 'sign_up' %}" method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Sign up">
-</form>
-</body>
-</html>
+{% extends 'base_content.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class = "col-12">
+            <div class = "card">
+                <div class = "card-header">
+                    <h1>Sign up</h1>
+                </div>
+                <div class= "card-body">
+                    {% crispy form %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

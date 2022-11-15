@@ -5,7 +5,7 @@ The members of the team are:
 - Mudassir Ahmad
 - Stav Armoni-Friedmann
 - Caroline Smith
-- *<name of team member 4>*
+- Oliver Macpherson
 - *<name of team member 5>*
 
 ## Project structure

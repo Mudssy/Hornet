@@ -2,7 +2,7 @@
 from django.test import TestCase
 from lessons.forms import SignUpForm
 from django.urls import reverse
-from ..models import Student
+from ..models import User
 from django.contrib.auth.hashers import check_password
 
 class SignUpViewTestCase(TestCase):
@@ -37,9 +37,9 @@ class SignUpViewTestCase(TestCase):
 
     def test_unsuccesful_sign_up(self):
         self.form_input['email'] = 'simply not an email'
-        before_count = Student.objects.count()
+        before_count = User.objects.count()
         response = self.client.post(self.url, self.form_input)
-        after_count = Student.objects.count()
+        after_count = User.objects.count()
         self.assertEqual(after_count, before_count)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'sign_up.html')
@@ -47,14 +47,14 @@ class SignUpViewTestCase(TestCase):
         self.assertTrue(form.is_bound)
 
     def test_success_sign_up(self):
-        before_count = Student.objects.count()
+        before_count = User.objects.count()
         response = self.client.post(self.url, self.form_input, follow=True)
-        after_count = Student.objects.count()
+        after_count = User.objects.count()
         self.assertEqual(after_count, before_count + 1)
         response_url = reverse('feed')
         self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
         self.assertTemplateUsed(response, 'feed.html')
-        user = Student.objects.get(username='@janedoe')
+        user = User.objects.get(username='@janedoe')
 
         self.assertEqual(user.first_name, 'Jane')
         self.assertEqual(user.last_name, 'Doe')
