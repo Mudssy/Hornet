@@ -1,11 +1,14 @@
 """Configuration of superadmin and staff admin interface for Hornet"""
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+
 from .models import User
 # Register your models here.
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    pass
+    class Meta:
+        is_staff=True
     # Checks if admin is a superuser
 #     def get_form(self, request, obj=None, **kwargs):
 #         form = super().get_form(request, obj, **kwargs)

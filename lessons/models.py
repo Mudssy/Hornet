@@ -12,6 +12,7 @@ class User(AbstractUser):
     class Account(models.IntegerChoices):
         STUDENT = 1
         TEACHER = 2
+        ADMINISTRATOR = 3
 
     username = models.CharField(
         max_length=30,

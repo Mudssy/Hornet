@@ -23,15 +23,26 @@ class Command(BaseCommand):
         email = self._email(first_name, last_name)
         username = self._username(first_name, last_name)
 
-        #
+        # Seed data handbook accounts
         User.objects.create_user(
-            username,
+            username=self._username(first_name, last_name),
             first_name=first_name,
             last_name=last_name,
             email=email,
             password=Command.PASSWORD,
             account_type=2
         )
+
+        # Administrator
+        staff = User.objects.create_user(
+            username='@petrapickles',
+            first_name="Petra",
+            last_name="Pickles",
+            email="petra.pickles@example.org",
+            password=Command.PASSWORD,
+            is_staff=True
+        )
+
 
         print("The seed command has not been implemented yet!")
         print("TO DO: Create a seed command following the instructions of the assignment carefully.")
@@ -51,7 +62,6 @@ class Command(BaseCommand):
             email=email,
             password=Command.PASSWORD,
         )
-
     def _email(self, first_name, last_name):
         email = f'{first_name}.{last_name}@example.org'
         return email
