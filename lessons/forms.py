@@ -1,5 +1,5 @@
 from django import forms
-from lessons.models import Student
+from lessons.models import Student, Request
 
 class SignUpForm(forms.ModelForm):
     class Meta:
@@ -27,3 +27,24 @@ class SignUpForm(forms.ModelForm):
             password=self.cleaned_data.get('new_password'),
         )
         return user
+
+class MakeRequestForm(forms.ModelForm):
+    class Meta:
+        model=Request
+        fields = ['availability', 'num_lessons', 'lesson_gap', 'duration', 'requestor', 'request_time', 'extra_requests', 'request_fulfilled']
+        exclude = ['requestor', 'request_time', 'request_fulfilled']
+        widgets = {
+            'availability': forms.Textarea(),
+            'extra_requests': forms.Textarea()
+        }
+
+    def save(self, student):
+        super().save(commit=False)
+        request = Request.objects.create(
+            availability=self.cleaned_data.get('availability'),
+            num_lessons=self.cleaned_data.get('num_lessons'),
+            lesson_gap=self.cleaned_data.get('lesson_gap'),
+            duration=self.cleaned_data.get('duration'),
+            requestor=student,
+            extra_requests=self.cleaned_data.get('extra_requests'),
+        )

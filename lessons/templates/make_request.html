@@ -1,0 +1,12 @@
+<html>
+<head>
+    <title>Hornet Music School</title>
+</head>
+<body>
+  <h1>Make Request</h1>
+  <form action="{% url 'make_request' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="Submit" value="Make Request">
+</body>
+</html>
