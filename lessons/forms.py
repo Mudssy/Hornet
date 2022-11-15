@@ -66,7 +66,7 @@ class StandardForm():
 
         for field in fields:
             helper.layout.append(
-                Field(field)
+                Field(field,css_class = "bg-transparent text-light mb-2")
             )
         helper.layout.append(Submit(submitName,submitValue))
         return helper

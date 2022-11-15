@@ -6,7 +6,7 @@ The members of the team are:
 - Stav Armoni-Friedmann
 - Caroline Smith
 - Oliver Macpherson
-- *<name of team member 5>*
+- Yahya Khan
 
 ## Project structure
 The project is called `Hornet` (Music School Management System).  It currently consists of a single app `lessons` where all functionality resides.
