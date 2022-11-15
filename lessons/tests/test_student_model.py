@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from ..models import Student
+from ..models import User
 
 class UserModelTestCase(TestCase):
 
@@ -12,7 +12,7 @@ class UserModelTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.student = Student.objects.get(username="@johndoe")
+        self.student = User.objects.get(username="@johndoe")
         # self.student = Student.objects.create_user(
         #     '@studentname',
         #     first_name='john',
@@ -27,8 +27,11 @@ class UserModelTestCase(TestCase):
         except ValidationError:
             self.fail()
 
+    def test_user_is_not_staff(self):
+        self.assertFalse(self.student.is_staff)
+        self.assertFalse(self.student.is_superuser)
     def test_email_must_be_unique(self):
-        second_user = Student.objects.get(username="@janedoe")
+        second_user = User.objects.get(username="@janedoe")
         self.student.email = second_user.email
         self._assert_user_is_invalid()
 
@@ -41,3 +44,4 @@ class UserModelTestCase(TestCase):
     def _assert_user_is_invalid(self):
         with self.assertRaises(ValidationError):
             self.student.full_clean()
+
