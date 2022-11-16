@@ -37,13 +37,24 @@ class User(AbstractUser):
 
 class LessonRequest(models.Model):
 
-    availability = models.CharField(max_length=100, blank=False)
+    class LessonGap(models.IntegerChoices):
+        BIWEEKLY = 1
+        WEEKLY = 2
+        FORTNIGHTLY = 3
+        MONTHLY = 4
+
+
+    # days of the week for which the student is available
+    day_of_week = models.DateField(max_length=100, blank=False)
 
     num_lessons = models.PositiveIntegerField(blank=False)
 
-    lesson_gap = models.PositiveIntegerField(blank=False)
+    lesson_gap_weeks = models.PositiveIntegerField(
+        choices=LessonGap.choices,
+        default=LessonGap.WEEKLY
+    )
 
-    duration = models.PositiveIntegerField(blank=False)
+    lesson_duration_hours = models.PositiveIntegerField(blank=False)
 
     requestor = models.ForeignKey(
         User,

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from faker import Faker
-from lessons.models import User
+from lessons.models import User, LessonRequest
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
@@ -19,19 +19,28 @@ class Command(BaseCommand):
             print('User seeding complete')
 
 
-        first_name = 'Teacher'
-        last_name = 'FirstTeacher'
+        first_name = 'John'
+        last_name = 'Smith'
         email = self._email(first_name, last_name)
         username = self._username(first_name, last_name)
 
         # Seed data handbook accounts
-        User.objects.create_user(
+        self.user = User.objects.create_user(
             username=self._username(first_name, last_name),
             first_name=first_name,
             last_name=last_name,
             email=email,
             password=Command.PASSWORD,
-            account_type=2
+            account_type=1
+        )
+
+        test_request = LessonRequest.objects.create(
+            availability='dummy',
+            num_lessons=5,
+            lesson_gap=8,
+            duration=45,
+            requestor=self.user,
+            extra_requests='dummy2',
         )
 
         # Administrator

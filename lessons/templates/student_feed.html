@@ -2,6 +2,8 @@
 {% block content %}
 
 Student feed
-
+{% for request in requests %}
+    {{ request.requestor }}
+{% endfor %}
 
 {% endblock %}
