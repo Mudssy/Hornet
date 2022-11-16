@@ -33,3 +33,28 @@ class User(AbstractUser):
         default=Account.STUDENT
     )
 
+    password = models.CharField(max_length=100)
+
+class Request(models.Model):
+
+    availability = models.CharField(max_length=100, blank=False)
+
+    num_lessons = models.PositiveIntegerField(blank=False)
+
+    lesson_gap = models.PositiveIntegerField(blank=False)
+
+    duration = models.PositiveIntegerField(blank=False)
+
+    requestor = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=False,
+    )
+
+    request_time = models.DateTimeField(
+        auto_now=False,
+        auto_now_add=True,
+    )
+
+    extra_requests = models.CharField(max_length=250)
+
