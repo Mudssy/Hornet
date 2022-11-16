@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from ..models import User, Request
+from ..models import User, LessonRequest
 
 class RequestModelTestCase(TestCase):
     """Unit tests for the request model"""
@@ -13,7 +13,7 @@ class RequestModelTestCase(TestCase):
             email="john@gmail.com",
             password="Password123"
         )
-        self.request = Request.objects.create(
+        self.request = LessonRequest.objects.create(
             availability='Available any weekday from 9am to 3pm',
             num_lessons=4,
             lesson_gap=7,
@@ -23,7 +23,7 @@ class RequestModelTestCase(TestCase):
         )
 
     def test_student_can_have_multiple_requests(self):
-        test_request = Request.objects.create(
+        test_request = LessonRequest.objects.create(
             availability='dummy',
             num_lessons=5,
             lesson_gap=8,

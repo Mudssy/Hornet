@@ -35,7 +35,7 @@ class User(AbstractUser):
 
     password = models.CharField(max_length=100)
 
-class Request(models.Model):
+class LessonRequest(models.Model):
 
     availability = models.CharField(max_length=100, blank=False)
 

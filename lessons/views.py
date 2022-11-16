@@ -1,13 +1,19 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
-from lessons.forms import SignUpForm,LogInForm
+from lessons.forms import SignUpForm, LogInForm
+from .models import LessonRequest, User
 
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
 
 def feed(request):
-    return render(request, 'feed.html')
+    user = request.user
+    requests = LessonRequest.objects.filter(requestor=user)
+    if user.account_type == 1:
+        return render(request, 'student_feed.html', {'requests':requests})
+    else:
+        return render(request, 'teacher_feed.html')
 
 def sign_up(request):
     if request.method == 'POST':
@@ -43,4 +49,7 @@ def log_out(request):
 
 def account_info(request):
     return render(request,"account_info.html")
+
+def make_request(request):
+    return render(request, 'make_request.html')
 
