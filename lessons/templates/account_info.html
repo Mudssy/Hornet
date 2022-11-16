@@ -13,7 +13,7 @@
                     <div class="col-md-4 text-center text-white"
                         style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
                         <img src="../static/images/user_icon.png" alt="User" class="my-5" style="width: 80px;" />
-                        <h5>{{user.first_name}} {{user.last_name}}</h5>
+                        <h5>{{user.first_name.capitalize}} {{user.last_name.capitalize}}</h5>
                         {%if user.account_type == 1%}
                             <p>Student</p>
                         {%elif user.account_type == 2%}
