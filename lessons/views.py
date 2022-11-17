@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
-from lessons.forms import SignUpForm, LogInForm
+from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
 from .models import LessonRequest, User
 
 # Create your views here.
@@ -51,5 +51,9 @@ def account_info(request):
     return render(request,"account_info.html")
 
 def make_request(request):
-    return render(request, 'make_request.html')
+    if request.method == "POST":
+        form = RequestLessonsForm(request.POST)
+    else:
+        form = RequestLessonsForm()
+    return render(request, 'make_request.html', {'form':form})
 

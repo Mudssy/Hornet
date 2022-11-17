@@ -1,9 +1,10 @@
 from django import forms
 from django.core.validators import RegexValidator
-from lessons.models import User
+from lessons.models import User,LessonRequest
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Field,HTML,Submit
+from datetime import datetime
 
 class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
@@ -57,6 +58,49 @@ class LogInForm(forms.Form):
         fields = ['username','password']
     username = forms.CharField(label="Username")
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+class RequestLessonsForm(forms.Form):
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = self.create_custom_helper()
+        self.title = "Request lessons"
+    
+    class Meta:
+        model = LessonRequest
+        fields = ["days_available","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
+
+    days_available = forms.MultipleChoiceField(
+        widget = forms.CheckboxSelectMultiple, choices=LessonRequest.AvailableWeekly.choices
+    )
+    num_lessons = forms.IntegerField(min_value=1, max_value=20)
+    lesson_gap_weeks = forms.ChoiceField(
+                        choices = LessonRequest.LessonGap.choices)
+    lesson_duration_hours= forms.IntegerField(min_value=1, max_value=3)
+    extra_requests = forms.CharField()
+        
+        
+    
+
+
+    def create_custom_helper(self):
+        helper = FormHelper()
+        helper.layout = Layout()
+
+        #helper.layout.append(HTML("Days available"))
+
+        for field in self.Meta.fields:
+            helper.layout.append(
+                Field(field)
+            )
+        
+        
+        
+            
+        return helper
+
+
+
+
 
 class StandardForm():
     def helper(fields, submitName, submitValue,form_action,form_method):
