@@ -13,7 +13,7 @@ def feed(request):
     if user.account_type == 1:
         return render(request, 'student_feed.html', {'requests':requests})
     else:
-        return render(request, 'teacher_feed.html')
+        return render(request, 'teacher_feed.html',{'requests':requests})
 
 def sign_up(request):
     if request.method == 'POST':
