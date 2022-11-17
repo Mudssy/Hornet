@@ -53,9 +53,16 @@ def make_request(request):
             current_user = request.user
             form = RequestLessonsForm(request.POST)
             if form.is_valid():
-                form.save(current_user)
+                LessonRequest.objects.create(
+                    requestor=current_user,
+                    days_available="".join(form.cleaned_data.get("days_available")),
+                    num_lessons=form.cleaned_data.get("num_lessons"),
+                    lesson_gap_weeks=form.cleaned_data.get("lesson_gap_weeks"),
+                    lesson_duration_hours=form.cleaned_data.get("lesson_duration_hours"),
+                    # request_time = datetime.now(),
+                    extra_requests=form.cleaned_data.get("extra_requests"),
+                )
                 return redirect("feed")
-            
         else:
             return redirect('log_in')
     else:
