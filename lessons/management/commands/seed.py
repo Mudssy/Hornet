@@ -35,10 +35,10 @@ class Command(BaseCommand):
         )
 
         test_request = LessonRequest.objects.create(
-            availability='dummy',
+            day_of_week='2022-11-17',
             num_lessons=5,
-            lesson_gap=8,
-            duration=45,
+            lesson_gap_weeks=2,
+            lesson_duration_hours=1,
             requestor=self.user,
             extra_requests='dummy2',
         )
@@ -80,4 +80,3 @@ class Command(BaseCommand):
     def _username(self, first_name, last_name):
         username = f'@{first_name}{last_name}'
         return username
-
