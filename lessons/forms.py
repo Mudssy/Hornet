@@ -78,13 +78,19 @@ class RequestLessonsForm(forms.ModelForm):
     lesson_duration_hours= forms.IntegerField(min_value=1, max_value=3)
     extra_requests = forms.CharField()
 
-    def clean():
+    def clean(self):
         super().clean()
-    def save():
+    def save(self):
         super().save(commit=False)
         
         request = LessonRequest.objects.create(
-            days_available = "".join(self.cleaned_data.get("days_available"))
+            days_available = "".join(self.cleaned_data.get("days_available")),
+            num_lessons = self.cleaned_data.get("num_lessons"),
+            lesson_gap_weeks = self.cleaned_data.get("lesson_gap_weeks"),
+            lesson_duration_hours = self.cleaned_data.get("lesson_duration_hours"),
+            #request_time = datetime.now(),
+            extra_requests = self.cleaned_data.get("extra_requests"),
+
         )
 
 
