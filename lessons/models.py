@@ -62,7 +62,7 @@ class LessonRequest(models.Model):
     )
 
     # days of the week for which the student is available
-    days_available = models.CharField(max_length=7, blank=False,default="1234567") #store available days in the week as string of numbers
+    days_available = models.CharField(max_length=50, blank=False,default="1234567") #store available days in the week as string of numbers
                                                                 #eg '126' means available Monday,Tuesday,Saturday
 
 
