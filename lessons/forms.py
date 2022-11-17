@@ -91,8 +91,6 @@ class RequestLessonsForm(forms.ModelForm):
             #request_time = datetime.now(),
             extra_requests = self.cleaned_data.get("extra_requests"),
 
-            days_available = "".join(self.cleaned_data.get("days_available"))
-
 
         )
         return request

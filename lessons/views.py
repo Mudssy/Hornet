@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
 from .models import LessonRequest, User
+from django.http import HttpResponseForbidden
 
 # Create your views here.
 def home(request):
@@ -50,10 +51,22 @@ def log_out(request):
 def account_info(request):
     return render(request,"account_info.html")
 
+
 def make_request(request):
-    if request.method == "POST":
-        form = RequestLessonsForm(request.POST)
+    if request.method =="POST":
+        if request.user.is_authenticated:
+            current_user = request.user
+            form = RequestLessonsForm(request.POST)
+            if form.is_valid():
+                form.save(current_user)
+                return redirect("feed")
+            
+        else:
+            return redirect('log_in')
     else:
         form = RequestLessonsForm()
-    return render(request, 'make_request.html', {'form':form})
+    
+    return render(request, 'make_request.html', {'form':form})          
+
+
 
