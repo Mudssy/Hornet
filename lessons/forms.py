@@ -61,7 +61,7 @@ class LogInForm(forms.Form):
 class RequestLessonsForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = self.create_custom_helper()
+        self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
         self.title = "Request lessons"
     
     class Meta:
@@ -79,11 +79,11 @@ class RequestLessonsForm(forms.ModelForm):
 
     def clean(self):
         super().clean()
-    def save(self):
+    def save(self,current_user):
         super().save(commit=False)
         
         request = LessonRequest.objects.create(
-
+            requestor = current_user,
             days_available = "".join(self.cleaned_data.get("days_available")),
             num_lessons = self.cleaned_data.get("num_lessons"),
             lesson_gap_weeks = self.cleaned_data.get("lesson_gap_weeks"),
@@ -94,22 +94,6 @@ class RequestLessonsForm(forms.ModelForm):
 
         )
         return request
-
-
-
-
-    def create_custom_helper(self):
-        helper = FormHelper()
-        helper.layout = Layout()
-
-        #helper.layout.append(HTML("Days available"))
-
-        for field in self.Meta.fields:
-            helper.layout.append(
-                Field(field)
-            )
-
-        return helper
 
 
 
