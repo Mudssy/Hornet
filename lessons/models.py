@@ -81,6 +81,7 @@ class LessonRequest(models.Model):
         blank=False,
     )
 
+    # The time at which the request was made
     request_time = models.DateTimeField(
         auto_now=False,
         auto_now_add=True,

@@ -58,7 +58,7 @@ class LogInForm(forms.Form):
     username = forms.CharField(label="Username")
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
-class RequestLessonsForm(forms.Form):
+class RequestLessonsForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = self.create_custom_helper()
@@ -75,7 +75,21 @@ class RequestLessonsForm(forms.Form):
     lesson_gap_weeks = forms.ChoiceField(
                         choices = LessonRequest.LessonGap.choices)
     lesson_duration_hours= forms.IntegerField(min_value=1, max_value=3)
+
     extra_requests = forms.CharField(max_length=250)
+
+    def clean(self):
+        super().clean()
+    def save(self):
+        super().save(commit=False)
+        
+        request = LessonRequest.objects.create(
+            days_available = "".join(self.cleaned_data.get("days_available"))
+
+        )
+        return request
+
+
 
 
     def create_custom_helper(self):
