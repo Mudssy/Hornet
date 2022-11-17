@@ -8,7 +8,7 @@ class FeedViewTestCase(TestCase):
     """Tests of the feed view."""
 
     fixtures=[
-        'lessons/tests/fixtures/default_user.json',
+        'lessons/tests/fixtures/default_student_user.json',
         'lessons/tests/fixtures/other_users.json'
     ]
 
@@ -20,7 +20,16 @@ class FeedViewTestCase(TestCase):
     # def test_feed_url(self):
     #     self.assertEqual(self.url, '/feed/')
 
-    def test_get_feed(self):
+    def test_get_student_feed(self):
         self.client.login(username=self.student.username, password='Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'student_feed.html')
+
+    def test_get_teacher_feed(self):
+        self.client.login(username=self.teacher.username, password="Password123")
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'teacher_feed.html')
+
+

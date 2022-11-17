@@ -9,7 +9,7 @@ from lessons.tests.helpers import LogInTester
 class LogInViewTestCase(TestCase, LogInTester):
 
     fixtures = [
-        'lessons/tests/fixtures/default_user.json'
+        'lessons/tests/fixtures/default_student_user.json'
     ]
 
     def setUp(self):

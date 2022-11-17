@@ -43,9 +43,19 @@ class LessonRequest(models.Model):
         FORTNIGHTLY = 3
         MONTHLY = 4
 
+    DAYS_OF_WEEK = (
+        (0, 'Monday'),
+        (1, 'Tuesday'),
+        (2, 'Wednesday'),
+        (3, 'Thursday'),
+        (4, 'Friday'),
+        (5, 'Saturday'),
+        (6, 'Sunday'),
+    )
 
     # days of the week for which the student is available
-    day_of_week = models.DateField(max_length=100, blank=False)
+    day_of_week = models.PositiveIntegerField(choices=DAYS_OF_WEEK)
+
 
     num_lessons = models.PositiveIntegerField(blank=False)
 
@@ -68,4 +78,6 @@ class LessonRequest(models.Model):
     )
 
     extra_requests = models.CharField(max_length=250)
+
+    is_booked = models.BooleanField(default=False)
 
