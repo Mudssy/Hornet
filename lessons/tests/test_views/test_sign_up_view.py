@@ -2,7 +2,7 @@
 from django.test import TestCase
 from lessons.forms import SignUpForm
 from django.urls import reverse
-from ..models import User
+from lessons.models import User
 from django.contrib.auth.hashers import check_password
 
 class SignUpViewTestCase(TestCase):

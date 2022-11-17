@@ -1,14 +1,14 @@
 from django.test import TestCase
 from lessons.forms import SignUpForm
 from django.urls import reverse
-from ..models import User
+from lessons.models import User
 from django.contrib.auth.hashers import check_password
 
 class SignUpViewTestCase(TestCase):
 
     fixtures = [
         'lessons/tests/fixtures/other_users.json',
-        'lessons/tests/fixtures/default_user.json'
+        'lessons/tests/fixtures/default_student_user.json'
     ]
 
     def setUp(self):

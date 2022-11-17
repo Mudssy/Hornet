@@ -1,25 +1,18 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from ..models import User
+from lessons.models import User
 
 class UserModelTestCase(TestCase):
 
     # retrieved by username="@johndoe" and "@janedoe" respectively
 
     fixtures = [
-        'lessons/tests/fixtures/default_user.json',
+        'lessons/tests/fixtures/default_student_user.json',
         'lessons/tests/fixtures/other_users.json'
     ]
 
     def setUp(self):
         self.student = User.objects.get(username="@johndoe")
-        # self.student = Student.objects.create_user(
-        #     '@studentname',
-        #     first_name='john',
-        #     last_name='doe',
-        #     email="john@gmail.com",
-        #     password="Password123"
-        # )
 
     def test_valid_user(self):
         try:

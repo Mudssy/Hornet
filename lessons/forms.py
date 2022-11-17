@@ -14,7 +14,6 @@ class SignUpForm(forms.ModelForm):
 
     class Meta:
         model = User
-
         fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password']
 
     new_password = forms.CharField(
@@ -84,6 +83,7 @@ class RequestLessonsForm(forms.ModelForm):
         super().save(commit=False)
         
         request = LessonRequest.objects.create(
+
             days_available = "".join(self.cleaned_data.get("days_available")),
             num_lessons = self.cleaned_data.get("num_lessons"),
             lesson_gap_weeks = self.cleaned_data.get("lesson_gap_weeks"),
@@ -91,13 +91,13 @@ class RequestLessonsForm(forms.ModelForm):
             #request_time = datetime.now(),
             extra_requests = self.cleaned_data.get("extra_requests"),
 
+            days_available = "".join(self.cleaned_data.get("days_available"))
+
+
         )
+        return request
 
 
-
-        
-        
-    
 
 
     def create_custom_helper(self):
@@ -110,10 +110,7 @@ class RequestLessonsForm(forms.ModelForm):
             helper.layout.append(
                 Field(field)
             )
-        
-        
-        
-            
+
         return helper
 
 

@@ -51,10 +51,20 @@ class LessonRequest(models.Model):
         Saturday = 6
         Sunday = 7
 
+    DAYS_OF_WEEK = (
+        (0, 'Monday'),
+        (1, 'Tuesday'),
+        (2, 'Wednesday'),
+        (3, 'Thursday'),
+        (4, 'Friday'),
+        (5, 'Saturday'),
+        (6, 'Sunday'),
+    )
 
     # days of the week for which the student is available
-    days_available= models.CharField(max_length=7, blank=False,default="1234567") #store available days in the week as string of numbers
+    days_available = models.CharField(max_length=7, blank=False,default="1234567") #store available days in the week as string of numbers
                                                                 #eg '126' means available Monday,Tuesday,Saturday
+
 
     num_lessons = models.PositiveIntegerField(blank=False)
 
@@ -71,10 +81,13 @@ class LessonRequest(models.Model):
         blank=False,
     )
 
+    # The time at which the request was made
     request_time = models.DateTimeField(
         auto_now=False,
         auto_now_add=True,
     )
 
     extra_requests = models.CharField(max_length=250)
+
+    is_booked = models.BooleanField(default=False)
 
