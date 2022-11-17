@@ -4,19 +4,19 @@ from lessons.models import User, LessonRequest
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
-    SEED_COUNT = 100
-
+    SEED_COUNT = 20
+    REQUESTS_PER_USER = 5
     def __init__(self):
         super().__init__()
         self.faker = Faker('en_GB')
     def handle(self, *args, **options):
         user_count=0
         while user_count < Command.SEED_COUNT:
-            while user_count < Command.SEED_COUNT:
-                print(f'Seeding user {user_count}', end='\r')
-                self._create_student()
-                user_count += 1
-            print('User seeding complete')
+            print(f'Seeding user {user_count}', end='\r')
+            curr_user = self._create_student()
+            self._create_request(curr_user, count=Command.REQUESTS_PER_USER)
+            user_count += 1
+        print('User seeding complete')
 
 
         first_name = 'John'
@@ -34,14 +34,7 @@ class Command(BaseCommand):
             account_type=1
         )
 
-        test_request = LessonRequest.objects.create(
-            availability='dummy',
-            num_lessons=5,
-            lesson_gap=8,
-            duration=45,
-            requestor=self.user,
-            extra_requests='dummy2',
-        )
+        self._create_request(user=self.user, count=10)
 
         # Administrator
         staff = User.objects.create_user(
@@ -53,25 +46,40 @@ class Command(BaseCommand):
             is_staff=True
         )
 
-
-        print("The seed command has not been implemented yet!")
-        print("TO DO: Create a seed command following the instructions of the assignment carefully.")
+        print("The seed command is under construction, and may be unstable due to changing fields")
 
 
 
+
+
+    def _create_request(self, user, count):
+        day = count,
+        lessons = 10 - count
+        while count > 0:
+            LessonRequest.objects.create(
+                days_available=str(count%7+1),
+                num_lessons=4,
+                lesson_gap_weeks=LessonRequest.LessonGap.FORTNIGHTLY,
+                lesson_duration_hours=1,
+                requestor=user,
+                extra_requests='I like music',
+                is_booked=(count % 2 == 0),
+            )
+            count -= 1
     # seeder creating student accounts
     def _create_student(self):
         first_name = self.faker.first_name()
         last_name = self.faker.last_name()
         email = self._email(first_name, last_name)
         username = self._username(first_name, last_name)
-        User.objects.create_user(
+        user = User.objects.create_user(
             username,
             first_name=first_name,
             last_name=last_name,
             email=email,
             password=Command.PASSWORD,
         )
+        return user
 
     def _email(self, first_name, last_name):
         email = f'{first_name}.{last_name}@example.org'

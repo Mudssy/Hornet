@@ -14,7 +14,6 @@ class SignUpForm(forms.ModelForm):
 
     class Meta:
         model = User
-
         fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password']
 
     new_password = forms.CharField(
@@ -76,10 +75,7 @@ class RequestLessonsForm(forms.Form):
     lesson_gap_weeks = forms.ChoiceField(
                         choices = LessonRequest.LessonGap.choices)
     lesson_duration_hours= forms.IntegerField(min_value=1, max_value=3)
-    extra_requests = forms.CharField()
-        
-        
-    
+    extra_requests = forms.CharField(max_length=250)
 
 
     def create_custom_helper(self):
@@ -92,10 +88,7 @@ class RequestLessonsForm(forms.Form):
             helper.layout.append(
                 Field(field)
             )
-        
-        
-        
-            
+
         return helper
 
 
