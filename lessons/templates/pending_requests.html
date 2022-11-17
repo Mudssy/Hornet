@@ -1,0 +1,7 @@
+{% extends 'feed.html' %}
+
+{% block feed_content%}
+    {% for request in requests%}
+        {{request.days_available}}
+    {% endfor %}
+{% endblock %}

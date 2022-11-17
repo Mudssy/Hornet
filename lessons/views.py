@@ -9,13 +9,8 @@ def home(request):
     return render(request, 'home.html')
 
 def feed(request):
-    user = request.user
-    requests = LessonRequest.objects.filter(requestor=user)
-    if user.account_type == 1:
-        return render(request, 'student_feed.html', {'requests':requests})
-    else:
-        return render(request, 'teacher_feed.html',{'requests':requests})
-
+    return render(request, 'feed.html')
+    
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -66,7 +61,12 @@ def make_request(request):
     else:
         form = RequestLessonsForm()
     
-    return render(request, 'make_request.html', {'form':form})          
+    return render(request, 'make_request.html', {'form':form})   
+
+def pending_requests(request):
+    user = request.user
+    requests = LessonRequest.objects.filter(requestor=user)
+    return render(request, 'pending_requests.html', {'requests':requests})       
 
 
 
