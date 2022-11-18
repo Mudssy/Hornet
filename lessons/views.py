@@ -73,7 +73,7 @@ def make_request(request):
 def pending_requests(request):
     user = request.user
     requests = LessonRequest.objects.filter(requestor=user)
-    return render(request, 'pending_requests.html', {'requests':requests})       
+    return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})       
 
 
 
