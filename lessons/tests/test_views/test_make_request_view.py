@@ -6,7 +6,8 @@ class MakeRequestTest(TestCase):
     """Tests for the make_request view"""
 
     fixtures = [
-        'lessons/tests/fixtures/default_student_user.json'
+        'lessons/tests/fixtures/default_student_user.json',
+        'lessons/tests/fixtures/other_users.json'
     ]
 
     def setUp(self):
@@ -39,3 +40,31 @@ class MakeRequestTest(TestCase):
             fetch_redirect_response=True
         )
         self.assertTemplateUsed(response, 'feed.html')
+
+    def test_unsuccessful_new_request(self):
+        self.client.login(username=self.user.username, password="Password123")
+        request_count_before = LessonRequest.objects.count()
+        self.data['num_lessons'] = ""
+        response = self.client.post(self.url, self.data, follow=True)
+        request_count_after = LessonRequest.objects.count()
+        self.assertEqual(request_count_after, request_count_before)
+        self.assertTemplateUsed(response, 'make_request.html')
+
+    def test_cannot_create_request_for_other_user(self):
+        self.client.login(username=self.user.username, password="Password123")
+        other_user = User.objects.get(username = '@janedoe')
+        self.data['requestor'] = other_user.id
+        request_count_before = LessonRequest.objects.count()
+        response = self.client.post(self.url, self.data, follow=True)
+        request_count_after = LessonRequest.objects.count()
+        self.assertEqual(request_count_after, request_count_before+1)
+        newest_request = LessonRequest.objects.latest('request_time')
+        self.assertEqual(self.user, newest_request.requestor)
+
+    def test_get_make_request_is_forbidden(self):
+        self.client.login(username=self.user.username, password="Password123")
+        request_count_before = LessonRequest.objects.count()
+        response = self.client.get(self.url, follow=True)
+        request_count_after = LessonRequest.objects.count()
+        self.assertEqual(request_count_after, request_count_before)
+        self.assertEqual(response.status_code, 403)
