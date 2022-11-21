@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'lessons',
 ]
 
+LOGIN_URL = 'lessons/views/log_in/'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -131,7 +133,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # user model for authentication
 AUTH_USER_MODEL = 'lessons.User'
 
-# gui 
+# gui
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-

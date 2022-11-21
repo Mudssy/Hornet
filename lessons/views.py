@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm
 from .models import LessonRequest, User
+from django.contrib.auth.models import Group
 
 # Create your views here.
 def home(request):
@@ -40,7 +41,7 @@ def log_in(request):
         form.add_error(None, "The credentials provided were incorrect")
     else:
         form = LogInForm()
-    
+
     return render(request,'log_in.html',{'form':form})
 
 def log_out(request):
@@ -53,3 +54,20 @@ def account_info(request):
 def make_request(request):
     return render(request, 'make_request.html')
 
+#associate user to administrator group
+def add_to_admin_group(request):
+    admin_group = Group.objects.get(account_type= 3)
+    request.user.groups.add(admin_group)
+    return HttpResponse("Successfully added")
+
+#associate user to director group
+def add_to_director_group(request):
+    director_group = Group.objects.get(account_type= 4)
+    request.user.groups.add(director_group)
+    return HttpResponse("Successfully added")
+
+#associate user to teacher group
+def add_to_teacher_group(request):
+    teacher_group = Group.objects.get(account_type= 2)
+    request.user.groups.add(teacher_group)
+    return HttpResponse("Successfully added")

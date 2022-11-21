@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 from django.core.validators import RegexValidator
 from django.db.models import PositiveSmallIntegerField
@@ -8,7 +8,7 @@ from django.db.models import PositiveSmallIntegerField
 # Create your models here.
 
 
-class User(AbstractUser):
+class User(AbstractUser, PermissionsMixin):
     class Account(models.IntegerChoices):
         STUDENT = 1
         TEACHER = 2

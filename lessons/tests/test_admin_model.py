@@ -2,6 +2,22 @@
 
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+
+#TODO: setup ADMINISTRATOR
+
+#TODO: test that administrator is staff
+
+#TODO: test that admin cannot make a group
+
+#TODO: test that admin cannot change a group
+
+#TODO: test that admin cannot delete a group
+
+#TODO: test that admin can confirm a request
+
+#TODO: test that admin account_type ==3
+
+
 # from ..admin import StaffAdmin
 # from ..models import Staff
 # from django.contrib import admin

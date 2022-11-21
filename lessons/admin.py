@@ -9,6 +9,12 @@ from .models import User
 class UserAdmin(admin.ModelAdmin):
     class Meta:
         is_staff=True
+
+    fieldsets = (
+        (None, {'fields': ('email', 'first_name', 'last_name', 'username', 'password')}),
+        ('Permissions', {'fields': ('is_staff', 'is_superuser', 'groups',
+            'user_permissions', 'account_type')}),
+    )
     # Checks if admin is a superuser
 #     def get_form(self, request, obj=None, **kwargs):
 #         form = super().get_form(request, obj, **kwargs)
