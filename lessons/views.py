@@ -81,7 +81,8 @@ def pending_requests(request):
 @teacher_prohibited
 @student_prohibited
 def approve_requests(request):
-    return render(request, 'pending_requests.html')
+    all_requests = LessonRequest.objects.all()
+    return render(request, 'approve_requests.html', {'requests': all_requests})
 
 
 

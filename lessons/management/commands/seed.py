@@ -45,6 +45,15 @@ class Command(BaseCommand):
             account_type=2
         )
 
+        teacher = User.objects.create_user(
+            username="@director",
+            first_name="director",
+            last_name="director",
+            email="director@gmail.com",
+            password=Command.PASSWORD,
+            account_type=3
+        )
+
         # Administrator
         staff = User.objects.create_user(
             username='@petrapickles',

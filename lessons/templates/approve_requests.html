@@ -1,0 +1,6 @@
+{% extends 'base_content.html' %}
+{% block content %}
+    {% for request in requests %}
+        {% include 'partials/show_request.html' %}
+    {% endfor %}
+{% endblock %}
