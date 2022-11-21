@@ -6,6 +6,9 @@
         <a class="nav-link" href="#">Invoices</a>
     {% elif user.account_type == 2%}
         <a class="nav-link" aria-current="page" href="#">Lessons</a>
+    {% elif user.account_type == 3 %}
+        <a class="nav-link" aria-current="page" href="approve_requests.html">Open Requests</a>
+        <a class="nav-link" aria-current="page" href="">Submit Payment</a>
     {% endif %}
         
 </nav>

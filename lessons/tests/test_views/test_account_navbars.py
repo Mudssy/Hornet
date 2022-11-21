@@ -13,8 +13,9 @@ class FeedNavBarTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.student = User.objects.get(username='@johndoe')
+        self.student = User.objects.get(username="@johndoe")
         self.teacher = User.objects.get(username="@teachersmith")
+        self.director = User.objects.get(username="@director")
         self.url = reverse('feed')
 
     def test_teacher_navbar_loads_correctly(self):
@@ -23,6 +24,8 @@ class FeedNavBarTestCase(TestCase):
         self.assertNotContains(response, 'Pending Requests')
         self.assertNotContains(response, 'Invoices')
         self.assertContains(response, 'Lessons')
+        self.assertNotContains(response, 'Approve Requests')
+        self.assertNotContains(response, 'Submit Payment')
 
     def test_student_navbar_loads_correctly(self):
         self.client.login(username=self.student.username, password='Password123')
@@ -30,3 +33,13 @@ class FeedNavBarTestCase(TestCase):
         self.assertContains(response, 'Pending Requests')
         self.assertContains(response, 'Lessons')
         self.assertContains(response, 'Invoices')
+        self.assertNotContains(response, 'Approve Requests')
+        self.assertNotContains(response, 'Submit Payment')
+    
+    def test_director_navbar_loads_correctly(self):
+        self.client.login(username=self.director.username, password='Password123')
+        response = self.client.get(self.url)
+        self.assertContains(response, 'Open Requests')
+        self.assertContains(response, 'Submit Payment')
+        self.assertNotContains(response, 'Invoices')
+

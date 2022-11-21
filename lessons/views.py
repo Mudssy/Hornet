@@ -76,7 +76,12 @@ def make_request(request):
 def pending_requests(request):
     user = request.user
     requests = LessonRequest.objects.filter(requestor=user)
-    return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})       
+    return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})
+
+@teacher_prohibited
+@student_prohibited
+def approve_requests(request):
+    return render(request, 'pending_requests.html')
 
 
 

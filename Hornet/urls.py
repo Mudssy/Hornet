@@ -26,5 +26,6 @@ urlpatterns = [
     path('log_out/', views.log_out, name='log_out'),
     path('account_info/',views.account_info, name='account_info'),
     path('make_request/', views.make_request, name='make_request'),
-    path('pending_requests/',views.pending_requests, name='pending_requests')
+    path('pending_requests/',views.pending_requests, name='pending_requests'),
+    path('approve_requests/',views.approve_requests, name='approve_requests')
 ]
