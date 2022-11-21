@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
 from .models import LessonRequest, User
 from django.http import HttpResponseForbidden
+from lessons.helpers import director_prohibited, teacher_prohibited, student_prohibited
 
 # Create your views here.
 def home(request):
@@ -46,7 +47,8 @@ def log_out(request):
 def account_info(request):
     return render(request,"account_info.html")
 
-
+@teacher_prohibited
+@director_prohibited
 def make_request(request):
     if request.method =="POST":
         if request.user.is_authenticated:
@@ -70,6 +72,7 @@ def make_request(request):
     
     return render(request, 'make_request.html', {'form':form})   
 
+@teacher_prohibited
 def pending_requests(request):
     user = request.user
     requests = LessonRequest.objects.filter(requestor=user)

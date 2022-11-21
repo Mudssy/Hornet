@@ -134,4 +134,9 @@ AUTH_USER_MODEL = 'lessons.User'
 # gui 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+ACCOUNT_RESTRICTED_PAGES = {
+    1 : [],
+    2 : ['make_requests', 'pending_requests'],
+    3 : ['make_requests']
+}
 
