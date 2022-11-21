@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.conf import settings
 
-def director_prohibited(view_function):
+def administrator_prohibited(view_function):
     def modified_view_function(request):
         if request.user.account_type==3:
             return redirect('feed')
