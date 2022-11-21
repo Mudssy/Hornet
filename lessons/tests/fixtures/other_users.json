@@ -23,5 +23,18 @@
       "account_type": 2,
       "is_active": true
     }
+  },
+  {
+    "model": "lessons.User",
+    "pk": 4,
+    "fields": {
+      "first_name": "Administrator",
+      "last_name": "Smith",
+      "username": "@administrator",
+      "email": "administrator@example.org",
+      "password": "pbkdf2_sha256$260000$ypOt2XEuTDSPK1lK3DtnmK$YZn/l5T6PEnD4MtoHUJl4152q02Snb+Mke+s20+d7ZY=",
+      "account_type": 3,
+      "is_active": true
+    }
   }
 ]

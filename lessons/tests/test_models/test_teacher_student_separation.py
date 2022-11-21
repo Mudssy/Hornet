@@ -19,3 +19,19 @@ class SignUpViewTestCase(TestCase):
         self.assertNotEqual(self.teacher.account_type, self.student.account_type)
         self.assertEqual(self.teacher.account_type, 2)
         self.assertEqual(self.student.account_type, 1)
+
+    def test_teacher_cannot_make_request(self):
+        self.client.login(username=self.teacher.username, password='Password123')
+        request_url = reverse('make_request')
+        response = self.client.get(request_url, follow=True)
+        response_url = reverse('feed')
+        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'feed.html')
+
+    def test_teacher_cannot_see_pending_requests(self):
+        self.client.login(username=self.teacher.username, password='Password123')
+        request_url = reverse('pending_requests')
+        response = self.client.get(request_url, follow=True)
+        response_url = reverse('feed')
+        self.assertRedirects(response, response_url, status_code=302, target_status_code=200)
+        self.assertTemplateUsed(response, 'feed.html')

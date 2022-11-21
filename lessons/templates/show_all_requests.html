@@ -1,0 +1,8 @@
+{% extends 'base_content.html' %}
+{% block content %}
+    {% for request in requests %}
+        {% if request.is_booked == False %}
+            {% include 'partials/show_request.html' %}
+        {% endif %}    
+    {% endfor %}
+{% endblock %}

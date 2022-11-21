@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
 from .models import LessonRequest, User
 from django.http import HttpResponseForbidden
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited
 
 # Create your views here.
 def home(request):
@@ -46,7 +47,8 @@ def log_out(request):
 def account_info(request):
     return render(request,"account_info.html")
 
-
+@teacher_prohibited
+@administrator_prohibited
 def make_request(request):
     if request.method =="POST":
         if request.user.is_authenticated:
@@ -55,7 +57,7 @@ def make_request(request):
             if form.is_valid():
                 LessonRequest.objects.create(
                     requestor=current_user,
-                    days_available="".join(form.cleaned_data.get("days_available")),
+                    days_available=form.cleaned_data.get("days_available"),
                     num_lessons=form.cleaned_data.get("num_lessons"),
                     lesson_gap_weeks=form.cleaned_data.get("lesson_gap_weeks"),
                     lesson_duration_hours=form.cleaned_data.get("lesson_duration_hours"),
@@ -70,10 +72,56 @@ def make_request(request):
     
     return render(request, 'make_request.html', {'form':form})   
 
+@teacher_prohibited
 def pending_requests(request):
     user = request.user
     requests = LessonRequest.objects.filter(requestor=user)
-    return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})       
+    return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})
 
+@teacher_prohibited
+@student_prohibited
+def show_all_requests(request):
+    all_requests = LessonRequest.objects.all()
+    return render(request, 'show_all_requests.html', {'requests': all_requests})
+
+def edit_request(request):
+
+    if request.method=="POST":
+        lesson_request = LessonRequest.objects.get(id=request.POST.get('request_id'))
+        lesson_request.is_booked=True
+        form = RequestLessonsForm(request.POST, instance=lesson_request)
+        if form.is_valid():
+            form.save()
+            return redirect('show_all_requests')
+    else:
+        lesson_request = LessonRequest.objects.get(id=request.GET.get('request_id'))
+        form = RequestLessonsForm(instance=lesson_request)
+
+
+
+
+
+
+
+
+
+
+    # if request.method=='POST':
+    #     id = request.POST.get('request_id')
+    #     request_being_edited = LessonRequest.objects.get(id=id)
+    #     form = RequestLessonsForm(request.POST, instance=request_being_edited)
+    #     if form.is_valid():
+    #         request_being_edited.days_available=request.POST.get('days_available')
+    #         request_being_edited.num_lessons=request.POST.get('num_lessons')
+    #         request_being_edited.lesson_gap_weeks=request.POST.get('lesson_gap_weeks')
+    #         request_being_edited.lesson_duration_hours=request.POST.get('lesson_duration_hours')
+    #         request_being_edited.extra_requests=request.POST.get('extra_requests')
+    #         return redirect('show_all_requests')
+    # else:
+    #     id = request.GET.get('request_id')
+    #     request_being_edited = LessonRequest.objects.get(id=id)
+    #     form = RequestLessonsForm(instance=request_being_edited)
+
+    return render(request, 'edit_request.html', {'form': form, 'request_id': id})
 
 

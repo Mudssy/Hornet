@@ -24,12 +24,10 @@ class FeedViewTestCase(TestCase):
         self.client.login(username=self.student.username, password='Password123')
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'student_feed.html')
 
     def test_get_teacher_feed(self):
         self.client.login(username=self.teacher.username, password="Password123")
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'teacher_feed.html')
 
 

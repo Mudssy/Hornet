@@ -39,7 +39,13 @@
                     <hr class="mt-0 mb-4">
                     <p>{{request.extra_requests}}</p>
                 </div>
-            
+                {% if user.account_type == 3%}
+                <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                    <form action="{% url 'edit_request' %}" method="get">
+                        <button type='submit' class="bg-transparent text-white" name="request_id" value="{{request.id}}"> Edit request </button>
+                    </form>
+                </div>
+                {% endif %}
             </div>
         </div>
         
