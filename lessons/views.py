@@ -1,20 +1,16 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
-from lessons.forms import SignUpForm, LogInForm
+from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
 from .models import LessonRequest, User
+from django.http import HttpResponseForbidden
 
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
 
 def feed(request):
-    user = request.user
-    requests = LessonRequest.objects.filter(requestor=user)
-    if user.account_type == 1:
-        return render(request, 'student_feed.html', {'requests':requests})
-    else:
-        return render(request, 'teacher_feed.html')
-
+    return render(request, 'feed.html')
+    
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -50,6 +46,34 @@ def log_out(request):
 def account_info(request):
     return render(request,"account_info.html")
 
+
 def make_request(request):
-    return render(request, 'make_request.html')
+    if request.method =="POST":
+        if request.user.is_authenticated:
+            current_user = request.user
+            form = RequestLessonsForm(request.POST)
+            if form.is_valid():
+                LessonRequest.objects.create(
+                    requestor=current_user,
+                    days_available="".join(form.cleaned_data.get("days_available")),
+                    num_lessons=form.cleaned_data.get("num_lessons"),
+                    lesson_gap_weeks=form.cleaned_data.get("lesson_gap_weeks"),
+                    lesson_duration_hours=form.cleaned_data.get("lesson_duration_hours"),
+                    # request_time = datetime.now(),
+                    extra_requests=form.cleaned_data.get("extra_requests"),
+                )
+                return redirect("feed")
+        else:
+            return redirect('log_in')
+    else:
+        form = RequestLessonsForm()
+    
+    return render(request, 'make_request.html', {'form':form})   
+
+def pending_requests(request):
+    user = request.user
+    requests = LessonRequest.objects.filter(requestor=user)
+    return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})       
+
+
 

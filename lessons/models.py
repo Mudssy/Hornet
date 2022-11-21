@@ -42,10 +42,29 @@ class LessonRequest(models.Model):
         WEEKLY = 2
         FORTNIGHTLY = 3
         MONTHLY = 4
+    class AvailableWeekly(models.IntegerChoices):
+        Monday = 1
+        Tuesday = 2
+        Wednesday = 3
+        Thursday = 4
+        Friday = 5
+        Saturday = 6
+        Sunday = 7
 
+    DAYS_OF_WEEK = (
+        (0, 'Monday'),
+        (1, 'Tuesday'),
+        (2, 'Wednesday'),
+        (3, 'Thursday'),
+        (4, 'Friday'),
+        (5, 'Saturday'),
+        (6, 'Sunday'),
+    )
 
     # days of the week for which the student is available
-    day_of_week = models.DateField(max_length=100, blank=False)
+    days_available = models.CharField(max_length=50, blank=False,default="1234567") #store available days in the week as string of numbers
+                                                                #eg '126' means available Monday,Tuesday,Saturday
+
 
     num_lessons = models.PositiveIntegerField(blank=False)
 
@@ -62,10 +81,13 @@ class LessonRequest(models.Model):
         blank=False,
     )
 
+    # The time at which the request was made
     request_time = models.DateTimeField(
         auto_now=False,
         auto_now_add=True,
     )
 
     extra_requests = models.CharField(max_length=250)
+
+    is_booked = models.BooleanField(default=False)
 

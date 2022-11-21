@@ -1,9 +1,10 @@
 from django import forms
 from django.core.validators import RegexValidator
-from lessons.models import User
+from lessons.models import User,LessonRequest
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Field,HTML,Submit
+from datetime import datetime
 
 class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
@@ -13,7 +14,6 @@ class SignUpForm(forms.ModelForm):
 
     class Meta:
         model = User
-
         fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password']
 
     new_password = forms.CharField(
@@ -57,6 +57,28 @@ class LogInForm(forms.Form):
         fields = ['username','password']
     username = forms.CharField(label="Username")
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+class RequestLessonsForm(forms.ModelForm):
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
+        self.title = "Request lessons"
+    
+    class Meta:
+        model = LessonRequest
+        fields = ["days_available","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
+
+    days_available = forms.MultipleChoiceField(
+        widget = forms.CheckboxSelectMultiple, choices=LessonRequest.AvailableWeekly.choices
+    )
+    num_lessons = forms.IntegerField(min_value=1, max_value=20)
+    lesson_gap_weeks = forms.ChoiceField(
+                        choices = LessonRequest.LessonGap.choices)
+    lesson_duration_hours= forms.IntegerField(min_value=1, max_value=3)
+    extra_requests = forms.CharField()
+
+
+
 
 class StandardForm():
     def helper(fields, submitName, submitValue,form_action,form_method):
