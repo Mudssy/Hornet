@@ -37,7 +37,7 @@ class RequestFormTestCase(TestCase):
         self.assertEqual(before_count + 1, after_count)
 
     def test_invalid_form_doesnt_save(self):
-        self.form_input['days_available'] = 'thursday'
+        self.form_input['lesson_duration_hours'] = 22
         before_count = LessonRequest.objects.count()
         self.client.login(username=self.student.username, password="Password123")
         self.assertRaises(TypeError, self.client.post(self.url, self.form_input))

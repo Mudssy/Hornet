@@ -42,6 +42,7 @@ class LessonRequest(models.Model):
         WEEKLY = 2
         FORTNIGHTLY = 3
         MONTHLY = 4
+        
     class AvailableWeekly(models.IntegerChoices):
         Monday = 1
         Tuesday = 2

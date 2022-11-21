@@ -58,10 +58,18 @@ class LogInForm(forms.Form):
     username = forms.CharField(label="Username")
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
+
+
+
+
 class RequestLessonsForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
+        if self.instance is None:
+            self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
+        else:
+            self.helper = StandardForm.helper(self.Meta.fields,"request_id",self.instance.id,"edit_request","POST")
+        
         self.title = "Request lessons"
     
     class Meta:
@@ -76,6 +84,11 @@ class RequestLessonsForm(forms.ModelForm):
                         choices = LessonRequest.LessonGap.choices)
     lesson_duration_hours= forms.IntegerField(min_value=1, max_value=3)
     extra_requests = forms.CharField()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cleaned_data["days_available"] = "".join(cleaned_data["days_available"])
+        return cleaned_data
 
 
 
