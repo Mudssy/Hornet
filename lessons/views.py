@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
 from .models import LessonRequest, User
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice
 
 # Create your views here.
 def home(request):
@@ -95,6 +95,7 @@ def edit_request(request):
         form = RequestLessonsForm(request.POST, instance=lesson_request)
         if form.is_valid():
             form.save()
+            create_invoice(lesson_request)
             return redirect('show_all_requests')
     else:
         lesson_request = LessonRequest.objects.get(id=request.GET.get('request_id'))

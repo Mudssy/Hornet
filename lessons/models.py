@@ -33,6 +33,8 @@ class User(AbstractUser):
         default=Account.STUDENT
     )
 
+    balance = models.IntegerField(default=0)
+
     password = models.CharField(max_length=100)
 
 class LessonRequest(models.Model):
@@ -92,3 +94,26 @@ class LessonRequest(models.Model):
 
     is_booked = models.BooleanField(default=False)
 
+class Invoice(models.Model):
+
+    associated_student=models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=False
+    )
+
+    date_created = models.DateTimeField(
+        auto_now=False,
+        auto_now_add=True
+    )
+
+    invoice_id=models.CharField(
+        max_length=7,
+        blank=True,
+    )
+    
+    # Information transferred from request object, for more professional invoice look
+    number_of_lessons=models.PositiveIntegerField(default=1)
+    lesson_duration=models.PositiveIntegerField(default=1)
+    hourly_cost=models.PositiveIntegerField(default=1)
+    total_price=models.PositiveIntegerField(blank=True)
