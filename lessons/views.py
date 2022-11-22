@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
-from .models import LessonRequest, User
+from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
 from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice
 
@@ -105,3 +105,10 @@ def edit_request(request):
     return render(request, 'edit_request.html', {'form': form, 'request_id': id})
 
 
+
+@teacher_prohibited
+@administrator_prohibited
+def invoices(request):
+    user = request.user
+    invoices = Invoice.objects.filter(associated_student=user)
+    return render(request, 'invoices.html', {'invoices':invoices})

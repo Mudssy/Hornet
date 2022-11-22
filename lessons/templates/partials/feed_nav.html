@@ -3,7 +3,7 @@
     {% if user.account_type == 1%}
         <a class="nav-link" aria-current="page" href="{% url 'pending_requests' %}">Pending Requests</a>
         <a class="nav-link" href="#">Lessons</a>
-        <a class="nav-link" href="#">Invoices</a>
+        <a class="nav-link" href="{% url 'invoices' %}">Invoices</a>
     {% elif user.account_type == 2%}
         <a class="nav-link" aria-current="page" href="#">Lessons</a>
     {% elif user.account_type == 3 %}

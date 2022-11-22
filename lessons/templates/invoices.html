@@ -1,0 +1,7 @@
+{% extends 'feed.html' %}
+
+{% block feed_content %}
+  {% for invoice in invoices %}
+    <p>{{invoice.invoice_id}}: £{{invoice.total_price}}</p>
+  {% endfor %}
+{% endblock %}

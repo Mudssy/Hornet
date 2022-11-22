@@ -29,4 +29,5 @@ urlpatterns = [
     path('pending_requests/',views.pending_requests, name='pending_requests'),
     path('show_all_requests/',views.show_all_requests, name='show_all_requests'),
     path('edit_request/', views.edit_request, name="edit_request"),
+    path('invoices/', views.invoices, name="invoices"),
 ]
