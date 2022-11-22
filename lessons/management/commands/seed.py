@@ -4,8 +4,8 @@ from lessons.models import User, LessonRequest
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
-    SEED_COUNT = 20
-    REQUESTS_PER_USER = 5
+    SEED_COUNT = 5
+    REQUESTS_PER_USER = 2
     def __init__(self):
         super().__init__()
         self.faker = Faker('en_GB')
@@ -34,7 +34,7 @@ class Command(BaseCommand):
             account_type=1
         )
 
-        self._create_request(user=self.user, count=10)
+        self._create_request(user=self.user, count=Command.REQUESTS_PER_USER)
 
         teacher = User.objects.create_user(
             username="@teacher",

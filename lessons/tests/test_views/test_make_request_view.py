@@ -13,7 +13,7 @@ class MakeRequestTest(TestCase):
     def setUp(self):
         self.user = User.objects.get(username='@johndoe')
         self.url = reverse('make_request')
-        self.data = {
+        self.form_input = {
             'days_available' : '2',
             'num_lessons' : 4,
             'lesson_gap_weeks' : LessonRequest.LessonGap.WEEKLY,
@@ -28,7 +28,7 @@ class MakeRequestTest(TestCase):
     def test_successful_new_request(self):
         self.client.login(username=self.user.username, password="Password123")
         request_count_before = LessonRequest.objects.count()
-        response = self.client.post(self.url, self.data, follow=True)
+        response = self.client.post(self.url, self.form_input, follow=True)
         request_count_after = LessonRequest.objects.count()
         self.assertEqual(request_count_after, request_count_before+1)
         newest_request = LessonRequest.objects.latest('request_time')
@@ -44,8 +44,8 @@ class MakeRequestTest(TestCase):
     def test_unsuccessful_new_request(self):
         self.client.login(username=self.user.username, password="Password123")
         request_count_before = LessonRequest.objects.count()
-        self.data['num_lessons'] = ""
-        response = self.client.post(self.url, self.data, follow=True)
+        self.form_input['num_lessons'] = ""
+        response = self.client.post(self.url, self.form_input, follow=True)
         request_count_after = LessonRequest.objects.count()
         self.assertEqual(request_count_after, request_count_before)
         self.assertTemplateUsed(response, 'make_request.html')
@@ -53,9 +53,9 @@ class MakeRequestTest(TestCase):
     def test_cannot_create_request_for_other_user(self):
         self.client.login(username=self.user.username, password="Password123")
         other_user = User.objects.get(username = '@janedoe')
-        self.data['requestor'] = other_user.id
+        self.form_input['requestor'] = other_user.id
         request_count_before = LessonRequest.objects.count()
-        response = self.client.post(self.url, self.data, follow=True)
+        response = self.client.post(self.url, self.form_input, follow=True)
         request_count_after = LessonRequest.objects.count()
         self.assertEqual(request_count_after, request_count_before+1)
         newest_request = LessonRequest.objects.latest('request_time')
@@ -67,4 +67,12 @@ class MakeRequestTest(TestCase):
         response = self.client.get(self.url, follow=True)
         request_count_after = LessonRequest.objects.count()
         self.assertEqual(request_count_after, request_count_before)
-        self.assertEqual(response.status_code, 403)
+
+    def test_make_request_saves_valid_form(self):
+        before = LessonRequest.objects.count()
+        self.client.login(username=self.user.username, password="Password123")
+        response = self.client.post(self.url, self.form_input, follow=True)
+        redirect_url = reverse('feed')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        after = LessonRequest.objects.count()
+        self.assertEqual(before+1, after)

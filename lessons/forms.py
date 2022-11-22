@@ -65,7 +65,7 @@ class LogInForm(forms.Form):
 class RequestLessonsForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance is None:
+        if self.instance.id is None:
             self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
         else:
             self.helper = StandardForm.helper(self.Meta.fields,"request_id",self.instance.id,"edit_request","POST")
