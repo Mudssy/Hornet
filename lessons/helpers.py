@@ -47,6 +47,5 @@ def create_invoice(lesson_request):
         invoice_id = str(student.id).rjust(4, '0') + "-" + (str(student_invoice_id)).rjust(4, '0')
     )
 
-    invoice.invoice_id=(
-        str(student.id) + "-" + str(invoice.id)
-    )
+    student.balance -= invoice.total_price
+    student.save()

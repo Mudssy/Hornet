@@ -110,5 +110,7 @@ def edit_request(request):
 @administrator_prohibited
 def invoices(request):
     user = request.user
+    balance = user.balance
+    print(balance)
     invoices = Invoice.objects.filter(associated_student=user)
-    return render(request, 'invoices.html', {'invoices':invoices})
+    return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})

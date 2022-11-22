@@ -1,7 +1,8 @@
 {% extends 'feed.html' %}
 
 {% block feed_content %}
+<p><h3>Current Credit(£): {{user.balance}}</h3></p>
   {% for invoice in invoices %}
-    <p>{{invoice.invoice_id}}: £{{invoice.total_price}}</p>
+    <p>{{invoice.invoice_id}}: -£{{invoice.total_price}}</p>
   {% endfor %}
 {% endblock %}
