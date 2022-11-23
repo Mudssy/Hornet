@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm
 from .models import LessonRequest, User
 from django.contrib.auth.models import Group
+from django.contrib.auth.decorators import group_required
 
 # Create your views here.
 def home(request):
