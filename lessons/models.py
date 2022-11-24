@@ -44,7 +44,7 @@ class LessonRequest(models.Model):
         WEEKLY = 2
         FORTNIGHTLY = 3
         MONTHLY = 4
-        
+
     class AvailableWeekly(models.IntegerChoices):
         Monday = 1
         Tuesday = 2
@@ -90,7 +90,7 @@ class LessonRequest(models.Model):
         auto_now_add=True,
     )
 
-    extra_requests = models.CharField(max_length=250)
+    extra_requests = models.CharField(max_length=250, blank=True)
 
     is_booked = models.BooleanField(default=False)
 
@@ -111,7 +111,7 @@ class Invoice(models.Model):
         max_length=7,
         blank=True,
     )
-    
+
     # Information transferred from request object, for more professional invoice look
     number_of_lessons=models.PositiveIntegerField(default=1)
     lesson_duration=models.PositiveIntegerField(default=1)
