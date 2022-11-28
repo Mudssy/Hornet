@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import User
+from .models import User, LessonRequest, Invoice
 # Register your models here.
 
 @admin.register(User)
@@ -51,3 +51,15 @@ class UserAdmin(admin.ModelAdmin):
 #
 #         admin.site.register(Staff, StaffAdmin)
 #         return form
+
+@admin.register(LessonRequest)
+class UserAdmin(admin.ModelAdmin):
+    list_display = [
+        'requestor', 'request_time', 'days_available', 'num_lessons', 'lesson_gap_weeks', 'lesson_duration_hours', 'extra_requests', 'is_booked'
+    ]
+
+@admin.register(Invoice)
+class UserAdmin(admin.ModelAdmin):
+    list_display = [
+        'associated_student', 'date_created', 'invoice_id', 'number_of_lessons', 'lesson_duration', 'hourly_cost', 'total_price'
+    ]

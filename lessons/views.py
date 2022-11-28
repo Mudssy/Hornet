@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, director_prohibited
 
 # Create your views here.
 def home(request):
@@ -11,7 +11,7 @@ def home(request):
 
 def feed(request):
     return render(request, 'feed.html')
-    
+
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -37,7 +37,7 @@ def log_in(request):
         form.add_error(None, "The credentials provided were incorrect")
     else:
         form = LogInForm()
-    
+
     return render(request,'log_in.html',{'form':form})
 
 def log_out(request):
@@ -69,8 +69,8 @@ def make_request(request):
             return redirect('log_in')
     else:
         form = RequestLessonsForm()
-    
-    return render(request, 'make_request.html', {'form':form})   
+
+    return render(request, 'make_request.html', {'form':form})
 
 @teacher_prohibited
 def pending_requests(request):
@@ -101,7 +101,7 @@ def edit_request(request):
         lesson_request = LessonRequest.objects.get(id=request.GET.get('request_id'))
         form = RequestLessonsForm(instance=lesson_request)
         id = request.GET.get('request_id')
-    
+
     return render(request, 'edit_request.html', {'form': form, 'request_id': id})
 
 
