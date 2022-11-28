@@ -45,23 +45,26 @@ class Command(BaseCommand):
             account_type=2
         )
 
-        teacher = User.objects.create_user(
-            username="@director",
-            first_name="director",
-            last_name="director",
-            email="director@gmail.com",
+        admin = User.objects.create_user(
+            username="@admin",
+            first_name="admin",
+            last_name="admin",
+            email="admin@gmail.com",
             password=Command.PASSWORD,
-            account_type=3
+            account_type=3,
+            is_staff=True,
+            is_superuser=False
         )
 
         # Administrator
-        staff = User.objects.create_user(
-            username='@petrapickles',
-            first_name="Petra",
-            last_name="Pickles",
-            email="petra.pickles@example.org",
+        director = User.objects.create_user(
+            username='@director',
+            first_name="director",
+            last_name="director",
+            email="director@example.org",
             password=Command.PASSWORD,
-            is_staff=True
+            is_staff=True,
+            is_superuser=True
         )
 
         print("The seed command is under construction, and may be unstable due to changing fields")
