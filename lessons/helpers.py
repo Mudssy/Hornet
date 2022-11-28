@@ -30,10 +30,18 @@ def student_prohibited(view_function):
             return view_function(request)
     return modified_view_function
 
+def director_prohibited(view_function):
+    def modified_view_function(request):
+        if request.user.account_type==4:
+            return redirect('feed')
+        else:
+            return view_function(request)
+    return modified_view_function
+
 def create_invoice(lesson_request):
     if not isinstance(lesson_request, LessonRequest) or lesson_request.id is None or lesson_request.is_booked == False:
         return
-    
+
     student = lesson_request.requestor
     student_invoice_id = Invoice.objects.filter(associated_student=student).count()+1
 

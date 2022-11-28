@@ -13,6 +13,7 @@ class User(AbstractUser):
         STUDENT = 1
         TEACHER = 2
         ADMINISTRATOR = 3
+        DIRECTOR = 4
 
     username = models.CharField(
         max_length=30,
