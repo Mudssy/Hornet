@@ -4,7 +4,7 @@ from lessons.models import User, LessonRequest
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
-    SEED_COUNT = 5
+    SEED_COUNT = 100
     REQUESTS_PER_USER = 2
     def __init__(self):
         super().__init__()
@@ -36,6 +36,7 @@ class Command(BaseCommand):
 
         self._create_request(user=self.user, count=Command.REQUESTS_PER_USER)
 
+        # Teacher for easier testing
         teacher = User.objects.create_user(
             username="@teacher",
             first_name="teacher",
@@ -45,6 +46,7 @@ class Command(BaseCommand):
             account_type=2
         )
 
+        # Admin for easier testing
         admin = User.objects.create_user(
             username="@admin",
             first_name="admin",
@@ -56,13 +58,48 @@ class Command(BaseCommand):
             is_superuser=False
         )
 
-        # Administrator
+        # Director for easier testing
         director = User.objects.create_user(
             username='@director',
             first_name="director",
             last_name="director",
             email="director@example.org",
             password=Command.PASSWORD,
+            account_type=4,
+            is_staff=True,
+            is_superuser=True
+        )
+
+        # Student for seeder requirement
+        johndoe = User.objects.create_user(
+            username='@JohnDoe',
+            first_name='John',
+            last_name='Doe',
+            email='john.doe@example.org',
+            password=Command.PASSWORD,
+            account_type=1
+        )
+
+        # Admin for seeder requirement
+        petrapickles = User.objects.create_user(
+            username='@PetraPickles',
+            first_name='Petra',
+            last_name='Pickles',
+            email='petra.pickles@example.org',
+            password=Command.PASSWORD,
+            account_type=3,
+            is_staff=True,
+            is_superuser=False
+        )
+
+        #Director for seeder requirement
+        martymajor = User.objects.create_user(
+            username='@MartyMajor',
+            first_name='Marty',
+            last_name='Major',
+            email='marty.major@example.org',
+            password=Command.PASSWORD,
+            account_type=4,
             is_staff=True,
             is_superuser=True
         )
