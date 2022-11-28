@@ -1,0 +1,9 @@
+{% extends 'feed.html' %}
+
+{% block feed_content %}
+  {% for request in requests %}
+    {% if request.is_booked == True %}
+      {% include 'partials/show_request.html' %}
+    {% endif %}
+  {% endfor %}
+{% endblock %}
