@@ -5,9 +5,6 @@ from django.core.validators import RegexValidator
 from django.db.models import PositiveSmallIntegerField
 
 
-# Create your models here.
-
-
 class User(AbstractUser):
     class Account(models.IntegerChoices):
         STUDENT = 1

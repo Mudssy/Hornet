@@ -45,7 +45,7 @@ class Command(BaseCommand):
             account_type=2
         )
 
-        teacher = User.objects.create_user(
+        director = User.objects.create_user(
             username="@director",
             first_name="director",
             last_name="director",
