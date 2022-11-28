@@ -78,6 +78,11 @@ def pending_requests(request):
     requests = LessonRequest.objects.filter(requestor=user)
     return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})
 
+def booked_lessons(request):
+    user = request.user
+    requests = LessonRequest.objects.filter(requestor=user)
+    return render(request, 'booked_lessons.html', {'requests':requests})
+
 @teacher_prohibited
 @student_prohibited
 def show_all_requests(request):
@@ -114,3 +119,4 @@ def invoices(request):
     print(balance)
     invoices = Invoice.objects.filter(associated_student=user)
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
+
