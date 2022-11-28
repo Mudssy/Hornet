@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
-from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
+from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, MakeAdminForm
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
 from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, director_prohibited
@@ -114,3 +114,25 @@ def invoices(request):
     print(balance)
     invoices = Invoice.objects.filter(associated_student=user)
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
+
+@student_prohibited
+@teacher_prohibited
+@administrator_prohibited
+def make_admin(request):
+    if request.method=="POST":
+        form=MakeAdminForm(request.POST)
+        if form.is_valid():
+            User.objects.create_user(
+                username=form.cleaned_data.get('username'),
+                first_name=form.cleaned_data.get('first_name'),
+                last_name=form.cleaned_data.get('last_name'),
+                email=form.cleaned_data.get('email'),
+                password=form.cleaned_data.get('new_password'),
+                account_type=3,
+                is_staff=True,
+                is_superuser=False
+            )
+            return redirect('feed')
+    else:
+        form=MakeAdminForm()
+    return render(request, 'make_admin.html', {'form':form})

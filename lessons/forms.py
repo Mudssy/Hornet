@@ -10,7 +10,7 @@ class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = StandardForm.helper(self.Meta.fields, "submit", "Sign up", "sign_up", "POST")
-        self.title = "Sign up" 
+        self.title = "Sign up"
 
     class Meta:
         model = User
@@ -51,8 +51,8 @@ class LogInForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = StandardForm.helper(self.Meta.fields,"submit","Log In","log_in","POST")
         self.title = "Login"
-        
-    
+
+
     class Meta:
         fields = ['username','password']
     username = forms.CharField(label="Username")
@@ -69,9 +69,9 @@ class RequestLessonsForm(forms.ModelForm):
             self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
         else:
             self.helper = StandardForm.helper(self.Meta.fields,"request_id",self.instance.id,"edit_request","POST")
-        
+
         self.title = "Request lessons"
-    
+
     class Meta:
         model = LessonRequest
         fields = ["days_available","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
@@ -90,6 +90,34 @@ class RequestLessonsForm(forms.ModelForm):
         cleaned_data["days_available"] = "".join(cleaned_data["days_available"])
         return cleaned_data
 
+class MakeAdminForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Make admin", "make_admin", "POST")
+        self.title = "Create Admin" 
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password']
+
+    new_password = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(),
+        validators=[RegexValidator(
+            regex=r'^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).*$',
+            message='Password must contain an uppercase character, a lowercase '
+                    'character and a number'
+        )]
+    )
+    confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
+
+
+    def clean(self):
+        super().clean()
+        new_password = self.cleaned_data.get('new_password')
+        password_confirmation = self.cleaned_data.get('confirm_password')
+        if new_password  != password_confirmation:
+             self.add_error('confirm_password', 'passwords do not match')
 
 
 
@@ -107,4 +135,3 @@ class StandardForm():
             )
         helper.layout.append(Submit(submitName,submitValue))
         return helper
-
