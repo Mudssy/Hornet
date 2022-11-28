@@ -125,7 +125,3 @@ def invoices(request):
     print(balance)
     invoices = Invoice.objects.filter(associated_student=user)
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
-<<<<<<< HEAD
-=======
-
->>>>>>> 21399adfb30f1ee42bcb33efb30472a13a2aa2c9
