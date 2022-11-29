@@ -91,6 +91,62 @@ class LessonRequest(models.Model):
 
     is_booked = models.BooleanField(default=False)
 
+class BookedLesson(models.Model):
+    # request from which this lesson is being created
+    associated_lesson_request = models.ForeignKey(
+        LessonRequest,
+        on_delete=models.CASCADE,
+        blank=False
+    )
+
+    class DayOfLesson(models.IntegerChoices):
+        Monday = 1
+        Tuesday = 2
+        Wednesday = 3
+        Thursday = 4
+        Friday = 5
+        Saturday = 6
+        Sunday = 7
+
+    DAYS_OF_WEEK = (
+        (0, 'Monday'),
+        (1, 'Tuesday'),
+        (2, 'Wednesday'),
+        (3, 'Thursday'),
+        (4, 'Friday'),
+        (5, 'Saturday'),
+        (6, 'Sunday'),
+    )
+
+    def getLessonDuration(self):
+        return self.associated_lesson_request.lesson_duration_hours
+
+    #default lesson duration is taken from lesson request
+    lesson_duration_hours = models.PositiveIntegerField(default=getLessonDuration)
+
+    def getRequestTime(self):
+        return self.associated_lesson_request.approval_time
+
+    #time the request for this lesson was made
+    request_time = getRequestTime
+
+    approval_time = models.DateTimeField(
+        auto_now=False,
+        auto_now_add=True,
+    )
+
+    #default special requests are taken from the lesson request
+    def getExtraRequests(self):
+        return self.associated_lesson_request.extra_requests
+
+    extra_requests = models.CharField(max_length=250, default=getExtraRequests)
+
+    is_booked = True
+
+    #TODO: implement list of teachers to pick for the booked lesson
+
+
+
 class Invoice(models.Model):
 
     associated_student=models.ForeignKey(
