@@ -94,14 +94,16 @@ class RequestLessonsForm(forms.ModelForm):
 class SubmitPaymentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper= StandardForm.helper(self.Meta.fields, "submit", "Submit", "submit_payment", "POST")
+        self.helper = StandardForm.helper(self.Meta.fields, "submit", self.instance.invoice_id, "submit_payment", "POST")
+        
 
 
     class Meta:
         model = Invoice
         fields = ["amount_paid"]
 
-    amount_paid = forms.IntegerField(min_value=1)
+    amount_paid= forms.IntegerField(min_value=0)
+    
 
 
 class StandardForm():

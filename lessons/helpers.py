@@ -52,3 +52,17 @@ def create_invoice(lesson_request):
 
     student.balance -= invoice.total_price
     student.save()
+
+def update_invoice(invoice, amount_paid):
+    amount_paid = int(amount_paid)
+    invoice.amount_outstanding -= amount_paid
+    invoice.amount_paid += amount_paid
+    if(invoice.amount_outstanding <= 0):
+        invoice.is_paid = True
+    
+    invoice.save()
+
+
+    student = invoice.associated_student
+    student.balance += amount_paid
+    student.save()

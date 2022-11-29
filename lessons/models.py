@@ -107,6 +107,7 @@ class Invoice(models.Model):
     invoice_id=models.CharField(
         max_length=7,
         blank=True,
+        unique=True
     )
 
     # Information transferred from request object, for more professional invoice look
@@ -115,5 +116,5 @@ class Invoice(models.Model):
     hourly_cost=models.PositiveIntegerField(default=1)
     total_price=models.PositiveIntegerField(blank=True)
     amount_paid=models.PositiveIntegerField(blank=True, default=0)
-    amount_outstanding=models.IntegerField(blank=True, default=0)
+    amount_outstanding=models.PositiveIntegerField(blank=True, default=0)
     is_paid=models.BooleanField(default=False)

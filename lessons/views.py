@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice
 
 # Create your views here.
 def home(request):
@@ -126,9 +126,24 @@ def invoices(request):
     invoices = Invoice.objects.filter(associated_student=user)
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
 
-@teacher_prohibited
-@student_prohibited
+
 def submit_payment(request):
-    all_invoices = Invoice.objects.all()
-    form = SubmitPaymentForm()
-    return render(request, 'submit_payment.html', {'invoices': all_invoices, 'form': form})
+
+    
+
+    if request.method=='POST':
+        invoice_id=request.POST.get('submit')
+        invoice = Invoice.objects.get(invoice_id=invoice_id)
+        amount_paid = int(request.POST.get('amount_paid'))
+        if amount_paid <= invoice.amount_outstanding:
+            update_invoice(invoice, amount_paid)
+        
+    forms = []
+    all_invoices = Invoice.objects.filter(is_paid=False)
+    for invoice in all_invoices:
+        form = SubmitPaymentForm(instance=(invoice))
+        forms.append(form)
+    
+    
+    
+    return render(request, 'submit_payment.html', {'forms': forms})
