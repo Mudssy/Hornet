@@ -1,0 +1,7 @@
+{% extends 'base_content.html' %}
+{% block content %}
+{% include 'partials/feed_nav.html' %}
+    {% for invoice in invoices %}
+           {% include 'partials/invoice.html' %}
+    {% endfor %}
+{% endblock %}

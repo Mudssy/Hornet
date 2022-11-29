@@ -114,3 +114,6 @@ class Invoice(models.Model):
     lesson_duration=models.PositiveIntegerField(default=1)
     hourly_cost=models.PositiveIntegerField(default=1)
     total_price=models.PositiveIntegerField(blank=True)
+    amount_paid=models.PositiveIntegerField(blank=True, default=0)
+    amount_outstanding=models.IntegerField(blank=True, default=0)
+    is_paid=models.BooleanField(default=False)

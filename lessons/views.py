@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
-from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
+from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
 from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice
@@ -125,3 +125,10 @@ def invoices(request):
     print(balance)
     invoices = Invoice.objects.filter(associated_student=user)
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
+
+@teacher_prohibited
+@student_prohibited
+def submit_payment(request):
+    all_invoices = Invoice.objects.all()
+    form = SubmitPaymentForm()
+    return render(request, 'submit_payment.html', {'invoices': all_invoices, 'form': form})

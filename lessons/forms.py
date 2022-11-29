@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import RegexValidator
-from lessons.models import User,LessonRequest
+from lessons.models import User,LessonRequest, Invoice
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Field,HTML,Submit
@@ -91,6 +91,17 @@ class RequestLessonsForm(forms.ModelForm):
         return cleaned_data
 
 
+class SubmitPaymentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper= StandardForm.helper(self.Meta.fields, "submit", "Submit", "submit_payment", "POST")
+
+
+    class Meta:
+        model = Invoice
+        fields = ["amount_paid"]
+
+    amount_paid = forms.IntegerField(min_value=1)
 
 
 class StandardForm():
