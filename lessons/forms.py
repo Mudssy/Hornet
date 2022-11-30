@@ -58,10 +58,6 @@ class LogInForm(forms.Form):
     username = forms.CharField(label="Username")
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
-
-
-
-
 class RequestLessonsForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -93,12 +89,18 @@ class RequestLessonsForm(forms.ModelForm):
 class MakeAdminForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Make admin", "make_admin", "POST")
-        self.title = "Create Admin" 
+        if self.instance.id is None:
+            self.helper = StandardForm.helper(self.Meta.fields, "submit", "Make admin", "make_admin", "POST")
+            self.title = "Create Admin"
+            del self.fields['is_staff']
+            del self.fields['is_superuser']
+        else:
+            self.helper = StandardForm.helper(self.Meta.fields,"user_id", self.instance.id, "edit_admin", "POST")
+            self.title = "Edit Admin"
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password']
+        fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password', 'is_staff', 'is_superuser']
 
     new_password = forms.CharField(
         label='Password',
@@ -118,8 +120,6 @@ class MakeAdminForm(forms.ModelForm):
         password_confirmation = self.cleaned_data.get('confirm_password')
         if new_password  != password_confirmation:
              self.add_error('confirm_password', 'passwords do not match')
-
-
 
 class StandardForm():
     def helper(fields, submitName, submitValue,form_action,form_method):

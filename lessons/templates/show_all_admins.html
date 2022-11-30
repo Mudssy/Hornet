@@ -1,7 +1,7 @@
 {% extends 'base_content.html' %}
 {% block content %}
   {% for user in users %}
-    {% if user.is_staff==True or user.is_superuser==True %}
+    {% if user.is_staff %}
       {% include 'partials/show_user.html' %}
     {% endif %}
   {% endfor %}

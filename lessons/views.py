@@ -134,3 +134,30 @@ def make_admin(request):
     else:
         form=MakeAdminForm()
     return render(request, 'make_admin.html', {'form':form})
+
+@director_only
+def edit_admin(request):
+    if request.method=="POST":
+        id=request.POST.get('user_id')
+        user=User.objects.get(id=id)
+        form= MakeAdminForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            if user.is_superuser:
+                user.account_type = 4
+            elif user.is_staff:
+                user.account_type = 3
+            else:
+                user.account_type = 2
+            return redirect('show_all_admins')
+    else:
+        id=request.GET.get('user_id')
+        user = User.objects.get(id=id)
+        form = MakeAdminForm(instance=user)
+
+    return render(request, 'edit_admin.html', {'form': form, 'user_id': id})
+
+@director_only
+def show_all_admins(request):
+    all_admins = User.objects.filter(is_staff=True)
+    return render(request, 'show_all_admins.html', {'users': all_admins})

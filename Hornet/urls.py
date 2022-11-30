@@ -30,5 +30,7 @@ urlpatterns = [
     path('show_all_requests/',views.show_all_requests, name='show_all_requests'),
     path('edit_request/', views.edit_request, name="edit_request"),
     path('invoices/', views.invoices, name="invoices"),
-    path('make_admin/', views.make_admin, name="make_admin")
+    path('make_admin/', views.make_admin, name="make_admin"),
+    path('show_all_admins/', views.show_all_admins, name="show_all_admins"),
+    path('edit_admin/', views.edit_admin, name="edit_admin")
 ]
