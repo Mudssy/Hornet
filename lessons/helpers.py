@@ -30,12 +30,12 @@ def student_prohibited(view_function):
             return view_function(request)
     return modified_view_function
 
-def director_prohibited(view_function):
+def director_only(view_function):
     def modified_view_function(request):
         if request.user.account_type==4:
-            return redirect('feed')
-        else:
             return view_function(request)
+        else:
+            return redirect('feed')
     return modified_view_function
 
 def create_invoice(lesson_request):

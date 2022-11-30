@@ -115,9 +115,7 @@ def invoices(request):
     invoices = Invoice.objects.filter(associated_student=user)
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
 
-@student_prohibited
-@teacher_prohibited
-@administrator_prohibited
+@director_only
 def make_admin(request):
     if request.method=="POST":
         form=MakeAdminForm(request.POST)
