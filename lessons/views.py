@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, MakeAdminForm
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, director_prohibited
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, director_only
 
 # Create your views here.
 def home(request):

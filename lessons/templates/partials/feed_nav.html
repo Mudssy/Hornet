@@ -9,6 +9,8 @@
     {% elif user.account_type == 3 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="">Submit Payment</a>
+    {% elif user.account_type == 4 %}
+        <a class="nav-link" aria-current="page" href="{% url 'make_admin' %}">Make Admin</a>
     {% endif %}
-        
+
 </nav>
