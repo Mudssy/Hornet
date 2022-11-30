@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 from lessons.models import User,LessonRequest, Invoice
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout,Field,HTML,Submit
+from crispy_forms.layout import Layout,Field,HTML,Submit,Hidden
 from datetime import datetime
 
 class SignUpForm(forms.ModelForm):
@@ -94,7 +94,7 @@ class RequestLessonsForm(forms.ModelForm):
 class SubmitPaymentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = StandardForm.helper(self.Meta.fields, "submit", self.instance.invoice_id, "submit_payment", "POST")
+        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Submit", "submit_payment", "POST", self.instance.invoice_id)
         
 
 
@@ -107,7 +107,7 @@ class SubmitPaymentForm(forms.ModelForm):
 
 
 class StandardForm():
-    def helper(fields, submitName, submitValue,form_action,form_method):
+    def helper(fields, submitName, submitValue,form_action,form_method, id=0):
         helper = FormHelper()
         helper.form_action = reverse_lazy(form_action)
         helper.form_method = form_method
@@ -119,5 +119,6 @@ class StandardForm():
                 Field(field,css_class = "bg-transparent text-light mb-2")
             )
         helper.layout.append(Submit(submitName,submitValue))
+        helper.layout.append(Hidden('id', id))
         return helper
 

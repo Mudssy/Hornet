@@ -4,6 +4,8 @@ from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPayme
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
 from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice
+from django.contrib import messages
+from django.urls import reverse
 
 # Create your views here.
 def home(request):
@@ -128,21 +130,28 @@ def invoices(request):
 
 
 def submit_payment(request):
-
-    
+    forms = []
+    affected_form = None
 
     if request.method=='POST':
-        invoice_id=request.POST.get('submit')
+        invoice_id=request.POST.get('id')
         invoice = Invoice.objects.get(invoice_id=invoice_id)
+        affected_form = SubmitPaymentForm(request.POST, instance=invoice)
         amount_paid = int(request.POST.get('amount_paid'))
         if amount_paid <= invoice.amount_outstanding:
             update_invoice(invoice, amount_paid)
-        
-    forms = []
+            messages.add_message(request, messages.SUCCESS, f"Submitted {amount_paid} into {invoice.associated_student.username}'s account")
+        else:
+            affected_form.add_error(None, "You can not pay more than is owed for a given invoice")
+            
+            
+    forms.append(affected_form)
+    # apologies for the ugliness, this adds all instances of invoice without the one with an erroneous input
     all_invoices = Invoice.objects.filter(is_paid=False)
     for invoice in all_invoices:
-        form = SubmitPaymentForm(instance=(invoice))
-        forms.append(form)
+        if affected_form is None or not affected_form.instance.invoice_id == invoice.invoice_id:
+            form = SubmitPaymentForm(instance=(invoice))
+            forms.append(form)
     
     
     
