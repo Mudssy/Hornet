@@ -51,7 +51,12 @@ def create_invoice(lesson_request):
     )
 
     student.balance -= invoice.total_price
+    record_string = f"Invoice id: {invoice.invoice_id}".ljust(20, " ") + f"-£{invoice.total_price}".ljust(5, " ") + f"Balance: {student.balance},"
+    student.payment_history_csv = record_string + student.payment_history_csv
+
     student.save()
+
+
 
 def update_invoice(invoice, amount_paid):
     amount_paid = int(amount_paid)
@@ -65,4 +70,19 @@ def update_invoice(invoice, amount_paid):
 
     student = invoice.associated_student
     student.balance += amount_paid
+    record_string = f"Invoice id: {invoice.invoice_id}".ljust(20, " ") + f"+£{amount_paid}".ljust(5, " ") + f"Balance: {student.balance},"
+    student.payment_history_csv = record_string + student.payment_history_csv
     student.save()
+
+def create_request(form, user):
+    LessonRequest.objects.create(
+        requestor=user,
+        days_available=form.cleaned_data.get("days_available"),
+        num_lessons=form.cleaned_data.get("num_lessons"),
+        lesson_gap_weeks=form.cleaned_data.get("lesson_gap_weeks"),
+        lesson_duration_hours=form.cleaned_data.get("lesson_duration_hours"),
+        # request_time = datetime.now(),
+        extra_requests=form.cleaned_data.get("extra_requests"),
+    )
+
+    

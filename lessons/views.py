@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request
 from django.contrib import messages
 from django.urls import reverse
 
@@ -63,15 +63,7 @@ def make_request(request):
             current_user = request.user
             form = RequestLessonsForm(request.POST)
             if form.is_valid():
-                LessonRequest.objects.create(
-                    requestor=current_user,
-                    days_available=form.cleaned_data.get("days_available"),
-                    num_lessons=form.cleaned_data.get("num_lessons"),
-                    lesson_gap_weeks=form.cleaned_data.get("lesson_gap_weeks"),
-                    lesson_duration_hours=form.cleaned_data.get("lesson_duration_hours"),
-                    # request_time = datetime.now(),
-                    extra_requests=form.cleaned_data.get("extra_requests"),
-                )
+                create_request(form, current_user)
                 return redirect("feed")
         else:
             return redirect('log_in')

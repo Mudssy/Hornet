@@ -34,6 +34,8 @@ class User(AbstractUser):
 
     password = models.CharField(max_length=100)
 
+    payment_history_csv = models.TextField(blank=True)
+
 class LessonRequest(models.Model):
 
     class LessonGap(models.IntegerChoices):
@@ -90,6 +92,8 @@ class LessonRequest(models.Model):
     extra_requests = models.CharField(max_length=250, blank=True)
 
     is_booked = models.BooleanField(default=False)
+
+    
 
 class Invoice(models.Model):
 
