@@ -91,6 +91,8 @@ class LessonRequest(models.Model):
 
     is_booked = models.BooleanField(default=False)
 
+    teacher = "this teacher"
+
 class BookedLesson(models.Model):
     # request from which this lesson is being created
     associated_lesson_request = models.ForeignKey(
@@ -143,7 +145,17 @@ class BookedLesson(models.Model):
 
     is_booked = True
 
+    def getTeacher(self):
+        return self.associated_lesson_request.teacher
+
+    teacher = getTeacher
+
     #TODO: implement list of teachers to pick for the booked lesson
+
+    def getRequestor(self):
+        return self.associated_lesson_request.requestor
+
+    requestor = getRequestor
 
 
 

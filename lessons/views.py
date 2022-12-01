@@ -86,7 +86,7 @@ def pending_requests(request):
 
 def booked_lessons(request):
     user = request.user
-    requests = LessonRequest.objects.filter(requestor=user)
+    requests = BookedLesson.objects.filter(requestor=user)
     return render(request, 'booked_lessons.html', {'requests':requests})
 
 @teacher_prohibited
