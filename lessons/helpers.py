@@ -55,10 +55,15 @@ def create_invoice(lesson_request):
     student.payment_history_csv = record_string + student.payment_history_csv
 
     student.save()
+    return invoice
 
 
 
 def update_invoice(invoice, amount_paid):
+    if invoice.amount_outstanding < amount_paid:
+        raise ValueError("Can not pay more than what is owed")
+
+
     amount_paid = int(amount_paid)
     invoice.amount_outstanding -= amount_paid
     invoice.amount_paid += amount_paid
@@ -73,6 +78,8 @@ def update_invoice(invoice, amount_paid):
     record_string = f"Invoice id: {invoice.invoice_id}".ljust(20, " ") + f"+£{amount_paid}".ljust(5, " ") + f"Balance: {student.balance},"
     student.payment_history_csv = record_string + student.payment_history_csv
     student.save()
+
+    return invoice
 
 def create_request(form, user):
     LessonRequest.objects.create(
