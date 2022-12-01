@@ -161,3 +161,11 @@ def edit_admin(request):
 def show_all_admins(request):
     all_admins = User.objects.filter(is_staff=True)
     return render(request, 'show_all_admins.html', {'users': all_admins})
+
+@student_prohibited
+@teacher_prohibited
+def delete_user(request):
+    id=request.GET.get('user_id')
+    user=User.objects.get(id=id)
+    user.delete()
+    return redirect('feed')

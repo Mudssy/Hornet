@@ -26,24 +26,15 @@
           <hr class="mt-0 mb-4">
           <p>{{user.email}}</p>
       </div>
-      <div class="card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-          <h6 class="card-title">Staff Status</h6>
-          <hr class="mt-0 mb-4">
-          {% if user.is_staff %}
-            <input type="checkbox" onclick="return false;" checked="checked"/>
-          {% else %}
-            <input type="checkbox" onclick="return false;" checked="unchecked"/>
-          {% endif %}
-      </div>
-      <div class="card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+      <!--<div class="card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
           <h6 class="card-title">Superuser Status</h6>
-          <hr class="mt-0 mb-4">
+          <hr class="mt-0 mb-4">                                                Information for whether an admin is a superuser, not necessary and bugged
           {% if user.is_superuser %}
             <input type="checkbox" onclick="return false;" checked="checked"/>
           {% else %}
             <input type="checkbox" onclick="return false;" checked="unchecked"/>
           {% endif %}
-      </div>
+      </div>-->
       <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
           <form action="{% url 'edit_admin' %}" method="get">
               <button type='submit' class="bg-transparent text-white" name="user_id" value="{{user.id}}"> Edit Admin </button>
