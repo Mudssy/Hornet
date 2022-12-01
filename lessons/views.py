@@ -148,3 +148,7 @@ def submit_payment(request):
     
     
     return render(request, 'submit_payment.html', {'forms': forms})
+
+def payment_history(request):
+    payment_history_list = request.user.payment_history_csv.split(",")
+    return render(request, 'payment_history.html', {'payments': payment_history_list})
