@@ -32,5 +32,6 @@ urlpatterns = [
     path('submit_payment/', views.submit_payment, name="submit_payment"),
     path('edit_request/', views.edit_request, name="edit_request"),
     path('invoices/', views.invoices, name="invoices"),
-    path('payment_history/', views.payment_history, name="payment_history")
+    path('payment_history/', views.payment_history, name="payment_history"),
+    path('delete_request/', views.delete_request, name="delete_request")
 ]

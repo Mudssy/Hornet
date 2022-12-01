@@ -152,3 +152,11 @@ def submit_payment(request):
 def payment_history(request):
     payment_history_list = request.user.payment_history_csv.split(",")
     return render(request, 'payment_history.html', {'payments': payment_history_list})
+
+def delete_request(request):
+    if request.method == "POST":
+        id = request.POST.get('request_id')
+        request = LessonRequest.objects.get(id=id)
+        request.delete()
+
+    return redirect('pending_requests')
