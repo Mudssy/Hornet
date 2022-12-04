@@ -168,4 +168,4 @@ def delete_user(request):
     id=request.POST.get('user_id')
     user=User.objects.get(id=id)
     user.delete()
-    return redirect('feed')
+    return redirect('show_all_admins')
