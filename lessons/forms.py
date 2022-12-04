@@ -92,8 +92,10 @@ class MakeAdminForm(forms.ModelForm):
         if self.instance.id is None:
             self.helper = StandardForm.helper(self.Meta.fields, "submit", "Make admin", "make_admin", "POST")
             self.title = "Create Admin"
-            del self.fields['is_staff']
-            del self.fields['is_superuser']
+            self.fields['is_staff'].widget = forms.HiddenInput()
+            self.fields['is_staff'].initial = True
+            self.fields['is_superuser'].widget = forms.HiddenInput()
+            self.fields['is_superuser'].initial = False
         else:
             self.helper = StandardForm.helper(self.Meta.fields,"user_id", self.instance.id, "edit_admin", "POST")
             self.title = "Edit Admin"
