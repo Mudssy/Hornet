@@ -1,16 +1,21 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
-from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, MakeAdminForm
+from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm, MakeAdminForm
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, director_only
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only
+from django.contrib import messages
+from django.urls import reverse
 
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
 
 def feed(request):
-    return render(request, 'feed.html')
+    if request.user.is_authenticated:
+        return render(request, 'feed.html')
+    else:
+        return redirect('log_in')
 
 def sign_up(request):
     if request.method == 'POST':
@@ -45,7 +50,10 @@ def log_out(request):
     return redirect('home')
 
 def account_info(request):
-    return render(request,"account_info.html")
+    if request.user.is_authenticated:
+        return render(request,"account_info.html")
+    else:
+        return redirect('log_in')
 
 @teacher_prohibited
 @administrator_prohibited
@@ -55,15 +63,7 @@ def make_request(request):
             current_user = request.user
             form = RequestLessonsForm(request.POST)
             if form.is_valid():
-                LessonRequest.objects.create(
-                    requestor=current_user,
-                    days_available=form.cleaned_data.get("days_available"),
-                    num_lessons=form.cleaned_data.get("num_lessons"),
-                    lesson_gap_weeks=form.cleaned_data.get("lesson_gap_weeks"),
-                    lesson_duration_hours=form.cleaned_data.get("lesson_duration_hours"),
-                    # request_time = datetime.now(),
-                    extra_requests=form.cleaned_data.get("extra_requests"),
-                )
+                create_request(form, current_user)
                 return redirect("feed")
         else:
             return redirect('log_in')
@@ -77,6 +77,11 @@ def pending_requests(request):
     user = request.user
     requests = LessonRequest.objects.filter(requestor=user)
     return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})
+
+def booked_lessons(request):
+    user = request.user
+    requests = LessonRequest.objects.filter(requestor=user)
+    return render(request, 'booked_lessons.html', {'requests':requests})
 
 @teacher_prohibited
 @student_prohibited
@@ -169,3 +174,43 @@ def delete_user(request):
     user=User.objects.get(id=id)
     user.delete()
     return redirect('show_all_admins')
+
+def submit_payment(request):
+    forms = []
+    affected_form = None
+
+    if request.method=='POST':
+        invoice_id=request.POST.get('id')
+        invoice = Invoice.objects.get(invoice_id=invoice_id)
+        affected_form = SubmitPaymentForm(request.POST, instance=invoice)
+        amount_paid = int(request.POST.get('amount_paid'))
+        if amount_paid <= invoice.amount_outstanding:
+            update_invoice(invoice, amount_paid)
+            messages.add_message(request, messages.SUCCESS, f"Submitted {amount_paid} into {invoice.associated_student.username}'s account")
+        else:
+            affected_form.add_error(None, "You can not pay more than is owed for a given invoice")
+
+
+    forms.append(affected_form)
+    # apologies for the ugliness, this adds all instances of invoice without the one with an erroneous input
+    all_invoices = Invoice.objects.filter(is_paid=False)
+    for invoice in all_invoices:
+        if affected_form is None or not affected_form.instance.invoice_id == invoice.invoice_id:
+            form = SubmitPaymentForm(instance=(invoice))
+            forms.append(form)
+
+
+
+    return render(request, 'submit_payment.html', {'forms': forms})
+
+def payment_history(request):
+    payment_history_list = request.user.payment_history_csv.split(",")
+    return render(request, 'payment_history.html', {'payments': payment_history_list})
+
+def delete_request(request):
+    if request.method == "POST":
+        id = request.POST.get('request_id')
+        request = LessonRequest.objects.get(id=id)
+        request.delete()
+
+    return redirect('pending_requests')

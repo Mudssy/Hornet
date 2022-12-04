@@ -5,9 +5,6 @@ from django.core.validators import RegexValidator
 from django.db.models import PositiveSmallIntegerField
 
 
-# Create your models here.
-
-
 class User(AbstractUser):
     class Account(models.IntegerChoices):
         STUDENT = 1
@@ -37,6 +34,8 @@ class User(AbstractUser):
     balance = models.IntegerField(default=0)
 
     password = models.CharField(max_length=100)
+
+    payment_history_csv = models.TextField(blank=True)
 
 class LessonRequest(models.Model):
 
@@ -95,6 +94,8 @@ class LessonRequest(models.Model):
 
     is_booked = models.BooleanField(default=False)
 
+    
+
 class Invoice(models.Model):
 
     associated_student=models.ForeignKey(
@@ -111,6 +112,7 @@ class Invoice(models.Model):
     invoice_id=models.CharField(
         max_length=7,
         blank=True,
+        unique=True
     )
 
     # Information transferred from request object, for more professional invoice look
@@ -118,3 +120,6 @@ class Invoice(models.Model):
     lesson_duration=models.PositiveIntegerField(default=1)
     hourly_cost=models.PositiveIntegerField(default=1)
     total_price=models.PositiveIntegerField(blank=True)
+    amount_paid=models.PositiveIntegerField(blank=True, default=0)
+    amount_outstanding=models.PositiveIntegerField(blank=True, default=0)
+    is_paid=models.BooleanField(default=False)

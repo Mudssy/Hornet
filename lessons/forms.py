@@ -1,9 +1,9 @@
 from django import forms
 from django.core.validators import RegexValidator
-from lessons.models import User,LessonRequest
+from lessons.models import User,LessonRequest, Invoice
 from django.urls import reverse_lazy
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout,Field,HTML,Submit,Button
+from crispy_forms.layout import Layout,Field,HTML,Submit,Hidden,Button
 from datetime import datetime
 
 class SignUpForm(forms.ModelForm):
@@ -115,6 +115,19 @@ class MakeAdminForm(forms.ModelForm):
     )
     confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
 
+class SubmitPaymentForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Submit", "submit_payment", "POST", self.instance.invoice_id)
+
+
+
+    class Meta:
+        model = Invoice
+        fields = ["amount_paid"]
+
+    amount_paid= forms.IntegerField(min_value=0)
+
 
     def clean(self):
         super().clean()
@@ -124,7 +137,7 @@ class MakeAdminForm(forms.ModelForm):
              self.add_error('confirm_password', 'passwords do not match')
 
 class StandardForm():
-    def helper(fields, submitName, submitValue,form_action,form_method):
+    def helper(fields, submitName, submitValue,form_action,form_method, id=0):
         helper = FormHelper()
         helper.form_action = reverse_lazy(form_action)
         helper.form_method = form_method
@@ -136,4 +149,5 @@ class StandardForm():
                 Field(field,css_class = "bg-transparent text-light mb-2")
             )
         helper.layout.append(Submit(submitName,submitValue))
+        helper.layout.append(Hidden('id', id))
         return helper

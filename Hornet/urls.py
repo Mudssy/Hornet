@@ -27,11 +27,15 @@ urlpatterns = [
     path('account_info/',views.account_info, name='account_info'),
     path('make_request/', views.make_request, name='make_request'),
     path('pending_requests/',views.pending_requests, name='pending_requests'),
+    path('booked_lessons/',views.booked_lessons, name='booked_lessons'),
     path('show_all_requests/',views.show_all_requests, name='show_all_requests'),
+    path('submit_payment/', views.submit_payment, name="submit_payment"),
     path('edit_request/', views.edit_request, name="edit_request"),
     path('invoices/', views.invoices, name="invoices"),
     path('make_admin/', views.make_admin, name="make_admin"),
     path('show_all_admins/', views.show_all_admins, name="show_all_admins"),
     path('edit_admin/', views.edit_admin, name="edit_admin"),
-    path('delete_user/', views.delete_user, name="delete_user")
+    path('delete_user/', views.delete_user, name="delete_user"),
+    path('payment_history/', views.payment_history, name="payment_history"),
+    path('delete_request/', views.delete_request, name="delete_request")
 ]
