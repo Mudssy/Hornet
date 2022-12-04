@@ -165,7 +165,7 @@ def show_all_admins(request):
 @student_prohibited
 @teacher_prohibited
 def delete_user(request):
-    id=request.GET.get('user_id')
+    id=request.POST.get('user_id')
     user=User.objects.get(id=id)
     user.delete()
     return redirect('feed')
