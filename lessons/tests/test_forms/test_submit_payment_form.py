@@ -31,7 +31,8 @@ class PaymentFormTestCase(TestCase):
             'num_lessons': 2,
             'lesson_duration_hours': 1,
             'extra_requests': 'magic piano skills',
-            'request_id':self.lesson_request.id
+            'id':self.lesson_request.id,
+            'submit': 'Submit'
         }
 
         

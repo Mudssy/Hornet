@@ -34,7 +34,8 @@ class RequestFormTestCase(TestCase):
             'num_lessons': 2,
             'lesson_duration_hours': 1,
             'extra_requests': 'magic piano skills',
-            'request_id':self.request.id
+            'id':self.request.id,
+            'edit': 'Edit'
         }
 
     def test_edit_request_url(self):
@@ -51,21 +52,22 @@ class RequestFormTestCase(TestCase):
         redirect_url = reverse('feed')
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
     
-    def test_edit_does_not_create_requests(self):
+    def test_edit_does_not_create_or_approve_requests(self):
+        before_approved_request = LessonRequest.objects.filter(is_booked=False).count()
         request_count = LessonRequest.objects.count()
         self.client.login(username=self.admin.username, password="Password123")
         self.client.post(self.url, self.form_input)
         after_count = LessonRequest.objects.count()
         self.assertEqual(request_count, after_count)
-        approved_request = LessonRequest.objects.filter(is_booked=True)
-        self.assertTrue(approved_request is not None)
-        self.assertEqual(approved_request[0].id, self.request.id)
+        approved_request = LessonRequest.objects.filter(is_booked=False).count()
+        self.assertEqual(before_approved_request, approved_request)
+        
 
     def test_edit_saves_correctly(self):
         self.form_input['extra_requests'] = "this should change"
         self.client.login(username=self.admin.username, password="Password123")
         self.client.post(self.url, self.form_input)
-        approved_request = LessonRequest.objects.filter(is_booked=True)
+        approved_request = LessonRequest.objects.filter(id=self.request.id)
         self.assertIn(approved_request[0].extra_requests, "this should change")
 
     def test_edit_redirects_after_save(self):

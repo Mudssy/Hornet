@@ -33,7 +33,8 @@ class RequestFormTestCase(TestCase):
             'num_lessons': 2,
             'lesson_duration_hours': 1,
             'extra_requests': 'magic piano skills',
-            'request_id':self.request.id
+            'id':self.request.id,
+            'submit': 'Submit'
         }
 
     def test_approved_request_generates_invoice(self):

@@ -93,6 +93,8 @@ def show_all_requests(request):
 @student_prohibited
 @teacher_prohibited
 def edit_request(request):
+    approve_permissions = request.user.account_type == 3 or request.user.account_type == 4
+
     if request.method=="POST":
         id=request.POST.get('id')
         lesson_request = LessonRequest.objects.get(id=id)
@@ -112,7 +114,7 @@ def edit_request(request):
     else:
         lesson_request = LessonRequest.objects.get(id=request.GET.get('request_id'))
         form = RequestLessonsForm(instance=lesson_request)
-        id = request.GET.get('request_id')
+        id = request.GET.get('id')
 
     return render(request, 'edit_request.html', {'form': form, 'request_id': id})
 
@@ -214,8 +216,8 @@ def payment_history(request):
 
 def delete_request(request):
     if request.method == "POST":
-        id = request.POST.get('request_id')
+        id = request.POST.get('id')
         request = LessonRequest.objects.get(id=id)
         request.delete()
 
-    return redirect('show_all_requests')
+    return redirect('pending_requests')

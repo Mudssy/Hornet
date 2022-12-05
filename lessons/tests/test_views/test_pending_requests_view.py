@@ -24,7 +24,7 @@ class PendingRequestTest(TestCase):
     def test_delete_button_deletes_request(self):
         self.client.login(username=self.student.username, password="Password123")
         before = LessonRequest.objects.count()
-        response = self.client.post('/delete_request/', {'request_id':self.request.id}, follow=True)
+        response = self.client.post('/delete_request/', {'id':self.request.id}, follow=True)
         after = LessonRequest.objects.count()
         self.assertEqual(before - 1, after)
         redirect_url = reverse('pending_requests')
