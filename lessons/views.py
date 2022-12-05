@@ -103,7 +103,6 @@ def edit_request(request):
     if request.method=="POST":
         id=request.POST.get('request_id')
         lesson_request = LessonRequest.objects.get(id=id)
-        lesson_request.is_booked=True
         create_booked_lessons(request)
         form = RequestLessonsForm(request.POST, instance=lesson_request)
         if form.is_valid():

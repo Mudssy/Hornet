@@ -81,7 +81,6 @@ class Command(BaseCommand):
                 lesson_duration_hours=1,
                 requestor=user,
                 extra_requests='I like music',
-                is_booked=(count % 2 == 0),
             )
             count -= 1
     # seeder creating student accounts

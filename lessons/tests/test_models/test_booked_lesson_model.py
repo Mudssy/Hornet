@@ -20,7 +20,7 @@ class BookedLessonModelTestCase(TestCase):
             extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
         )
         self.booked_lesson = BookedLesson.objects.create(
-            booked_lesson = BookedLesson.objects.create(associated_lesson_request = self.request)
+            associated_lesson_request = self.request
         )
         self.staff_member = User.objects.get(username="@petrapickles")
 

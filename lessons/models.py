@@ -81,17 +81,9 @@ class LessonRequest(models.Model):
         blank=False,
     )
 
-    # The time at which the request was made
-    request_time = models.DateTimeField(
-        auto_now=False,
-        auto_now_add=True,
-    )
-
     extra_requests = models.CharField(max_length=250, blank=True)
 
-    is_booked = models.BooleanField(default=False)
-
-    teacher = "this teacher"
+    teacher = models.CharField(max_length=50, blank=True)
 
 class BookedLesson(models.Model):
     # request from which this lesson is being created
@@ -100,6 +92,12 @@ class BookedLesson(models.Model):
         on_delete=models.CASCADE,
         blank=False
     )
+
+    class LessonGap(models.IntegerChoices):
+        BIWEEKLY = 1
+        WEEKLY = 2
+        FORTNIGHTLY = 3
+        MONTHLY = 4
 
     class DayOfLesson(models.IntegerChoices):
         Monday = 1
@@ -120,32 +118,18 @@ class BookedLesson(models.Model):
         (6, 'Sunday'),
     )
 
-    #default lesson duration is taken from lesson request
-    @property
-    def lesson_duration_hours(self):
-        return self.associated_lesson_request.lesson_duration_hours
-
-    #time the request for this lesson was made
-    @property
-    def request_time(self):
-        return self.associated_lesson_request.request_time
+    days_available = models.CharField(max_length=50, blank=False,default="1234567") #store available days in the week as string of numbers
+                                                                #eg '126' means available Monday,Tuesday,Saturday
 
 
-    #TODO: implement list of teachers to pick for the booked lesson
-    @property
-    def teacher(self):
-        return self.associated_lesson_request.teacher
+    num_lessons = models.PositiveIntegerField(blank=False)
 
-    approval_time = models.DateTimeField(
-        auto_now=False,
-        auto_now_add=True,
+    lesson_gap_weeks = models.PositiveIntegerField(
+        choices=LessonGap.choices,
+        default=LessonGap.WEEKLY
     )
 
-    @property
-    def extra_requests(self):
-        return self.associated_lesson_request.teacher
-
-    is_booked = True
+    lesson_duration_hours = models.PositiveIntegerField(blank=False)
 
     requestor = models.ForeignKey(
         User,
@@ -153,7 +137,14 @@ class BookedLesson(models.Model):
         blank=False,
     )
 
+    lesson_date = models.DateTimeField(
+        auto_now=False,
+        auto_now_add=True,
+    )
 
+    extra_requests = models.CharField(max_length=250, blank=True)
+
+    teacher = models.CharField(max_length=50, blank=True)
 
 
 class Invoice(models.Model):
