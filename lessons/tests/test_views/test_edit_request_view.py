@@ -100,7 +100,7 @@ class RequestFormTestCase(TestCase):
         response = self.client.get(self.url, {'id': self.request.id})
         self.assertContains(response, 'Edit')
 
-    def test_student_cannot_approve_requests(self):
+    def test_student_does_not_have_approve_button(self):
         self.client.login(username=self.student.username, password="Password123")
         response = self.client.get(self.url, {'id': self.request.id})
         self.assertContains(response, 'Edit')

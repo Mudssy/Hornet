@@ -63,3 +63,8 @@ class LogInViewTestCase(TestCase, LogInTester):
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
 
 
+    def test_log_in_with_incorrect_password(self):
+        form_input = { 'username': '@johndoe', 'password': 'BadPassword123' }
+        response = self.client.post(self.url, form_input, follow=True)
+        self.assertFalse(self._is_logged_in())
+        self.assertTemplateUsed(response, 'log_in.html')
