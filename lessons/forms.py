@@ -64,7 +64,7 @@ class RequestLessonsForm(forms.ModelForm):
         if self.instance.id is None:
             self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
         else:
-            self.helper = StandardForm.helper(self.Meta.fields,"request_id",self.instance.id,"edit_request","POST")
+            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", "edit_request","POST", self.instance.id)
 
         self.title = "Request lessons"
 
@@ -97,7 +97,7 @@ class MakeAdminForm(forms.ModelForm):
             self.fields['is_superuser'].widget = forms.HiddenInput()
             self.fields['is_superuser'].initial = False
         else:
-            self.helper = StandardForm.helper(self.Meta.fields,"user_id", self.instance.id, "edit_admin", "POST")
+            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", "edit_admin", "POST", self.instance.id)
             self.title = "Edit Admin"
 
     class Meta:
@@ -115,11 +115,11 @@ class MakeAdminForm(forms.ModelForm):
     )
     confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
 
+
 class SubmitPaymentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Submit", "submit_payment", "POST", self.instance.invoice_id)
-
+        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Approve", "submit_payment", "POST", self.instance.invoice_id)
 
 
     class Meta:

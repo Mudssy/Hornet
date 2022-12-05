@@ -199,8 +199,6 @@ def submit_payment(request):
             form = SubmitPaymentForm(instance=(invoice))
             forms.append(form)
 
-
-
     return render(request, 'submit_payment.html', {'forms': forms})
 
 def payment_history(request):
