@@ -64,7 +64,10 @@ class RequestLessonsForm(forms.ModelForm):
         if self.instance.id is None:
             self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
         else:
-            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", "edit_request","POST", self.instance.id)
+            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Approve", "edit_request","POST", self.instance.id)
+            self.helper.layout.append(
+                Submit("edit", "Edit")
+            )
 
         self.title = "Request lessons"
 
@@ -120,7 +123,6 @@ class SubmitPaymentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = StandardForm.helper(self.Meta.fields, "submit", "Approve", "submit_payment", "POST", self.instance.invoice_id)
-
 
     class Meta:
         model = Invoice

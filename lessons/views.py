@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm, MakeAdminForm
 from .models import LessonRequest, User, Invoice
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only, update_request
 from django.contrib import messages
 from django.urls import reverse
 
@@ -94,14 +94,21 @@ def show_all_requests(request):
 @teacher_prohibited
 def edit_request(request):
     if request.method=="POST":
-        id=request.POST.get('request_id')
+        id=request.POST.get('id')
         lesson_request = LessonRequest.objects.get(id=id)
-        lesson_request.is_booked=True
         form = RequestLessonsForm(request.POST, instance=lesson_request)
         if form.is_valid():
-            form.save()
-            create_invoice(lesson_request)
+            if 'edit' in request.POST:
+                lesson_request.is_booked = False
+                form.save()
+                lesson_request.save()
+            elif 'submit' in request.POST:
+                lesson_request.is_booked = True
+                create_invoice(lesson_request)
+                form.save()
+            
             return redirect('show_all_requests')
+
     else:
         lesson_request = LessonRequest.objects.get(id=request.GET.get('request_id'))
         form = RequestLessonsForm(instance=lesson_request)
@@ -211,4 +218,4 @@ def delete_request(request):
         request = LessonRequest.objects.get(id=id)
         request.delete()
 
-    return redirect('pending_requests')
+    return redirect('show_all_requests')
