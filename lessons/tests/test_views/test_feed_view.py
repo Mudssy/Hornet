@@ -14,7 +14,7 @@ class FeedViewTestCase(TestCase):
 
     def setUp(self):
         self.student = User.objects.get(username='@johndoe')
-        self.teacher = User.objects.get(username="@teachersmith")
+        self.teacher = User.objects.get(username="@teacher")
         self.url = reverse('feed')
 
     # def test_feed_url(self):
