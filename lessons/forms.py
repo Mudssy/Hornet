@@ -60,14 +60,25 @@ class LogInForm(forms.Form):
 
 class RequestLessonsForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
-        super().__init__(*args, **kwargs)
+        # Removing and saving this argument so it is not passed to the superclass init function
+        if 'approve_permissions' in kwargs:
+            approve_permissions = kwargs.pop('approve_permissions')
+        else:
+            approve_permissions=False
+
+        super(RequestLessonsForm, self).__init__(*args, **kwargs)
+        
+
         if self.instance.id is None:
             self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
         else:
-            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Approve", "edit_request","POST", self.instance.id)
-            self.helper.layout.append(
-                Submit("edit", "Edit")
-            )
+            if approve_permissions:
+                self.helper = StandardForm.helper(self.Meta.fields,"submit", "Approve", "edit_request","POST", self.instance.id)
+                self.helper.layout.append(
+                    Submit("edit", "Edit")
+                )
+            else:
+                self.helper = StandardForm.helper(self.Meta.fields, "edit", "Edit", "edit_request", "POST", self.instance.id)
 
         self.title = "Request lessons"
 

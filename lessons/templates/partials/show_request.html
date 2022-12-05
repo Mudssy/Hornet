@@ -41,17 +41,17 @@
                 </div>
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
                     <form action="{% url 'delete_request' %}" method="post">
-                        {% csrf_token %} 
-                        <button type='submit' class="bg-transparent text-white" name="request_id" value="{{request.id}}"> Delete </button>
+                        {% csrf_token %}
+                        {% if not request.is_booked %}
+                            <button type='submit' class="bg-transparent text-white" name="id" value="{{request.id}}"> Delete </button>
+                        {% endif %}
                     </form>
                 </div>
-                {% if user.account_type == 3 or user.account_type == 4 %}
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
                     <form action="{% url 'edit_request' %}" method="get">
-                        <button type='submit' class="bg-transparent text-white" name="request_id" value="{{request.id}}"> Edit request </button>
+                        <button type='submit' class="bg-transparent text-white" name="id" value="{{request.id}}"> Edit request </button>
                     </form>
                 </div>
-                {% endif %}
             </div>
         </div>
         

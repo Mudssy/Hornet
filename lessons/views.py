@@ -90,7 +90,6 @@ def show_all_requests(request):
     return render(request, 'show_all_requests.html', {'requests': all_requests})
 
 
-@student_prohibited
 @teacher_prohibited
 def edit_request(request):
     approve_permissions = request.user.account_type == 3 or request.user.account_type == 4
@@ -112,8 +111,8 @@ def edit_request(request):
             return redirect('show_all_requests')
 
     else:
-        lesson_request = LessonRequest.objects.get(id=request.GET.get('request_id'))
-        form = RequestLessonsForm(instance=lesson_request)
+        lesson_request = LessonRequest.objects.get(id=request.GET.get('id'))
+        form = RequestLessonsForm(instance=lesson_request, approve_permissions=approve_permissions)
         id = request.GET.get('id')
 
     return render(request, 'edit_request.html', {'form': form, 'request_id': id})

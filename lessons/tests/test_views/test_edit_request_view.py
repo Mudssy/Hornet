@@ -43,7 +43,7 @@ class RequestFormTestCase(TestCase):
 
     def test_edit_request_uses_correct_template(self):
         self.client.login(username=self.admin.username, password="Password123")
-        response = self.client.get(self.url, {'request_id':self.request.id})
+        response = self.client.get(self.url, {'id':self.request.id})
         self.assertTemplateUsed(response, 'edit_request.html')
 
     def test_student_cannot_edit_requests(self):
