@@ -1,9 +1,9 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm
-from .models import LessonRequest, User, Invoice
+from .models import LessonRequest, BookedLesson, User, Invoice
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice
+from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, create_booked_lessons
 
 # Create your views here.
 def home(request):
@@ -84,6 +84,7 @@ def pending_requests(request):
     requests = LessonRequest.objects.filter(requestor=user)
     return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})
 
+
 def booked_lessons(request):
     user = request.user
     requests = BookedLesson.objects.filter(requestor=user)
@@ -103,6 +104,7 @@ def edit_request(request):
         id=request.POST.get('request_id')
         lesson_request = LessonRequest.objects.get(id=id)
         lesson_request.is_booked=True
+        create_booked_lessons(request)
         form = RequestLessonsForm(request.POST, instance=lesson_request)
         if form.is_valid():
             form.save()

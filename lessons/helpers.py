@@ -33,7 +33,7 @@ def student_prohibited(view_function):
 def create_invoice(lesson_request):
     if not isinstance(lesson_request, LessonRequest) or lesson_request.id is None or lesson_request.is_booked == False:
         return
-    
+
     student = lesson_request.requestor
     student_invoice_id = Invoice.objects.filter(associated_student=student).count()+1
 
@@ -49,3 +49,13 @@ def create_invoice(lesson_request):
 
     student.balance -= invoice.total_price
     student.save()
+
+def create_booked_lessons(lesson_request):
+    if not isinstance(lesson_request, LessonRequest) or lesson_request.id is None or lesson_request.is_booked == False or lesson_request.num_lessons <= 0:
+        return
+    counter = lesson_request.num_lessons
+    while(counter > 0):
+        booked_lesson = BookedLesson.objects.create(associated_lesson_request = lesson_request)
+        counter = counter - 1
+    else:
+        return

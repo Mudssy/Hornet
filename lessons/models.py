@@ -120,42 +120,39 @@ class BookedLesson(models.Model):
         (6, 'Sunday'),
     )
 
-    def getLessonDuration(self):
+    #default lesson duration is taken from lesson request
+    @property
+    def lesson_duration_hours(self):
         return self.associated_lesson_request.lesson_duration_hours
 
-    #default lesson duration is taken from lesson request
-    lesson_duration_hours = models.PositiveIntegerField(default=getLessonDuration)
-
-    def getRequestTime(self):
-        return self.associated_lesson_request.approval_time
-
     #time the request for this lesson was made
-    request_time = getRequestTime
+    @property
+    def request_time(self):
+        return self.associated_lesson_request.request_time
+
+
+    #TODO: implement list of teachers to pick for the booked lesson
+    @property
+    def teacher(self):
+        return self.associated_lesson_request.teacher
 
     approval_time = models.DateTimeField(
         auto_now=False,
         auto_now_add=True,
     )
 
-    #default special requests are taken from the lesson request
-    def getExtraRequests(self):
-        return self.associated_lesson_request.extra_requests
-
-    extra_requests = models.CharField(max_length=250, default=getExtraRequests)
+    @property
+    def extra_requests(self):
+        return self.associated_lesson_request.teacher
 
     is_booked = True
 
-    def getTeacher(self):
-        return self.associated_lesson_request.teacher
+    requestor = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=False,
+    )
 
-    teacher = getTeacher
-
-    #TODO: implement list of teachers to pick for the booked lesson
-
-    def getRequestor(self):
-        return self.associated_lesson_request.requestor
-
-    requestor = getRequestor
 
 
 
