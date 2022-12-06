@@ -9,6 +9,7 @@ from datetime import datetime
 class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
         super().__init__(*args, **kwargs)
+        ## helper is used by crispy forms to render the form
         self.helper = StandardForm.helper(self.Meta.fields, "submit", "Sign up", "sign_up", "POST")
         self.title = "Sign up"
 
@@ -109,11 +110,13 @@ class RequestLessonsForm(forms.ModelForm):
     extra_requests = forms.CharField()
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super().clean() ##call the clean method
+        #convert the days available list to string to be stored easily in database
         cleaned_data["days_available"] = "".join(cleaned_data["days_available"])
+        #if any teacher is requested set teacher to none
         if int(cleaned_data["teacher"]) == -1:
             cleaned_data["teacher"] = None
-        else:
+        else: #otherwise set teacher by foreign key 
             cleaned_data["teacher"] = User.objects.get(id = cleaned_data["teacher"])
             
         return cleaned_data
@@ -167,7 +170,7 @@ class SubmitPaymentForm(forms.ModelForm):
         if new_password  != password_confirmation:
              self.add_error('confirm_password', 'passwords do not match')
 
-class StandardForm():
+class StandardForm(): # helper class to create django helper easily
     def helper(fields, submitName, submitValue,form_action,form_method, id=0):
         helper = FormHelper()
         helper.form_action = form_action
@@ -175,10 +178,10 @@ class StandardForm():
 
         helper.layout = Layout()
 
-        for field in fields:
+        for field in fields: #loop over fields in each form
             helper.layout.append(
                 Field(field,css_class = "bg-transparent text-light mb-2")
             )
-        helper.layout.append(Submit(submitName,submitValue))
-        helper.layout.append(Hidden('id', id))
+        helper.layout.append(Submit(submitName,submitValue)) # give form a submit button 
+        helper.layout.append(Hidden('id', id)) #add a hidden id
         return helper
