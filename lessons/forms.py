@@ -82,13 +82,25 @@ class RequestLessonsForm(forms.ModelForm):
 
         self.title = "Request lessons"
 
+        ## teacher choices needs to be updated in the innit incase teachers change
+        self.fields["teacher"].choices = self.get_teacher_choices()
+    
+    def get_teacher_choices(self):
+        teacher_objects = User.objects.filter(account_type = 2).values("id","username")
+        teacher_choices = [(-1,"Any")]
+        teacher_choices += [(teacher["id"], teacher["username"]) for teacher in teacher_objects.all()]
+        return teacher_choices
+
+
     class Meta:
         model = LessonRequest
-        fields = ["days_available","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
+        fields = ["days_available","teacher","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
 
     days_available = forms.MultipleChoiceField(
         widget = forms.CheckboxSelectMultiple, choices=LessonRequest.AvailableWeekly.choices
     )
+    teacher = forms.ChoiceField()
+    
     num_lessons = forms.IntegerField(min_value=1, max_value=20)
     lesson_gap_weeks = forms.ChoiceField(
                         choices = LessonRequest.LessonGap.choices)
@@ -98,6 +110,10 @@ class RequestLessonsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         cleaned_data["days_available"] = "".join(cleaned_data["days_available"])
+        if int(cleaned_data["teacher"]) == -1:
+            cleaned_data["teacher"] = None
+        else:
+            cleaned_data["teacher"] = User.objects.get(id = cleaned_data["teacher"])
         return cleaned_data
 
 class MakeAdminForm(forms.ModelForm):

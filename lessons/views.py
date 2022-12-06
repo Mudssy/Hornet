@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
-from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm, MakeAdminForm
 from .models import LessonRequest, User, Invoice
+from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm, MakeAdminForm
 from django.http import HttpResponseForbidden
 from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only, update_request
 from django.contrib import messages

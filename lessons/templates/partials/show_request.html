@@ -40,6 +40,11 @@
                     <p>{{request.extra_requests}}</p>
                 </div>
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                    <h6 class="card-title">Requested Teacher</h6>
+                    <hr class="mt-0 mb-4">
+                    <p>{{request.teacher.username}}</p>
+                </div>
+                <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
                     <form action="{% url 'delete_request' %}" method="post">
                         {% csrf_token %}
                         {% if not request.is_booked %}

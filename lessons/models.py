@@ -83,6 +83,14 @@ class LessonRequest(models.Model):
         User,
         on_delete=models.CASCADE,
         blank=False,
+        related_name='requestor',
+    )
+    teacher = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank = True,
+        null = True,
+        related_name='teacher',
     )
 
     # The time at which the request was made

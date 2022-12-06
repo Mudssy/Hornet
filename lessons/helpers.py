@@ -98,6 +98,7 @@ def create_request(form, user):
         lesson_duration_hours=form.cleaned_data.get("lesson_duration_hours"),
         # request_time = datetime.now(),
         extra_requests=form.cleaned_data.get("extra_requests"),
+        teacher = form.cleaned_data.get("teacher"),
     )
 
 
