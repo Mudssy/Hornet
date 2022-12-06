@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import RegexValidator
 from lessons.models import User,LessonRequest, Invoice
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Field,HTML,Submit,Hidden,Button
 from datetime import datetime
@@ -72,13 +72,14 @@ class RequestLessonsForm(forms.ModelForm):
         if self.instance.id is None:
             self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
         else:
+            action_string = reverse('edit_request',  kwargs={'request_id': self.instance.id})
             if approve_permissions:
-                self.helper = StandardForm.helper(self.Meta.fields,"submit", "Approve", "edit_request","POST", self.instance.id)
+                self.helper = StandardForm.helper(self.Meta.fields,"submit", "Approve", action_string,"POST", self.instance.id)
                 self.helper.layout.append(
                     Submit("edit", "Edit")
                 )
             else:
-                self.helper = StandardForm.helper(self.Meta.fields, "edit", "Edit", "edit_request", "POST", self.instance.id)
+                self.helper = StandardForm.helper(self.Meta.fields, "edit", "Edit", action_string, "POST", self.instance.id)
 
         self.title = "Request lessons"
 
@@ -114,20 +115,21 @@ class RequestLessonsForm(forms.ModelForm):
             cleaned_data["teacher"] = None
         else:
             cleaned_data["teacher"] = User.objects.get(id = cleaned_data["teacher"])
+            
         return cleaned_data
 
 class MakeAdminForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.id is None:
-            self.helper = StandardForm.helper(self.Meta.fields, "submit", "Make admin", "make_admin", "POST")
+            self.helper = StandardForm.helper(self.Meta.fields, "submit", "Make admin", reverse("make_admin"), "POST")
             self.title = "Create Admin"
             self.fields['is_staff'].widget = forms.HiddenInput()
             self.fields['is_staff'].initial = True
             self.fields['is_superuser'].widget = forms.HiddenInput()
             self.fields['is_superuser'].initial = False
         else:
-            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", "edit_admin", "POST", self.instance.id)
+            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_admin"), "POST", self.instance.id)
             self.title = "Edit Admin"
 
     class Meta:
@@ -149,7 +151,7 @@ class MakeAdminForm(forms.ModelForm):
 class SubmitPaymentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Approve", "submit_payment", "POST", self.instance.invoice_id)
+        self.helper = StandardForm.helper(self.Meta.fields, "submit", "Approve", reverse("submit_payment"), "POST", self.instance.invoice_id)
 
     class Meta:
         model = Invoice
@@ -168,7 +170,7 @@ class SubmitPaymentForm(forms.ModelForm):
 class StandardForm():
     def helper(fields, submitName, submitValue,form_action,form_method, id=0):
         helper = FormHelper()
-        helper.form_action = reverse_lazy(form_action)
+        helper.form_action = form_action
         helper.form_method = form_method
 
         helper.layout = Layout()

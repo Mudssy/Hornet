@@ -95,21 +95,19 @@ def show_all_requests(request):
 
 class EditRequestView(DetailView):
 
-    @method_decorator(teacher_prohibited)
-    def dispatch(self, request):
-        id = request.POST.get('id') or ""
-        id += request.GET.get('id') or ""
-        self.request_id = id
-        self.lesson_request = LessonRequest.objects.get(id=id)
-        return super().dispatch(request)
 
-    def post(self, request):
+    def dispatch(self, request, request_id):
+        self.lesson_request = LessonRequest.objects.get(id=request_id)
+        return super().dispatch(request, request_id)
+
+
+    def post(self, request, request_id):
         form = RequestLessonsForm(request.POST, instance=self.lesson_request)
         should_book = 'submit' in request.POST
         
         if not form.is_valid():
             form.add_error(None, "Some of these edits seem off")
-            return render(request, 'edit_request.html', {'form': form, 'request_id': self.request_id})
+            return render(request, 'edit_request.html', {'form': form, 'request_id': self.lesson_request.id})
         else:
             self.lesson_request.is_booked = should_book
             self.lesson_request.save()
@@ -120,10 +118,11 @@ class EditRequestView(DetailView):
 
             return redirect('show_all_requests')
 
-    def get(self, request):
+
+    def get(self, request, request_id):
         permissions = self.request.user.account_type >= 3
         self.form = RequestLessonsForm(instance=self.lesson_request, approve_permissions=permissions)
-        return render(request, 'edit_request.html', {'form': self.form, 'request_id': self.request_id})
+        return render(request, 'edit_request.html', {'form': self.form})
 
 
 
