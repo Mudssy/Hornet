@@ -14,7 +14,23 @@
                     <h6 class="card-title">Days Available</h6>
                     <hr class="mt-0 mb-4">
                     {% for day in request.days_available%}
-                        <p>{{day}}</p>
+                        {% if day == "1" %}
+                            <p>Monday</p>
+                        {% elif day == "2" %}
+                            <p>Tuesday</p>
+                        {% elif day == "3" %}
+                            <p>Wednesday</p>
+                        {% elif day == "4" %}
+                            <p>Thursday</p>
+                        {% elif day == "5" %}
+                            <p>Friday</p>
+                        {% elif day == "6" %}
+                            <p>Saturday</p>
+                        {% elif day == "7" %}
+                            <p>Sunday</p>
+                        {% endif %}
+
+                        
                     {% endfor %}
                     
                 </div>

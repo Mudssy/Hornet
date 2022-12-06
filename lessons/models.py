@@ -103,6 +103,27 @@ class LessonRequest(models.Model):
 
     is_booked = models.BooleanField(default=False)
 
+
+""" class BookedLesson(models.Model):
+    start_time = models.DateTimeField(blank=False)
+    student = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank=False,
+        related_name='requestor',
+    )
+    teacher = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='teacher',
+    )
+
+    duration = models.PositiveSmallIntegerField(blank = False) #in hours
+    
+
+ """
+
+
     
 
 class Invoice(models.Model):
