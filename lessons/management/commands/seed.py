@@ -4,7 +4,7 @@ from lessons.models import User, LessonRequest
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
-    SEED_COUNT = 100
+    SEED_COUNT = 2
     REQUESTS_PER_USER = 2
     def __init__(self):
         super().__init__()

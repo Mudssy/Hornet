@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from lessons import views
 
+from lessons.views import UserListView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -37,5 +39,7 @@ urlpatterns = [
     path('edit_admin/', views.edit_admin, name="edit_admin"),
     path('delete_user/', views.delete_user, name="delete_user"),
     path('payment_history/', views.payment_history, name="payment_history"),
-    path('delete_request/', views.delete_request, name="delete_request")
+    path('delete_request/', views.delete_request, name="delete_request"),
+    path('user_list/', UserListView.as_view(), name="user_list"),
+    path('user_payment_history/', views.user_payment_history, name="user_payment_history")
 ]

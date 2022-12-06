@@ -1,0 +1,7 @@
+{% extends 'base_content.html' %}
+{% block content %}
+{% include 'partials/feed_nav.html' %}
+    {% for user in object_list %}
+        {% include 'partials/show_user.html' with user=user %}
+    {% endfor %}
+{% endblock %}

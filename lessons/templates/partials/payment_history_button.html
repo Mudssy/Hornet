@@ -1,0 +1,4 @@
+<form action="{% url 'user_payment_history' %}" method="get">
+    {% csrf_token %}
+    <button type='submit' class="bg-transparent text-white" name="user_id" value="{{user.id}}"> Show Payments </button>
+</form>

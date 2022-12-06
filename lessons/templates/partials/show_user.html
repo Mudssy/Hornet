@@ -35,17 +35,12 @@
             <input type="checkbox" onclick="return false;" checked="unchecked"/>
           {% endif %}
       </div>-->
-      <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-          <form action="{% url 'edit_admin' %}" method="get">
-              <button type='submit' class="bg-transparent text-white" name="user_id" value="{{user.id}}"> Edit Admin </button>
-          </form>
-      </div>
-      <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-          <form action="{% url 'delete_user' %}" method="post">
-            {% csrf_token %}
-              <button type='submit' class="bg-transparent text-white" name="user_id" value="{{user.id}}"> Delete </button>
-          </form>
-      </div>
+      {% if request.user.account_type == 4 and user.account_type >= 3 %}
+       {% include 'partials/edit_delete_account.html' %}
+      {% endif %}
+      {% if user.account_type == 1 %}
+        {% include 'partials/payment_history_button.html' with user=user %}
+      {% endif %}
     </div>
   </div>
 </div>

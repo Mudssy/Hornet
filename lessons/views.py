@@ -6,6 +6,8 @@ from django.http import HttpResponseForbidden
 from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only, update_request
 from django.contrib import messages
 from django.urls import reverse
+from django.utils import timezone
+from django.views.generic import ListView
 
 # Create your views here.
 def home(request):
@@ -107,9 +109,7 @@ def edit_request(request):
                 lesson_request.is_booked = True
                 create_invoice(lesson_request)
                 form.save()
-            
             return redirect('show_all_requests')
-
     else:
         lesson_request = LessonRequest.objects.get(id=request.GET.get('id'))
         form = RequestLessonsForm(instance=lesson_request, approve_permissions=approve_permissions)
@@ -213,10 +213,21 @@ def payment_history(request):
     payment_history_list = request.user.payment_history_csv.split(",")
     return render(request, 'payment_history.html', {'payments': payment_history_list})
 
+def user_payment_history(request):
+    user = User.objects.get(id=request.GET['user_id'])
+    payment_history_list = user.payment_history_csv.split(",")
+    return render(request, 'payment_history.html', {'payments': payment_history_list})
+
 def delete_request(request):
     if request.method == "POST":
         id = request.POST.get('id')
         request = LessonRequest.objects.get(id=id)
         request.delete()
-
+    
     return redirect('pending_requests')
+
+
+class UserListView(ListView):
+    model = User
+    template_name='user_list.html'
+
