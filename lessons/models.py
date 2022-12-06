@@ -85,6 +85,7 @@ class LessonRequest(models.Model):
         blank=False,
         related_name='requestor',
     )
+    
     teacher = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

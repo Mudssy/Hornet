@@ -17,7 +17,7 @@ class RequestFormTestCase(TestCase):
     def setUp(self):
         self.admin = User.objects.get(username="@administrator")
         self.student = User.objects.get(username="@johndoe")
-        self.url = reverse('edit_request')
+        self.teacher = User.objects.get(username="@teacher")
         self.request = LessonRequest.objects.create(
             requestor=self.student,
             days_available="123",
@@ -33,9 +33,10 @@ class RequestFormTestCase(TestCase):
             'num_lessons': 2,
             'lesson_duration_hours': 1,
             'extra_requests': 'magic piano skills',
-            'id':self.request.id,
-            'submit': 'Submit'
+            'submit': 'Approve',
+            'teacher': str(self.teacher.id)
         }
+        self.url = reverse('edit_request',  kwargs={'request_id': self.request.id})
 
     def test_approved_request_generates_invoice(self):
         before=Invoice.objects.count()

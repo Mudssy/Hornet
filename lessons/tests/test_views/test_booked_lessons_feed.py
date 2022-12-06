@@ -16,13 +16,16 @@ class BookedLesson(TestCase):
     def setUp(self):
         self.student = User.objects.get(username="@johndoe")
         self.admin = User.objects.get(username="@administrator")
+        self.teacher = User.objects.get(username="@teacher")
         self.form_input = {
-            'days_available' : '2',
-            'num_lessons' : 4,
-            'lesson_gap_weeks' : LessonRequest.LessonGap.WEEKLY,
-            'lesson_duration_hours' : 1,
-            'requestor' : self.user,
-            'extra_requests' : 'I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
+            'requestor': self.student,
+            'days_available': ['1', '2'],
+            'lesson_gap_weeks': LessonRequest.LessonGap.WEEKLY,
+            'num_lessons': 2,
+            'lesson_duration_hours': 1,
+            'extra_requests': 'magic piano skills',
+            'submit': 'Approve',
+            'teacher': str(self.teacher.id)
         }
         self.url = reverse('booked_lessons')
         

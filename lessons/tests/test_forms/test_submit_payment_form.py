@@ -16,6 +16,7 @@ class PaymentFormTestCase(TestCase):
         self.url=reverse('submit_payment')
         self.director = User.objects.get(username="@administrator")
         self.student = User.objects.get(username="@johndoe")
+        self.teacher = User.objects.get(username="@teacher")
         self.lesson_request = LessonRequest.objects.create(
             days_available=0,
             num_lessons=4,
@@ -32,7 +33,8 @@ class PaymentFormTestCase(TestCase):
             'lesson_duration_hours': 1,
             'extra_requests': 'magic piano skills',
             'id':self.lesson_request.id,
-            'submit': 'Submit'
+            'submit': 'Submit',
+            'teacher': str(self.teacher.id)
         }
 
         
@@ -41,7 +43,7 @@ class PaymentFormTestCase(TestCase):
         
         # creates our invoice object
         self.client.login(username=self.director.username, password="Password123")
-        self.client.post(reverse('edit_request'), self.form_input)
+        self.client.post(reverse('edit_request',  kwargs={'request_id': self.lesson_request.id}), self.form_input)
         self.invoice_id = str(self.student.id).rjust(4, '0') + "-" + (str(self.lesson_request.id)).rjust(4, '0')
         self.payment_info = {
             'id': self.invoice_id,
@@ -52,7 +54,7 @@ class PaymentFormTestCase(TestCase):
     def test_approved_request_generates_inovice_in_director_feed(self):
         # sets up our invoice object
         self.client.login(username=self.director.username, password="Password123")
-        self.client.post(reverse('edit_request'), self.form_input)
+        self.client.post(reverse('edit_request',  kwargs={'request_id': self.lesson_request.id}), self.form_input)
         approved_request = LessonRequest.objects.get(id=self.lesson_request.id)
         self.assertIsInstance(approved_request, LessonRequest)
         self.assertTrue(approved_request.is_booked)
