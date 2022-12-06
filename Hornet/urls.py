@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from lessons import views
 
-from lessons.views import UserListView
+from lessons.views import UserListView, EditRequestView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,7 +32,7 @@ urlpatterns = [
     path('booked_lessons/',views.booked_lessons, name='booked_lessons'),
     path('show_all_requests/',views.show_all_requests, name='show_all_requests'),
     path('submit_payment/', views.submit_payment, name="submit_payment"),
-    path('edit_request/', views.edit_request, name="edit_request"),
+    path('edit_request/', EditRequestView.as_view(), name="edit_request"),
     path('invoices/', views.invoices, name="invoices"),
     path('make_admin/', views.make_admin, name="make_admin"),
     path('show_all_admins/', views.show_all_admins, name="show_all_admins"),

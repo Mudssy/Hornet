@@ -7,7 +7,8 @@ from lessons.helpers import administrator_prohibited, teacher_prohibited, studen
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 def home(request):
@@ -92,30 +93,37 @@ def show_all_requests(request):
     return render(request, 'show_all_requests.html', {'requests': all_requests})
 
 
-@teacher_prohibited
-def edit_request(request):
-    approve_permissions = request.user.account_type == 3 or request.user.account_type == 4
+class EditRequestView(DetailView):
 
-    if request.method=="POST":
-        id=request.POST.get('id')
-        lesson_request = LessonRequest.objects.get(id=id)
-        form = RequestLessonsForm(request.POST, instance=lesson_request)
-        if form.is_valid():
-            if 'edit' in request.POST:
-                lesson_request.is_booked = False
-                form.save()
-                lesson_request.save()
-            elif 'submit' in request.POST:
-                lesson_request.is_booked = True
-                create_invoice(lesson_request)
-                form.save()
+    @method_decorator(teacher_prohibited)
+    def dispatch(self, request):
+        id = request.POST.get('id') or ""
+        id += request.GET.get('id') or ""
+        self.request_id = id
+        self.lesson_request = LessonRequest.objects.get(id=id)
+        return super().dispatch(request)
+
+    def post(self, request):
+        form = RequestLessonsForm(request.POST, instance=self.lesson_request)
+        should_book = 'submit' in request.POST
+        
+        if not form.is_valid():
+            form.add_error(None, "Some of these edits seem off")
+            return render(request, 'edit_request.html', {'form': form, 'request_id': self.request_id})
+        else:
+            self.lesson_request.is_booked = should_book
+            self.lesson_request.save()
+
+            # this will just bounce if the lesson sholdnt be booked
+            create_invoice(self.lesson_request)
+            form.save()
+
             return redirect('show_all_requests')
-    else:
-        lesson_request = LessonRequest.objects.get(id=request.GET.get('id'))
-        form = RequestLessonsForm(instance=lesson_request, approve_permissions=approve_permissions)
-        id = request.GET.get('id')
 
-    return render(request, 'edit_request.html', {'form': form, 'request_id': id})
+    def get(self, request):
+        permissions = self.request.user.account_type >= 3
+        self.form = RequestLessonsForm(instance=self.lesson_request, approve_permissions=permissions)
+        return render(request, 'edit_request.html', {'form': self.form, 'request_id': self.request_id})
 
 
 
@@ -182,6 +190,7 @@ def delete_user(request):
     user=User.objects.get(id=id)
     user.delete()
     return redirect('show_all_admins')
+
 
 def submit_payment(request):
     forms = []
