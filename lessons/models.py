@@ -26,6 +26,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
 
     last_name = models.CharField(max_length=50)
+    
     account_type = PositiveSmallIntegerField(
         choices=Account.choices,
         default=Account.STUDENT

@@ -215,6 +215,8 @@ def payment_history(request):
 
 def user_payment_history(request):
     user = User.objects.get(id=request.GET['user_id'])
+    if user is None:
+        raise AttributeError
     payment_history_list = user.payment_history_csv.split(",")
     return render(request, 'payment_history.html', {'payments': payment_history_list})
 
@@ -228,6 +230,11 @@ def delete_request(request):
 
 
 class UserListView(ListView):
+
     model = User
     template_name='user_list.html'
+
+    def get_queryset(self):
+        object_list = self.model.objects.filter(account_type=1)
+        return object_list
 
