@@ -17,7 +17,7 @@ class TestDeleteUserViewTestCase(TestCase):
     def test_users_are_removed_from_database(self):
         self.client.login(username=self.director.username, password="Password123")
         user_count_before = User.objects.count()
-        self.client.post(self.url, {'user_id':self.admin.id})
+        self.client.post(self.url)
         user_count_after = User.objects.count()
         self.assertEqual(user_count_after, user_count_before-1)
 

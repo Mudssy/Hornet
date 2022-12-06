@@ -25,7 +25,7 @@ class TestEditAdminViewTestCase(TestCase):
         }
 
     def test_edit_admin_url(self):
-        self.assertEqual(self.url, '/edit_admin/')
+        self.assertEqual(self.url, '/edit_admin/4')
 
     def test_edit_admin_uses_correct_template(self):
         self.client.login(username=self.director.username, password="Password123")
