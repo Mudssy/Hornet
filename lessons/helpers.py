@@ -52,7 +52,7 @@ def create_invoice(lesson_request):
     student.save()
 
 def create_booked_lessons(lesson_request):
-    if not isinstance(lesson_request, LessonRequest) or lesson_request.id is None or lesson_request.num_lessons <= 0:
+    if not isinstance(lesson_request, LessonRequest) or lesson_request.is_booked == True or lesson_request.id is None or lesson_request.num_lessons <= 0:
         return
     counter = lesson_request.num_lessons
     date = datetime(2020, 2, 20)
@@ -70,4 +70,4 @@ def create_booked_lessons(lesson_request):
         date += timedelta(days=1)
 
         counter = counter - 1
-    lesson_request.delete()
+    lesson_request.is_booked = True

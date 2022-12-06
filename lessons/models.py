@@ -85,6 +85,8 @@ class LessonRequest(models.Model):
 
     teacher = models.CharField(max_length=50, blank=True)
 
+    is_booked = models.BooleanField(default=False)
+
 class BookedLesson(models.Model):
     # request from which this lesson is being created
     associated_lesson_request = models.ForeignKey(

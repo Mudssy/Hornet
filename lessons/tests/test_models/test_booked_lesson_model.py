@@ -13,14 +13,20 @@ class BookedLessonModelTestCase(TestCase):
         self.student = User.objects.get(username="@johndoe")
         self.request = LessonRequest.objects.create(
             days_available="4",
-            num_lessons=4,
+            num_lessons= 4,
             lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
             lesson_duration_hours=1,
             requestor=self.student,
             extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
         )
         self.booked_lesson = BookedLesson.objects.create(
-            associated_lesson_request = self.request
+            associated_lesson_request = self.request,
+            num_lessons= 4,
+            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
+            lesson_duration_hours=1,
+            requestor=self.student,
+            extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
+
         )
         self.staff_member = User.objects.get(username="@petrapickles")
 

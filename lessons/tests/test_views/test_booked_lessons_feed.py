@@ -22,7 +22,7 @@ class BookedLesson(TestCase):
             'num_lessons' : 4,
             'lesson_gap_weeks' : LessonRequest.LessonGap.WEEKLY,
             'lesson_duration_hours' : 1,
-            'requestor' : self.user,
+            'requestor' : self.student,
             'extra_requests' : 'I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
         }
         self.url = reverse('booked_lessons')
@@ -38,6 +38,9 @@ class BookedLesson(TestCase):
 
 
     def test_admin_approved_lessons_appear_in_student_feed(self):
+        self.client.login(username=self.student.username, password="Password123")
+        response = self.client.get(self.url)
+        self.assertContains(response, self.booked_lesson)
         pass
 
 
