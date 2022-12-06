@@ -129,7 +129,7 @@ class MakeAdminForm(forms.ModelForm):
             self.fields['is_superuser'].widget = forms.HiddenInput()
             self.fields['is_superuser'].initial = False
         else:
-            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_admin"), "POST", self.instance.id)
+            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_admin", kwargs={'user_id': self.instance.id}), "POST", self.instance.id)
             self.title = "Edit Admin"
 
     class Meta:

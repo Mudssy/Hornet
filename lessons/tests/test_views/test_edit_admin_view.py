@@ -11,7 +11,7 @@ class TestEditAdminViewTestCase(TestCase):
     def setUp(self):
         self.admin = User.objects.get(username="@administrator")
         self.director = User.objects.get(username="@director")
-        self.url = reverse('edit_admin')
+        self.url = reverse('edit_admin', kwargs={'user_id': self.admin.id})
         self.form_input = {
             'first_name':self.admin.first_name,
             'last_name':self.admin.last_name,

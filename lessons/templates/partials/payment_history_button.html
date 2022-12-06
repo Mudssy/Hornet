@@ -1,4 +1,5 @@
-<form action="{% url 'user_payment_history' %}" method="get">
-    {% csrf_token %}
-    <button type='submit' class="bg-transparent text-white" name="user_id" value="{{user.id}}"> Show Payments </button>
-</form>
+
+{% csrf_token %}
+<a href="{% url 'user_payment_history' user_id=user.id %}" class="btn btn-primary bg-transparent text-white"> 
+    Show History
+</a>

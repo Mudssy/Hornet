@@ -4,16 +4,15 @@ from lessons.models import User
 
 class TestDeleteUserViewTestCase(TestCase):
     fixtures = [
-        'lessons/tests/fixtures/other_users.json'
+        'lessons/tests/fixtures/other_users.json',
+        'lessons/tests/fixtures/default_student_user.json'
     ]
 
     def setUp(self):
         self.admin = User.objects.get(username="@administrator")
         self.director = User.objects.get(username="@director")
-        self.url = reverse('delete_user')
-
-    def test_delete_admin_url(self):
-        self.assertEqual(self.url, '/delete_user/')
+        self.student= User.objects.get(username="@johndoe")
+        self.url = reverse('delete_user', kwargs={'user_id': self.student.id})
 
     def test_users_are_removed_from_database(self):
         self.client.login(username=self.director.username, password="Password123")

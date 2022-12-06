@@ -95,7 +95,6 @@ def show_all_requests(request):
 
 class EditRequestView(DetailView):
 
-
     def dispatch(self, request, request_id):
         self.lesson_request = LessonRequest.objects.get(id=request_id)
         return super().dispatch(request, request_id)
@@ -131,7 +130,6 @@ class EditRequestView(DetailView):
 def invoices(request):
     user = request.user
     balance = user.balance
-    print(balance)
     invoices = Invoice.objects.filter(associated_student=user)
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
 
@@ -156,10 +154,10 @@ def make_admin(request):
     return render(request, 'make_admin.html', {'form':form})
 
 @director_only
-def edit_admin(request):
+def edit_admin(request, user_id):
+
+    user = User.objects.get(id=user_id)
     if request.method=="POST":
-        id=request.POST.get('user_id')
-        user=User.objects.get(id=id)
         form= MakeAdminForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
@@ -171,8 +169,6 @@ def edit_admin(request):
                 user.account_type = 2
             return redirect('show_all_admins')
     else:
-        id=request.GET.get('user_id')
-        user = User.objects.get(id=id)
         form = MakeAdminForm(instance=user)
 
     return render(request, 'edit_admin.html', {'form': form, 'user_id': id})
@@ -184,9 +180,8 @@ def show_all_admins(request):
 
 @student_prohibited
 @teacher_prohibited
-def delete_user(request):
-    id=request.POST.get('user_id')
-    user=User.objects.get(id=id)
+def delete_user(request, user_id):
+    user=User.objects.get(id=user_id)
     user.delete()
     return redirect('show_all_admins')
 
@@ -221,18 +216,17 @@ def payment_history(request):
     payment_history_list = request.user.payment_history_csv.split(",")
     return render(request, 'payment_history.html', {'payments': payment_history_list})
 
-def user_payment_history(request):
-    user = User.objects.get(id=request.GET['user_id'])
-    if user is None:
-        raise AttributeError
+
+def user_payment_history(request, user_id):
+    user = User.objects.get(id=user_id)
     payment_history_list = user.payment_history_csv.split(",")
     return render(request, 'payment_history.html', {'payments': payment_history_list})
 
-def delete_request(request):
-    if request.method == "POST":
-        id = request.POST.get('id')
-        request = LessonRequest.objects.get(id=id)
-        request.delete()
+
+def delete_request(request, request_id):
+    
+    request = LessonRequest.objects.get(id=request_id)
+    request.delete()
     
     return redirect('pending_requests')
 

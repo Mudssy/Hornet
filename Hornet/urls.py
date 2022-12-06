@@ -36,10 +36,10 @@ urlpatterns = [
     path('invoices/', views.invoices, name="invoices"),
     path('make_admin/', views.make_admin, name="make_admin"),
     path('show_all_admins/', views.show_all_admins, name="show_all_admins"),
-    path('edit_admin/', views.edit_admin, name="edit_admin"),
-    path('delete_user/', views.delete_user, name="delete_user"),
+    path('edit_admin/<int:user_id>', views.edit_admin, name="edit_admin"),
+    path('delete_user/<int:user_id>', views.delete_user, name="delete_user"),
     path('payment_history/', views.payment_history, name="payment_history"),
-    path('delete_request/', views.delete_request, name="delete_request"),
+    path('delete_request/<int:request_id>', views.delete_request, name="delete_request"),
     path('user_list/', UserListView.as_view(), name="user_list"),
-    path('user_payment_history/', views.user_payment_history, name="user_payment_history")
+    path('user_payment_history/<int:user_id>', views.user_payment_history, name="user_payment_history")
 ]

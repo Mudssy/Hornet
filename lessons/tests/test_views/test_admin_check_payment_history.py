@@ -20,7 +20,7 @@ class PaymentHistoryFormTestCase(TestCase):
         self.teacher = User.objects.get(username="@teacher")
         self.admin = User.objects.get(username="@administrator")
         self.director = User.objects.get(username="@director")
-        self.url = reverse('user_payment_history')
+        self.url = reverse('user_payment_history', kwargs={'user_id':self.student.id})
         self.request = LessonRequest.objects.create(
             days_available="4",
             num_lessons=4,
