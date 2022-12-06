@@ -1,10 +1,10 @@
 from django import forms
 from django.core.validators import RegexValidator
 from lessons.models import User,LessonRequest, Invoice
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout,Field,HTML,Submit,Hidden,Button
-from datetime import datetime
+from crispy_forms.layout import Layout,Field,Submit,Hidden
+
 
 class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
