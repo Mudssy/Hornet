@@ -5,6 +5,8 @@ from lessons.forms import MakeAdminForm
 from lessons.models import User
 
 class MakeAdminFormTestCase(TestCase):
+    """Unit tests of the MakeAdminForm"""
+
     fixtures = [
         'lessons/tests/fixtures/default_student_user.json',
         'lessons/tests/fixtures/other_users.json'

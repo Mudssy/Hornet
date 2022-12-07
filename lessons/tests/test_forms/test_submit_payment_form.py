@@ -7,6 +7,8 @@ from lessons.models import User, LessonRequest, Invoice
 
 
 class PaymentFormTestCase(TestCase):
+    """Unit tests of the SubmitPaymentForm"""
+
     fixtures = [
         'lessons/tests/fixtures/default_student_user.json',
         'lessons/tests/fixtures/other_users.json'
@@ -37,10 +39,10 @@ class PaymentFormTestCase(TestCase):
             'teacher': str(self.teacher.id)
         }
 
-        
+
         self.lesson_price = 2 * 1 * 40
         self.url = reverse('submit_payment')
-        
+
         # creates our invoice object
         self.client.login(username=self.director.username, password="Password123")
         self.client.post(reverse('edit_request',  kwargs={'request_id': self.lesson_request.id}), self.form_input)
@@ -49,8 +51,8 @@ class PaymentFormTestCase(TestCase):
             'id': self.invoice_id,
             'amount_paid': self.lesson_price
         }
-        
-    
+
+
     def test_approved_request_generates_inovice_in_director_feed(self):
         # sets up our invoice object
         self.client.login(username=self.director.username, password="Password123")
@@ -66,7 +68,7 @@ class PaymentFormTestCase(TestCase):
         # checks director feed
         response = self.client.get(self.url)
         self.assertContains(response, this_invoice.invoice_id)
-        
+
     def test_paid_invoice_disappears(self):
         self.client.post(self.url, self.payment_info)
         response = self.client.get(self.url)
@@ -90,4 +92,3 @@ class PaymentFormTestCase(TestCase):
         self.assertFalse(this_invoice.is_paid)
         self.assertEqual(this_invoice.amount_paid, 0)
         self.assertEqual(this_invoice.amount_outstanding, self.lesson_price)
-        

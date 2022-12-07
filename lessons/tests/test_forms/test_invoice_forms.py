@@ -3,6 +3,7 @@ from django.test import TestCase
 from lessons.forms import SubmitPaymentForm
 from lessons.models import User, Invoice
 
+"""Tests for the invoice form"""
 
 def SubmitPaymentTestCase(TestCase):
     fixtures = [

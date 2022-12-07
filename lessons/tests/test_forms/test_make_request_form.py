@@ -7,6 +7,8 @@ from lessons.models import User, LessonRequest
 
 
 class RequestFormTestCase(TestCase):
+    """Unit tests of the RequestLessonsForm"""
+
     fixtures = [
         'lessons/tests/fixtures/default_student_user.json',
         'lessons/tests/fixtures/other_users.json'
