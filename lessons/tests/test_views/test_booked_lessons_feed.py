@@ -5,6 +5,7 @@ from django.test import TestCase
 from lessons.forms import SignUpForm, RequestLessonsForm
 from lessons.models import User, LessonRequest, BookedLesson
 import datetime
+import json
 
 class BookedLesson(TestCase):
     """Tests of the feed view."""
@@ -18,15 +19,9 @@ class BookedLesson(TestCase):
         self.student = User.objects.get(username="@johndoe")
         self.admin = User.objects.get(username="@administrator")
         self.teacher = User.objects.get(username="@teacher")
-        self.form_input = {
-            'requestor': self.student,
-            'days_available': ['1', '2'],
-            'lesson_gap_weeks': LessonRequest.LessonGap.WEEKLY,
-            'num_lessons': 2,
-            'lesson_duration_hours': 1,
-            'extra_requests': 'magic piano skills',
-            'submit': 'Approve',
-            'teacher': str(self.teacher.id)
-        }
+        with open('lessons/tests/fixtures/lesson_request_form_input.json', 'r') as file:
+            self.form_input=json.load(file)
+            self.form_input['teacher'] = str(self.teacher.id)
+
         self.url = reverse('booked_lessons')
     

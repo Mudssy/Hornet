@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.test import TestCase
 from lessons.forms import SignUpForm, RequestLessonsForm
 from lessons.models import User, LessonRequest, Invoice
-
+from lessons import helpers
 
 class RequestFormTestCase(TestCase):
     
@@ -20,16 +20,10 @@ class RequestFormTestCase(TestCase):
         self.student = User.objects.get(username="@johndoe")
         self.url = reverse('invoices')
         student_invoice_id = Invoice.objects.filter(associated_student=self.student).count()+1
-        self.invoice_id = str(self.student.id).rjust(4, '0') + "-" + (str(student_invoice_id)).rjust(4, '0')
-
-        self.invoice = Invoice.objects.create(
-            associated_student=self.student,
-            number_of_lessons=1,
-            lesson_duration=1,
-            hourly_cost=40,
-            total_price=40*1*1,
-            invoice_id = self.invoice_id
-        )   
+        self.request = LessonRequest.objects.get(requestor=self.student)
+        self.request.is_booked=True
+        self.invoice = helpers.create_invoice(self.request)
+        self.invoice_id = self.invoice.id
 
     def test_invoice_view_contains_invoice_id(self):
         self.client.login(username=self.student.username, password="Password123")

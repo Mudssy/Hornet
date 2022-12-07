@@ -3,20 +3,14 @@ from django import forms
 from django.test import TestCase
 from lessons.forms import SignUpForm
 from lessons.models import User
-
+import json
 
 class SignUpFormTestCase(TestCase):
     """Unit tests of the sign up form."""
 
     def setUp(self):
-        self.form_input = {
-            'first_name': 'Jane',
-            'last_name': 'Doe',
-            'username': '@janedoe',
-            'email': 'janedoe@example.org',
-            'new_password': 'Password123',
-            'confirm_password': 'Password123'
-        }
+        with open('lessons/tests/fixtures/sign_up_form_input.json', 'r') as file:
+            self.form_input=json.load(file)
 
     def test_valid_sign_up_form(self):
         form = SignUpForm(data=self.form_input)

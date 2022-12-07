@@ -12,14 +12,7 @@ class PendingRequestTest(TestCase):
     def setUp(self):
         self.student = User.objects.get(username='@johndoe')
         self.url = reverse('pending_requests')
-        self.request = LessonRequest.objects.create(
-            days_available=0,
-            num_lessons=4,
-            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
-            lesson_duration_hours=1,
-            requestor=self.student,
-            extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
-        )
+        self.request = LessonRequest.objects.get(requestor=self.student)
 
     # def test_delete_button_deletes_request(self):
     #     self.client.login(username=self.student.username, password="Password123")

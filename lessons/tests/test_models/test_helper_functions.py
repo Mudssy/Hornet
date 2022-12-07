@@ -15,18 +15,8 @@ class MakeRequestTest(TestCase):
     def setUp(self):
         self.student = User.objects.get(username="@johndoe")
         self.admin = User.objects.get(username="@administrator")
-
-        self.request = LessonRequest.objects.create(
-            days_available=0,
-            num_lessons=4,
-            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
-            lesson_duration_hours=1,
-            requestor=self.student,
-            extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
-        )
-
+        self.request = LessonRequest.objects.get(requestor=self.student)
         self.lesson_price = self.request.num_lessons * self.request.lesson_duration_hours * 40
-        
 
 
     def test_create_invoice_creates_invoice(self):
@@ -34,7 +24,8 @@ class MakeRequestTest(TestCase):
         self.assertEqual(self.student.balance, 0)
         self.request.is_booked=True
         create_invoice(self.request)
-        self.assertEqual(self.student.balance, -self.lesson_price)
+        balance = User.objects.get(username="@johndoe").balance
+        self.assertEqual(balance, -self.lesson_price)
         after = Invoice.objects.count()
         self.assertEqual(before + 1, after)
 
