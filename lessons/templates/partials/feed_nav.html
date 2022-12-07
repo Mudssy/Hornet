@@ -6,23 +6,22 @@
 {% endcomment %}
 
 <nav class="nav nav-tabs bg-black bg-opacity-25">
-    {% if user.account_type == 1%}
+    {% if request.user.account_type == 1%}
         <a class="nav-link" aria-current="page" href="{% url 'pending_requests' %}">Pending Requests</a>
         <a class="nav-link" href="{% url 'booked_lessons' %}">Lessons</a>
         <a class="nav-link" href="{% url 'invoices' %}">Invoices</a>
         <a class="nav-link" href="{% url 'payment_history' %}"> Payment History </a>
-    {% elif user.account_type == 2%}
+    {% elif request.user.account_type == 2%}
         <a class="nav-link" aria-current="page" href="#">Lessons</a>
-    {% elif user.account_type == 3 %}
+    {% elif request.user.account_type == 3 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="{% url 'submit_payment' %}">Submit Payment</a>
         <a class="nav-link" aria-current="page" href="{% url 'user_list' %}">User List</a>
-    {% elif user.account_type == 4 %}
+    {% elif request.user.account_type == 4 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="{% url 'submit_payment' %}">Submit Payment</a>
         <a class="nav-link" aria-current="page" href="{% url 'make_admin' %}">Make Admin</a>
         <a class="nav-link" aria-current="page" href="{% url 'show_all_admins' %}">View Admins</a>
         <a class="nav-link" aria-current="page" href="{% url 'user_list' %}">User List</a>
     {% endif %}
-
 </nav>
