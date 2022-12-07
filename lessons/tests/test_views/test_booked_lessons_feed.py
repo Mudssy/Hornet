@@ -27,24 +27,8 @@ class BookedLesson(TestCase):
         }
         self.url = reverse('booked_lessons')
 
-
-    def test_admin_approved_lessons_appear_in_student_feed(self):
-        self.client.login(username=self.student.username, password="Password123")
-        response = self.client.get(self.url)
-        self.assertContains(response, self.booked_lesson)
-        pass
-
-
-    #test that approving lesson request creates numLessons amount of booked lessons
-    def test_number_of_booked_lessons_equals_num_lessons(self):
-        pass
-
-    #test that not accepting lesson request does not create booked lessons
-    def test_deleting_request_does_not_create_lessons(self):
-        pass
-
-    #test that approved lesson request does not appear in student feed
-    def test_approved_request_does_not_appear_in_student_feed(self):
+    #test that approved lesson request appears in student feed
+    def test_admin_approved_request_appears_in_student_feed(self):
         self.client.login(username=self.student.username, password="Password123")
         self.client.post(reverse('pending_requests'), self.form_input)
         request = LessonRequest.objects.get(requestor=self.student)
@@ -56,7 +40,16 @@ class BookedLesson(TestCase):
         self.form_input['request_id'] = request.id
         self.client.post(self.url, self.form_input)
         response = self.client.get(self.url)
-        self.assertNotContains(response, request)
+        self.assertContains(response, request)
+
+
+    #test that approving lesson request creates numLessons amount of booked lessons
+    def test_number_of_booked_lessons_equals_num_lessons(self):
+        pass
+
+    #test that not accepting lesson request does not create booked lessons
+    def test_deleting_request_does_not_create_lessons(self):
+        pass
 
     #test that a booked lesson has the same attributes as the lesson request
     def test_booked_lesson_has_same_values_as_lesson_request(self):

@@ -87,6 +87,11 @@ class LessonRequest(models.Model):
 
     is_booked = models.BooleanField(default=False)
 
+    request_time = models.DateTimeField(
+        auto_now=False,
+        auto_now_add=True,
+    )
+
 class BookedLesson(models.Model):
     # request from which this lesson is being created
     associated_lesson_request = models.ForeignKey(
