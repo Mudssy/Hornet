@@ -16,14 +16,18 @@ class RequestFormTestCase(TestCase):
     def setUp(self):
         self.url=reverse('make_request')
         self.student = User.objects.get(username="@johndoe")
+        self.teacher = User.objects.get(username="@teacher")
         self.form_input = {
             'requestor': self.student,
             'days_available': ['1', '2'],
             'lesson_gap_weeks': LessonRequest.LessonGap.WEEKLY,
             'num_lessons': 2,
             'lesson_duration_hours': 1,
-            'extra_requests': 'magic piano skills'
+            'extra_requests': 'magic piano skills',
+            'submit': 'Approve',
+            'teacher': str(self.teacher.id)
         }
+
 
     def test_valid_form_is_valid(self):
         self.form = RequestLessonsForm(data=self.form_input)

@@ -1,0 +1,5 @@
+
+{% csrf_token %}
+<a href="{% url 'user_payment_history' user_id=user.id %}" class="btn btn-primary bg-transparent text-white"> 
+    Show History
+</a>

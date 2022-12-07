@@ -10,6 +10,7 @@ class User(AbstractUser):
         STUDENT = 1
         TEACHER = 2
         ADMINISTRATOR = 3
+        DIRECTOR = 4
 
     username = models.CharField(
         max_length=30,
@@ -25,6 +26,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
 
     last_name = models.CharField(max_length=50)
+    
     account_type = PositiveSmallIntegerField(
         choices=Account.choices,
         default=Account.STUDENT
@@ -34,13 +36,15 @@ class User(AbstractUser):
 
     password = models.CharField(max_length=100)
 
+    payment_history_csv = models.TextField(blank=True)
+
 class LessonRequest(models.Model):
 
     class LessonGap(models.IntegerChoices):
         BIWEEKLY = 1
         WEEKLY = 2
-        FORTNIGHTLY = 3
-        MONTHLY = 4
+        FORTNIGHTLY = 4
+        MONTHLY = 8
 
     class AvailableWeekly(models.IntegerChoices):
         Monday = 1
@@ -79,11 +83,18 @@ class LessonRequest(models.Model):
         User,
         on_delete=models.CASCADE,
         blank=False,
+        related_name='requestor',
+    )
+    
+    teacher = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        blank = True,
+        null = True,
+        related_name='teacher',
     )
 
     extra_requests = models.CharField(max_length=250, blank=True)
-
-    teacher = models.CharField(max_length=50, blank=True)
 
     is_booked = models.BooleanField(default=False)
 
@@ -92,67 +103,92 @@ class LessonRequest(models.Model):
         auto_now_add=True,
     )
 
+# class BookedLesson(models.Model):
+#     # request from which this lesson is being created
+#     associated_lesson_request = models.ForeignKey(
+#         LessonRequest,
+#         on_delete=models.CASCADE,
+#         blank=False
+#     )
+
+#     class LessonGap(models.IntegerChoices):
+#         BIWEEKLY = 1
+#         WEEKLY = 2
+#         FORTNIGHTLY = 3
+#         MONTHLY = 4
+
+#     class DayOfLesson(models.IntegerChoices):
+#         Monday = 1
+#         Tuesday = 2
+#         Wednesday = 3
+#         Thursday = 4
+#         Friday = 5
+#         Saturday = 6
+#         Sunday = 7
+
+#     DAYS_OF_WEEK = (
+#         (0, 'Monday'),
+#         (1, 'Tuesday'),
+#         (2, 'Wednesday'),
+#         (3, 'Thursday'),
+#         (4, 'Friday'),
+#         (5, 'Saturday'),
+#         (6, 'Sunday'),
+#     )
+
+#     days_available = models.CharField(max_length=50, blank=False,default="1234567") #store available days in the week as string of numbers
+#                                                                 #eg '126' means available Monday,Tuesday,Saturday
+
+
+#     num_lessons = models.PositiveIntegerField(blank=False)
+
+#     lesson_gap_weeks = models.PositiveIntegerField(
+#         choices=LessonGap.choices,
+#         default=LessonGap.WEEKLY
+#     )
+
+#     lesson_duration_hours = models.PositiveIntegerField(blank=False)
+
+#     requestor = models.ForeignKey(
+#         User,
+#         on_delete=models.CASCADE,
+#         blank=False,
+#     )
+
+#     lesson_date = models.DateTimeField(
+#         auto_now=False,
+#         auto_now_add=True,
+#     )
+
+#     extra_requests = models.CharField(max_length=250, blank=True)
+
+#     teacher = models.CharField(max_length=50, blank=True)
+
+
+
 class BookedLesson(models.Model):
-    # request from which this lesson is being created
-    associated_lesson_request = models.ForeignKey(
-        LessonRequest,
-        on_delete=models.CASCADE,
-        blank=False
-    )
 
-    class LessonGap(models.IntegerChoices):
-        BIWEEKLY = 1
-        WEEKLY = 2
-        FORTNIGHTLY = 3
-        MONTHLY = 4
+    start_time = models.DateTimeField(blank=False)
 
-    class DayOfLesson(models.IntegerChoices):
-        Monday = 1
-        Tuesday = 2
-        Wednesday = 3
-        Thursday = 4
-        Friday = 5
-        Saturday = 6
-        Sunday = 7
+    duration = models.PositiveSmallIntegerField(blank = False) #in hours
 
-    DAYS_OF_WEEK = (
-        (0, 'Monday'),
-        (1, 'Tuesday'),
-        (2, 'Wednesday'),
-        (3, 'Thursday'),
-        (4, 'Friday'),
-        (5, 'Saturday'),
-        (6, 'Sunday'),
-    )
-
-    days_available = models.CharField(max_length=50, blank=False,default="1234567") #store available days in the week as string of numbers
-                                                                #eg '126' means available Monday,Tuesday,Saturday
-
-
-    num_lessons = models.PositiveIntegerField(blank=False)
-
-    lesson_gap_weeks = models.PositiveIntegerField(
-        choices=LessonGap.choices,
-        default=LessonGap.WEEKLY
-    )
-
-    lesson_duration_hours = models.PositiveIntegerField(blank=False)
-
-    requestor = models.ForeignKey(
+    student = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         blank=False,
+        related_name='student',
+    )
+    teacher = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='booked_teacher',
     )
 
-    lesson_date = models.DateTimeField(
-        auto_now=False,
-        auto_now_add=True,
-    )
+    
 
-    extra_requests = models.CharField(max_length=250, blank=True)
 
-    teacher = models.CharField(max_length=50, blank=True)
 
+    
 
 class Invoice(models.Model):
 
@@ -170,6 +206,7 @@ class Invoice(models.Model):
     invoice_id=models.CharField(
         max_length=7,
         blank=True,
+        unique=True
     )
 
     # Information transferred from request object, for more professional invoice look
@@ -177,3 +214,6 @@ class Invoice(models.Model):
     lesson_duration=models.PositiveIntegerField(default=1)
     hourly_cost=models.PositiveIntegerField(default=1)
     total_price=models.PositiveIntegerField(blank=True)
+    amount_paid=models.PositiveIntegerField(blank=True, default=0)
+    amount_outstanding=models.PositiveIntegerField(blank=True, default=0)
+    is_paid=models.BooleanField(default=False)

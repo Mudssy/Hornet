@@ -12,7 +12,7 @@ class SignUpViewTestCase(TestCase):
     ]
 
     def setUp(self):
-        self.teacher = User.objects.get(username="@teachersmith")
+        self.teacher = User.objects.get(username="@teacher")
         self.student = User.objects.get(username="@johndoe")
 
     def test_teacher_student_account_types(self):

@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from lessons import views
 
+from lessons.views import UserListView, EditRequestView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
@@ -29,6 +31,15 @@ urlpatterns = [
     path('pending_requests/',views.pending_requests, name='pending_requests'),
     path('booked_lessons/',views.booked_lessons, name='booked_lessons'),
     path('show_all_requests/',views.show_all_requests, name='show_all_requests'),
-    path('edit_request/', views.edit_request, name="edit_request"),
+    path('submit_payment/', views.submit_payment, name="submit_payment"),
+    path('edit_request/<int:request_id>', EditRequestView.as_view(), name="edit_request"),
     path('invoices/', views.invoices, name="invoices"),
+    path('make_admin/', views.make_admin, name="make_admin"),
+    path('show_all_admins/', views.show_all_admins, name="show_all_admins"),
+    path('edit_admin/<int:user_id>', views.edit_admin, name="edit_admin"),
+    path('delete_user/<int:user_id>', views.delete_user, name="delete_user"),
+    path('payment_history/', views.payment_history, name="payment_history"),
+    path('delete_request/<int:request_id>', views.delete_request, name="delete_request"),
+    path('user_list/', UserListView.as_view(), name="user_list"),
+    path('user_payment_history/<int:user_id>', views.user_payment_history, name="user_payment_history")
 ]

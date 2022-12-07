@@ -1,0 +1,9 @@
+{% extends 'base_content.html' %}
+{% block content %}
+{% include 'partials/feed_nav.html' %}
+  {% for user in users %}
+    {% if user.is_staff %}
+      {% include 'partials/show_user.html' %}
+    {% endif %}
+  {% endfor %}
+{% endblock %}

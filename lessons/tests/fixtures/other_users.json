@@ -17,7 +17,7 @@
     "fields": {
       "first_name": "Teacher",
       "last_name": "Smith",
-      "username": "@teachersmith",
+      "username": "@teacher",
       "email": "teachersmith@example.org",
       "password": "pbkdf2_sha256$260000$ypOt2XEuTDSPK1lK3DtnmK$YZn/l5T6PEnD4MtoHUJl4152q02Snb+Mke+s20+d7ZY=",
       "account_type": 2,
@@ -34,6 +34,19 @@
       "email": "administrator@example.org",
       "password": "pbkdf2_sha256$260000$ypOt2XEuTDSPK1lK3DtnmK$YZn/l5T6PEnD4MtoHUJl4152q02Snb+Mke+s20+d7ZY=",
       "account_type": 3,
+      "is_active": true
+    }
+  },
+  {
+    "model": "lessons.User",
+    "pk": 5,
+    "fields": {
+      "first_name": "Director",
+      "last_name": "Smith",
+      "username": "@director",
+      "email": "director@example.org",
+      "password": "pbkdf2_sha256$260000$ypOt2XEuTDSPK1lK3DtnmK$YZn/l5T6PEnD4MtoHUJl4152q02Snb+Mke+s20+d7ZY=",
+      "account_type": 4,
       "is_active": true
     }
   }

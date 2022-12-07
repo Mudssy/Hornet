@@ -1,29 +1,48 @@
 <div class="card mb-3 bg-black bg-opacity-50" style="border-radius: .5rem;">
-
+    
         <div class="card-body p-4">
             <h6>Pending Request</h6>
             <hr class="mt-0 mb-4">
             <div class="pt-1 d-flex flex-wrap justify-content-center align-items-center">
                 <div class="card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-
+    
                     <h6 class="card-title">Time Of Request</h6>
                     <hr class="mt-0 mb-4">
-                    <p>{{request.request_time}}</p>
+                    <p>{{request.request_time}} {{request.id}}</p>
                 </div>
                 <div class="card bg-transparent bg-opacity-75 border-0  mb-3 m-4 p-4">
                     <h6 class="card-title">Days Available</h6>
                     <hr class="mt-0 mb-4">
-                    {% for day in request.days_available%}
-                        <p>{{day}}</p>
+                    {% for day in request.days_available %}
+                        {% if day == "1" %}
+                            <p>Monday</p>
+                        {% elif day == "2" %}
+                            <p>Tuesday</p>
+                        {% elif day == "3" %}
+                            <p>Wednesday</p>
+                        {% elif day == "4" %}
+                            <p>Thursday</p>
+                        {% elif day == "5" %}
+                            <p>Friday</p>
+                        {% elif day == "6" %}
+                            <p>Saturday</p>
+                        {% elif day == "7" %}
+                            <p>Sunday</p>
+                        {% endif %}
                     {% endfor %}
-
+                    
                 </div>
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
                     <h6 class="card-title">Number of Lessons</h6>
                     <hr class="mt-0 mb-4">
                     <p>{{request.num_lessons}}</p>
                 </div>
-
+                <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                    <h6 class="card-title">Student</h6>
+                    <hr class="mt-0 mb-4">
+                    <p>{{ request.associated_student }}</p>
+                </div>
+            
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
                     <h6 class="card-title">Gap between lessons</h6>
                     <hr class="mt-0 mb-4">
@@ -39,14 +58,26 @@
                     <hr class="mt-0 mb-4">
                     <p>{{request.extra_requests}}</p>
                 </div>
-                {% if user.account_type == 3%}
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-                    <form action="{% url 'edit_request' %}" method="get">
-                        <button type='submit' class="bg-transparent text-white" name="request_id" value="{{request.id}}"> Edit request </button>
+                    <h6 class="card-title">Requested Teacher</h6>
+                    <hr class="mt-0 mb-4">
+                    <p>{{request.teacher.username}}</p>
+                </div>
+                <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                        {% csrf_token %}
+                        {% if not request.is_booked %}
+                        <a href="{% url 'delete_request' request_id=request.id %}" class="btn btn-primary bg-transparent text-white"> 
+                            Delete
+                        </a>
+                        {% endif %}
                     </form>
                 </div>
-                {% endif %}
+                <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                    <a href="{% url 'edit_request' request_id=request.id %}" class="btn btn-primary bg-transparent text-white"> 
+                        Edit Request
+                    </a>
+                </div>
             </div>
         </div>
-
+        
 </div>
