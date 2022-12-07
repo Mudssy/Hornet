@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.test import TestCase
 from lessons.forms import SignUpForm, RequestLessonsForm
 from lessons.models import User, LessonRequest, Invoice
-
+from lessons import helpers
 
 class PaymentFormTestCase(TestCase):
     fixtures = [
@@ -17,14 +17,8 @@ class PaymentFormTestCase(TestCase):
         self.director = User.objects.get(username="@administrator")
         self.student = User.objects.get(username="@johndoe")
         self.teacher = User.objects.get(username="@teacher")
-        self.lesson_request = LessonRequest.objects.create(
-            days_available=0,
-            num_lessons=4,
-            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
-            lesson_duration_hours=1,
-            requestor=self.student,
-            extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
-        )
+
+        self.lesson_request = LessonRequest.objects.get(requestor=self.student)
         self.form_input = {
             'requestor': self.student,
             'days_available': ['1', '2'],
@@ -37,19 +31,17 @@ class PaymentFormTestCase(TestCase):
             'teacher': str(self.teacher.id)
         }
 
-        
-        self.lesson_price = 2 * 1 * 40
+        self.lesson_price = 1 * 1 * 40
         self.url = reverse('submit_payment')
         
-        # creates our invoice object
-        self.client.login(username=self.director.username, password="Password123")
-        self.client.post(reverse('edit_request',  kwargs={'request_id': self.lesson_request.id}), self.form_input)
-        self.invoice_id = str(self.student.id).rjust(4, '0') + "-" + (str(self.lesson_request.id)).rjust(4, '0')
+        self.lesson_request.is_booked = True
+        self.invoice = helpers.create_invoice(self.lesson_request)
+        self.invoice_id = self.invoice.invoice_id
+
         self.payment_info = {
-            'id': self.invoice_id,
-            'amount_paid': self.lesson_price
+            'amount_paid': 20,
+            'id': self.invoice_id
         }
-        
     
     def test_approved_request_generates_inovice_in_director_feed(self):
         # sets up our invoice object
@@ -59,15 +51,15 @@ class PaymentFormTestCase(TestCase):
         self.assertIsInstance(approved_request, LessonRequest)
         self.assertTrue(approved_request.is_booked)
         request_id = approved_request.id
-        invoice_id = str(self.student.id).rjust(4, '0') + "-" + (str(request_id)).rjust(4, '0')
-        this_invoice = Invoice.objects.get(invoice_id=invoice_id)
-        self.assertEqual(self.lesson_price, this_invoice.amount_outstanding)
+        self.assertEqual(self.lesson_price, self.invoice.amount_outstanding)
 
         # checks director feed
         response = self.client.get(self.url)
-        self.assertContains(response, this_invoice.invoice_id)
+        self.assertContains(response, self.invoice.id)
+        
         
     def test_paid_invoice_disappears(self):
+        self.payment_info['amount_paid'] = self.invoice.amount_outstanding
         self.client.post(self.url, self.payment_info)
         response = self.client.get(self.url)
         this_invoice = Invoice.objects.get(invoice_id=self.invoice_id)

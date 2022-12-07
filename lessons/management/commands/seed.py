@@ -1,3 +1,13 @@
+"""
+Database seeder for Lessons app.
+
+Seeds database with example users including a director, an administrator, a
+teacher and a student
+
+version 2022.12.07    
+"""
+
+
 from django.core.management.base import BaseCommand, CommandError
 from faker import Faker
 from lessons.models import User, LessonRequest

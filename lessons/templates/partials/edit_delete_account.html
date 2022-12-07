@@ -1,9 +1,13 @@
+{% comment %}
+    Buttons for editing or deleting accounts
+    version 2022.12.07
+{% endcomment %}
 
 {% csrf_token %}
-<a href="{% url 'edit_admin' user_id=user.id %}" class="btn btn-primary bg-transparent text-white"> 
+<a href="{% url 'edit_admin' user_id=user.id %}" class="btn btn-primary bg-transparent text-white">
     Edit Account
 </a>
 {% csrf_token %}
-<a href="{% url 'delete_user' user_id=user.id %}" class="btn btn-primary bg-transparent text-white"> 
+<a href="{% url 'delete_user' user_id=user.id %}" class="btn btn-primary bg-transparent text-white">
     Delete
 </a>

@@ -101,7 +101,6 @@ class EditRequestView(DetailView):
         self.lesson_request = LessonRequest.objects.get(id=request_id)
         return super().dispatch(request, request_id)
 
-
     def post(self, request, request_id):
         form = RequestLessonsForm(request.POST, instance=self.lesson_request)
         should_book = 'submit' in request.POST
@@ -116,12 +115,9 @@ class EditRequestView(DetailView):
             # this will just bounce if the lesson sholdnt be booked
             create_booked_lessons(self.lesson_request)
             create_invoice(self.lesson_request)
-            
-
             form.save()
 
             return redirect('show_all_requests')
-
 
     def get(self, request, request_id):
         permissions = self.request.user.account_type >= 3
@@ -253,7 +249,11 @@ class UserListView(ListView):
     model = User
     template_name='user_list.html'
 
-    def get_queryset(self):
-        object_list = self.model.objects.filter(account_type=1)
+    def dispatch(self, request, account_type):
+        self.account_type = account_type
+        return super().dispatch(request, account_type)
+
+    def get_queryset(self, *args, **kwargs):
+        object_list = self.model.objects.filter(account_type=self.account_type)
         return object_list
 

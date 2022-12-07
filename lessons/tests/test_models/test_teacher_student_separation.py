@@ -5,6 +5,7 @@ from lessons.models import User
 from django.contrib.auth.hashers import check_password
 
 class SignUpViewTestCase(TestCase):
+    """Unit tests of the separation between teacher and student"""
 
     fixtures = [
         'lessons/tests/fixtures/other_users.json',

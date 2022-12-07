@@ -1,3 +1,9 @@
+{% comment %}
+    Partial for the feed of a user, which changes depending on their level of
+    clearance. Users with a feed can be students (1), teachers (2), admin (3)
+    or directors (4)
+    version 2022.12.07
+{% endcomment %}
 
 <nav class="nav nav-tabs bg-black bg-opacity-25">
     {% if request.user.account_type == 1%}
@@ -10,13 +16,12 @@
     {% elif request.user.account_type == 3 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="{% url 'submit_payment' %}">Submit Payment</a>
-        <a class="nav-link" aria-current="page" href="{% url 'user_list' %}">User List</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=1 %}">User List</a>
     {% elif request.user.account_type == 4 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="{% url 'submit_payment' %}">Submit Payment</a>
-        <a class="nav-link" aria-current="page" href="{% url 'make_user' %}">Make User</a>
-        <a class="nav-link" aria-current="page" href="{% url 'show_all_admins' %}">View Admins</a>
-        <a class="nav-link" aria-current="page" href="{% url 'show_all_teachers' %}">View Teachers</a>
-        <a class="nav-link" aria-current="page" href="{% url 'show_all_students' %}">View Students</a>
+        <a class="nav-link" aria-current="page" href="{% url 'make_admin' %}">Make Admin</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=3 %}">View Admins</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=1 %}">User List</a>
     {% endif %}
 </nav>

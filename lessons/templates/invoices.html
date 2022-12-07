@@ -1,5 +1,10 @@
 {% extends 'feed.html' %}
 
+{% comment %}
+    Template which displays a feed of a user's invoices
+    version 2022.12.07
+{% endcomment %}
+
 {% block feed_content %}
 <p><h3>Current Credit(£): {{user.balance}}</h3></p>
   {% for invoice in invoices %}

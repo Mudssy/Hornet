@@ -1,5 +1,10 @@
 {% extends 'feed.html' %}
 
+{% comment %}
+    Template which displays a feed of a user's pending lesson requests
+    version 2022.12.07
+{% endcomment %}
+
 {% block feed_content %}
   {% for request in requests %}
     {% if request.is_booked == False %}

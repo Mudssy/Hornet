@@ -11,14 +11,7 @@ class RequestModelTestCase(TestCase):
     ]
     def setUp(self):
         self.student = User.objects.get(username="@johndoe")
-        self.request = LessonRequest.objects.create(
-            days_available="4",
-            num_lessons=4,
-            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
-            lesson_duration_hours=1,
-            requestor=self.student,
-            extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
-        )
+        self.request = LessonRequest.objects.get(requestor=self.student)
 
     def test_student_can_have_multiple_requests(self):
         second_request = LessonRequest.objects.create(

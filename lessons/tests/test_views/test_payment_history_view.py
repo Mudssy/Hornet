@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.test import TestCase
 from lessons.forms import SignUpForm, RequestLessonsForm
 from lessons.models import User, LessonRequest, Invoice
-
+import json
 
 class RequestFormTestCase(TestCase):
     
@@ -20,26 +20,10 @@ class RequestFormTestCase(TestCase):
         self.student = User.objects.get(username="@johndoe")
         self.teacher = User.objects.get(username="@teacher")
         self.url = reverse('payment_history')
-        self.request = LessonRequest.objects.create(
-            requestor=self.student,
-            days_available="123",
-            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
-            num_lessons=2,
-            lesson_duration_hours=1,
-            extra_requests="testfixture",
-            teacher=self.teacher
-        )
-
-        self.form_input = {
-            'requestor': self.student,
-            'days_available': ['1', '2'],
-            'lesson_gap_weeks': LessonRequest.LessonGap.WEEKLY,
-            'num_lessons': 2,
-            'lesson_duration_hours': 1,
-            'extra_requests': 'magic piano skills',
-            'submit': 'Approve',
-            'teacher': str(self.teacher.id)
-        }
+        self.request = LessonRequest.objects.get(requestor=self.student)
+        with open('lessons/tests/fixtures/lesson_request_form_input.json', 'r') as file:
+            self.form_input=json.load(file)
+            self.form_input['teacher'] = str(self.teacher.id)
 
         self.client.login(username=self.student.username, password="Password123")
         student_invoice_id = Invoice.objects.filter(associated_student=self.student).count()+1

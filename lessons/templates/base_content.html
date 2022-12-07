@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
-{% block body%}    
+
+{% comment %}
+    Template which displays a navbar on top of base.html
+    version 2022.12.07
+{% endcomment %}
+
+{% block body%}
     {% include 'partials/navbar.html' %}
     <div class="container-fluid">
-        
-        
+
+
         {%block content %}
         {% endblock %}
-        
+
     </div>
 {% endblock%}

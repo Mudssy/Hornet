@@ -21,16 +21,9 @@ class PaymentHistoryFormTestCase(TestCase):
         self.admin = User.objects.get(username="@administrator")
         self.director = User.objects.get(username="@director")
         self.url = reverse('user_payment_history', kwargs={'user_id':self.student.id})
-        self.request = LessonRequest.objects.create(
-            days_available="4",
-            num_lessons=4,
-            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
-            lesson_duration_hours=1,
-            requestor=self.student,
-            extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice',
-            is_booked=True
-        )
+        self.request = LessonRequest.objects.get(requestor=self.student)
         # this should create the relevant payment history
+        self.request.is_booked=True
         self.invoice = create_invoice(self.request)
 
     
