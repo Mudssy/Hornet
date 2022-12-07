@@ -225,7 +225,7 @@ def payment_history(request):
 def user_payment_history(request, user_id):
     user = User.objects.get(id=user_id)
     payment_history_list = user.payment_history_csv.split(",")
-    return render(request, 'payment_history.html', {'payments': payment_history_list})
+    return render(request, 'payment_history.html', {'payments': payment_history_list, 'user': user})
 
 
 def delete_request(request, request_id):
