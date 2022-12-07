@@ -1,9 +1,9 @@
+{% extends 'feed.html' %}
+
 {% comment %}
     Displays a feed of all booked lessons of a user
     version 2022.12.07
 {% endcomment %}
-
-{% extends 'feed.html' %}
 
 {% block feed_content %}
   {% for lesson in lessons %}

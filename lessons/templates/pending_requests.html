@@ -1,9 +1,9 @@
+{% extends 'feed.html' %}
+
 {% comment %}
     Template which displays a feed of a user's pending lesson requests
     version 2022.12.07
 {% endcomment %}
-
-{% extends 'feed.html' %}
 
 {% block feed_content %}
   {% for request in requests %}

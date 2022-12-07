@@ -1,9 +1,10 @@
+{% extends 'base_content.html' %}
+
 {% comment %}
     Template which displays a list of all users in the music school
     version 2022.12.07
 {% endcomment %}
 
-{% extends 'base_content.html' %}
 {% block content %}
 {% include 'partials/feed_nav.html' %}
     {% for user in object_list %}
