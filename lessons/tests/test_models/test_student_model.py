@@ -3,6 +3,7 @@ from django.test import TestCase
 from lessons.models import User
 
 class UserModelTestCase(TestCase):
+    """Unit tests for the User model"""
 
     # retrieved by username="@johndoe" and "@janedoe" respectively
 
@@ -37,4 +38,3 @@ class UserModelTestCase(TestCase):
     def _assert_user_is_invalid(self):
         with self.assertRaises(ValidationError):
             self.student.full_clean()
-
