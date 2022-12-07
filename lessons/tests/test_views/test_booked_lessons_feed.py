@@ -26,15 +26,6 @@ class BookedLesson(TestCase):
             'extra_requests' : 'I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
         }
         self.url = reverse('booked_lessons')
-        self.booked_lesson = BookedLesson.objects.create(
-            days_available = 2,
-            num_lessons = 4,
-            lesson_gap_weeks = LessonRequest.LessonGap.WEEKLY,
-            lesson_duration_hours = 1,
-            extra_requests = 'I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice',
-            teacher = "teacher",
-            lesson_date = datetime(2020, 2, 20)
-        )
 
 
     def test_admin_approved_lessons_appear_in_student_feed(self):
@@ -55,7 +46,7 @@ class BookedLesson(TestCase):
     #test that approved lesson request does not appear in student feed
     def test_approved_request_does_not_appear_in_student_feed(self):
         self.client.login(username=self.student.username, password="Password123")
-        self.client.post(reverse('lesson_requests'), self.form_input)
+        self.client.post(reverse('pending_requests'), self.form_input)
         request = LessonRequest.objects.get(requestor=self.student)
         response = self.client.get(self.url)
         self.assertNotContains(response, request)

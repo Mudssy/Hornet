@@ -28,7 +28,6 @@ class BookedLessonModelTestCase(TestCase):
             extra_requests='I want to practice music theory with Mrs Doe at least once, and practice the clarinet at least twice'
 
         )
-        self.staff_member = User.objects.get(username="@petrapickles")
 
     def test_requestor_cannot_be_blank(self):
         self.booked_lesson.requestor = None

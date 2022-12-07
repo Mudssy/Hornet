@@ -7,7 +7,7 @@ from lessons.models import User, LessonRequest, Invoice
 
 
 class RequestFormTestCase(TestCase):
-    
+
 
     fixtures = [
         'lessons/tests/fixtures/default_student_user.json',
