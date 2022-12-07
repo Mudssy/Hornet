@@ -14,8 +14,9 @@
     {% elif request.user.account_type == 4 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="{% url 'submit_payment' %}">Submit Payment</a>
-        <a class="nav-link" aria-current="page" href="{% url 'make_admin' %}">Make Admin</a>
+        <a class="nav-link" aria-current="page" href="{% url 'make_user' %}">Make User</a>
         <a class="nav-link" aria-current="page" href="{% url 'show_all_admins' %}">View Admins</a>
-        <a class="nav-link" aria-current="page" href="{% url 'user_list' %}">User List</a>
+        <a class="nav-link" aria-current="page" href="{% url 'show_all_teachers' %}">View Teachers</a>
+        <a class="nav-link" aria-current="page" href="{% url 'show_all_students' %}">View Students</a>
     {% endif %}
 </nav>

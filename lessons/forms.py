@@ -99,7 +99,7 @@ class RequestLessonsForm(forms.ModelForm):
         fields = ["days_available","teacher","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
 
     days_available = forms.MultipleChoiceField(
-        widget = forms.CheckboxSelectMultiple, choices=LessonRequest.AvailableWeekly.choices
+        widget = forms.CheckboxSelectMultiple, choices=LessonRequest.AvailableWeekly.choices, required=True
     )
     teacher = forms.ChoiceField()
     
@@ -126,18 +126,22 @@ class MakeAdminForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if self.instance.id is None:
             self.helper = StandardForm.helper(self.Meta.fields, "submit", "Make admin", reverse("make_admin"), "POST")
-            self.title = "Create Admin"
-            self.fields['is_staff'].widget = forms.HiddenInput()
+            self.title = "Create User"
+            """ self.fields['is_staff'].widget = forms.HiddenInput()
             self.fields['is_staff'].initial = True
             self.fields['is_superuser'].widget = forms.HiddenInput()
-            self.fields['is_superuser'].initial = False
+            self.fields['is_superuser'].initial = False """
         else:
             self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_admin", kwargs={'user_id': self.instance.id}), "POST", self.instance.id)
-            self.title = "Edit Admin"
+            self.title = "Edit User"
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password', 'is_staff', 'is_superuser']
+        fields = ['first_name', 'last_name', 'email', 'username','new_password','confirm_password', 'account_type']
+    
+    account_type = forms.ChoiceField(
+        choices = User.Account.choices, required=True,
+    )
 
     new_password = forms.CharField(
         label='Password',
@@ -149,6 +153,15 @@ class MakeAdminForm(forms.ModelForm):
         )]
     )
     confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput())
+
+    def clean(self):
+        super().clean()
+        new_password = self.cleaned_data.get('new_password')
+        password_confirmation = self.cleaned_data.get('confirm_password')
+        if new_password  != password_confirmation:
+             self.add_error('confirm_password', 'passwords do not match')
+    
+    
 
 
 class SubmitPaymentForm(forms.ModelForm):

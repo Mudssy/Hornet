@@ -139,19 +139,26 @@ def invoices(request):
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
 
 @director_only
-def make_admin(request):
+def make_user(request):
     if request.method=="POST":
         form=MakeAdminForm(request.POST)
         if form.is_valid():
+            staff = False
+            superuser = False
+            if form.cleaned_data.get("account_type") == 3:
+                staff = True
+            elif form.cleaned_data.get("account_type") == 4:
+                superuser = True
+            
             User.objects.create_user(
                 username=form.cleaned_data.get('username'),
                 first_name=form.cleaned_data.get('first_name'),
                 last_name=form.cleaned_data.get('last_name'),
                 email=form.cleaned_data.get('email'),
                 password=form.cleaned_data.get('new_password'),
-                account_type=3,
-                is_staff=True,
-                is_superuser=False
+                account_type=form.cleaned_data.get('account_type'),
+                is_staff=staff,
+                is_superuser=superuser
             )
             return redirect('feed')
     else:
@@ -159,19 +166,24 @@ def make_admin(request):
     return render(request, 'make_admin.html', {'form':form})
 
 @director_only
-def edit_admin(request, user_id):
+def edit_user(request, user_id):
 
     user = User.objects.get(id=user_id)
     if request.method=="POST":
         form= MakeAdminForm(request.POST, instance=user)
         if form.is_valid():
+            if form.cleaned_data.get('account_type') == "1" or form.cleaned_data.get('account_type') == "2":
+                user.is_staff = False 
+                user.is_superuser = False
+            elif form.cleaned_data.get('account_type') == 3:
+                user.is_staff = True
+                user.is_superuser = False
+            elif form.cleaned_data.get('account_type') == 4:
+                user.is_staff = False
+                user.is_superuser = True
+            user.save()
             form.save()
-            if user.is_superuser:
-                user.account_type = 4
-            elif user.is_staff:
-                user.account_type = 3
-            else:
-                user.account_type = 2
+            
             return redirect('show_all_admins')
     else:
         form = MakeAdminForm(instance=user)
