@@ -21,12 +21,12 @@ class UserListFormTestCase(TestCase):
         self.teacher = User.objects.get(username="@teacher")
         self.admin = User.objects.get(username="@administrator")
         self.director = User.objects.get(username="@director")
-        self.url = reverse('user_list')
+        self.url = reverse('user_list', kwargs={'account_type': 1})
 
 
 
     def test_url(self):
-        self.assertEqual(self.url, '/user_list/')
+        self.assertEqual(self.url, '/user_list/1')
 
     def test_user_in_user_list(self):
         self.client.login(username=self.admin.username, password="Password123")

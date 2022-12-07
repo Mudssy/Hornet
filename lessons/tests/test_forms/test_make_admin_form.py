@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.test import TestCase
 from lessons.forms import MakeAdminForm
 from lessons.models import User
+import json
 
 class MakeAdminFormTestCase(TestCase):
     """Unit tests of the MakeAdminForm"""
@@ -13,15 +14,10 @@ class MakeAdminFormTestCase(TestCase):
     ]
 
     def setUp(self):
+        with open('lessons/tests/fixtures/make_admin_form_input.json', 'r') as file:
+            self.form_input=json.load(file)
+
         self.url = reverse('make_admin')
-        self.form_input = {
-            'first_name': 'Tess',
-            'last_name': 'Test',
-            'email': 'tesstest@example.org',
-            'username': '@tesstest',
-            'new_password': 'Password123',
-            'confirm_password': 'Password123'
-        }
         self.director = User.objects.get(username="@director")
 
     def test_valid_make_admin_form_is_valid(self):

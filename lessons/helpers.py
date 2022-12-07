@@ -60,11 +60,12 @@ def create_invoice(lesson_request):
     )
 
     student.balance -= invoice.total_price
+    student.save()
 
     record_string = f"Invoice id: {invoice.invoice_id}".ljust(20, " ") + f"-£{invoice.total_price}".ljust(5, " ") + f"Balance: {student.balance},"
     student.payment_history_csv = record_string + student.payment_history_csv
 
-    student.save()
+    
     return invoice
 
 

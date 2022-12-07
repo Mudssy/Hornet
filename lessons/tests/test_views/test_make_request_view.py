@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from lessons.models import LessonRequest, User
+import json
 
 class MakeRequestTest(TestCase):
     """Tests for the make_request view"""
@@ -14,16 +15,9 @@ class MakeRequestTest(TestCase):
         self.student = User.objects.get(username='@johndoe')
         self.teacher = User.objects.get(username="@teacher")
         self.url = reverse('make_request')
-        self.form_input = {
-            'requestor': self.student,
-            'days_available': ['1', '2'],
-            'lesson_gap_weeks': LessonRequest.LessonGap.WEEKLY,
-            'num_lessons': 2,
-            'lesson_duration_hours': 1,
-            'extra_requests': 'magic piano skills',
-            'submit': 'Approve',
-            'teacher': str(self.teacher.id)
-        }
+        with open('lessons/tests/fixtures/lesson_request_form_input.json', 'r') as file:
+            self.form_input=json.load(file)
+            self.form_input['teacher'] = str(self.teacher.id)
 
     def test_make_request_url(self):
         self.assertEqual(self.url,'/make_request/')

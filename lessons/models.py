@@ -101,6 +101,7 @@ class LessonRequest(models.Model):
     request_time = models.DateTimeField(
         auto_now=False,
         auto_now_add=True,
+        null=True
     )
 
 # class BookedLesson(models.Model):

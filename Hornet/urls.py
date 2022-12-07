@@ -40,6 +40,6 @@ urlpatterns = [
     path('delete_user/<int:user_id>', views.delete_user, name="delete_user"),
     path('payment_history/', views.payment_history, name="payment_history"),
     path('delete_request/<int:request_id>', views.delete_request, name="delete_request"),
-    path('user_list/', UserListView.as_view(), name="user_list"),
+    path('user_list/<int:account_type>', UserListView.as_view(), name="user_list"),
     path('user_payment_history/<int:user_id>', views.user_payment_history, name="user_payment_history")
 ]
