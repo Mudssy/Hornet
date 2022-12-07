@@ -1,3 +1,9 @@
+{% comment %}
+    Partial for the feed of a user, which changes depending on their level of
+    clearance. Users with a feed can be students (1), teachers (2), admin (3)
+    or directors (4)
+    version 2022.12.07
+{% endcomment %}
 
 <nav class="nav nav-tabs bg-black bg-opacity-25">
     {% if user.account_type == 1%}

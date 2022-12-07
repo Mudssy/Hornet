@@ -1,9 +1,16 @@
+{% comment %}
+    Navbar which displays different items depending on a user's clearance.
+    Users can be students (1), teachers (2), admin (3) or directors (4)
+    
+    version 2022.12.07
+{% endcomment %}
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-black bg-opacity-50 shadow border-0 p-2 mb-5">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'home' %}">
-        
+
         <img src="../static/images/logo.png" alt="Hornet Music School" width="142" height="50">
-      
+
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -19,7 +26,7 @@
             <a class="nav-link" href="{% url 'make_request' %}">Requests</a>
           </li>
           {% endif %}
-        </ul>    
+        </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,7 +48,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'sign_up' %}">Sign Up</a>
           </li>
-        </ul>    
+        </ul>
         {% endif %}
       </div>
     </div>
