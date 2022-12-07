@@ -24,5 +24,5 @@ class TestDeleteUserViewTestCase(TestCase):
     def test_redirects_after_delete(self):
         self.client.login(username=self.director.username, password="Password123")
         response = self.client.post(self.url, {'user_id':self.admin.id})
-        redirect_url = reverse('show_all_admins')
+        redirect_url = reverse('user_list', kwargs={"account_type": self.student.account_type})
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)

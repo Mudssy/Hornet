@@ -4,5 +4,6 @@
     "email": "tesstest@example.org",
     "username": "@tesstest",
     "new_password": "Password123",
-    "confirm_password": "Password123"
+    "confirm_password": "Password123",
+    "account_type": 3
 }

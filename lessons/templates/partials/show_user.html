@@ -40,7 +40,7 @@
             <input type="checkbox" onclick="return false;" checked="unchecked"/>
           {% endif %}
       </div>-->
-      {% if request.user.account_type == 4 and user.account_type >= 3 %}
+      {% if request.user.account_type == 4%}
        {% include 'partials/edit_delete_account.html' %}
       {% endif %}
       {% if user.account_type == 1 %}

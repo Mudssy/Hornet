@@ -9,18 +9,19 @@ class MakeAdminViewTest(TestCase):
 
     def setUp(self):
         self.director = User.objects.get(username='@director')
-        self.url = reverse('make_admin')
+        self.url = reverse('open_account')
         self.form_input = {
             'first_name': 'Tess',
             'last_name': 'Test',
             'email': 'tesstest@example.org',
             'username': '@tesstest',
             'new_password': 'Password123',
-            'confirm_password': 'Password123'
+            'confirm_password': 'Password123',
+            'account_type': 3,
         }
 
     def test_make_admin_url(self):
-        self.assertEqual(self.url, '/make_admin/')
+        self.assertEqual(self.url, '/open_account/')
 
     def test_successful_new_admin(self):
         self.client.login(username=self.director.username, password='Password123')
@@ -47,7 +48,7 @@ class MakeAdminViewTest(TestCase):
         response = self.client.post(self.url, self.form_input, follow=True)
         user_count_after = User.objects.count()
         self.assertEqual(user_count_after, user_count_before)
-        self.assertTemplateUsed(response, 'make_admin.html')
+        self.assertTemplateUsed(response, 'open_account.html')
 
     def test_admin_cannot_create_new_admin(self):
         self.admin = User.objects.get(username='@administrator')

@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate,login,logout
 from django.shortcuts import render, redirect
 from .models import LessonRequest, User, Invoice, BookedLesson
-from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm, MakeAdminForm
+from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm, OpenAccountForm
 from django.http import HttpResponseForbidden
 from lessons.helpers import administrator_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only, update_request, create_booked_lessons
 from django.contrib import messages
@@ -135,16 +135,17 @@ def invoices(request):
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
 
 @director_only
-def make_user(request):
+def open_account(request):
     if request.method=="POST":
-        form=MakeAdminForm(request.POST)
+        form=OpenAccountForm(request.POST)
         if form.is_valid():
             staff = False
             superuser = False
-            if form.cleaned_data.get("account_type") == 3:
+            if form.cleaned_data.get("account_type") == "3":
                 staff = True
-            elif form.cleaned_data.get("account_type") == 4:
+            elif form.cleaned_data.get("account_type") == "4":
                 superuser = True
+                
             
             User.objects.create_user(
                 username=form.cleaned_data.get('username'),
@@ -158,45 +159,45 @@ def make_user(request):
             )
             return redirect('feed')
     else:
-        form=MakeAdminForm()
-    return render(request, 'make_admin.html', {'form':form})
+        form=OpenAccountForm()
+    return render(request, 'open_account.html', {'form':form})
 
 @director_only
-def edit_user(request, user_id):
+def edit_account(request, user_id):
 
     user = User.objects.get(id=user_id)
     if request.method=="POST":
-        form= MakeAdminForm(request.POST, instance=user)
+        form= OpenAccountForm(request.POST, instance=user)
         if form.is_valid():
             if form.cleaned_data.get('account_type') == "1" or form.cleaned_data.get('account_type') == "2":
                 user.is_staff = False 
                 user.is_superuser = False
-            elif form.cleaned_data.get('account_type') == 3:
+            elif form.cleaned_data.get('account_type') == "3":
                 user.is_staff = True
                 user.is_superuser = False
-            elif form.cleaned_data.get('account_type') == 4:
+            elif form.cleaned_data.get('account_type') == "4":
                 user.is_staff = False
                 user.is_superuser = True
             user.save()
             form.save()
             
-            return redirect('show_all_admins')
+            return redirect("user_list", account_type = user.account_type)
     else:
-        form = MakeAdminForm(instance=user)
+        form = OpenAccountForm(instance=user)
 
-    return render(request, 'edit_admin.html', {'form': form, 'user_id': id})
+    return render(request, 'edit_account.html', {'form': form, 'user_id': id})
 
-@director_only
+""" @director_only
 def show_all_admins(request):
     all_admins = User.objects.filter(is_staff=True)
-    return render(request, 'show_all_admins.html', {'users': all_admins})
+    return render(request, 'show_all_admins.html', {'users': all_admins}) """
 
 @student_prohibited
 @teacher_prohibited
 def delete_user(request, user_id):
     user=User.objects.get(id=user_id)
     user.delete()
-    return redirect('show_all_admins')
+    return redirect("user_list", account_type = user.account_type)
 
 
 def submit_payment(request):

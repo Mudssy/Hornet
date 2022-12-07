@@ -11,7 +11,7 @@ class TestEditAdminViewTestCase(TestCase):
     def setUp(self):
         self.admin = User.objects.get(username="@administrator")
         self.director = User.objects.get(username="@director")
-        self.url = reverse('edit_admin', kwargs={'user_id': self.admin.id})
+        self.url = reverse('edit_account', kwargs={'user_id': self.admin.id})
         self.form_input = {
             'first_name':self.admin.first_name,
             'last_name':self.admin.last_name,
@@ -19,18 +19,17 @@ class TestEditAdminViewTestCase(TestCase):
             'username':self.admin.username,
             'new_password':"Password123",
             'confirm_password':"Password123",
-            'is_staff':True,
-            'is_superuser':False,
+            'account_type': 3,
             'user_id':self.admin.id
         }
 
     def test_edit_admin_url(self):
-        self.assertEqual(self.url, '/edit_admin/4')
+        self.assertEqual(self.url, '/edit_account/4')
 
     def test_edit_admin_uses_correct_template(self):
         self.client.login(username=self.director.username, password="Password123")
         response = self.client.get(self.url, {'user_id':self.admin.id})
-        self.assertTemplateUsed(response, 'edit_admin.html')
+        self.assertTemplateUsed(response, 'edit_account.html')
 
     def test_non_director_cannot_edit_admin(self):
         self.client.login(username=self.admin.username, password='Password123')
@@ -57,5 +56,5 @@ class TestEditAdminViewTestCase(TestCase):
     def test_admin_edit_redirects_after_save(self):
         self.client.login(username=self.director.username, password="Password123")
         response = self.client.post(self.url, self.form_input, follow=True)
-        redirect_url = reverse('show_all_admins')
+        redirect_url = reverse('user_list', kwargs={"account_type": self.form_input["account_type"]})
         self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)

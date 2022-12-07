@@ -1,7 +1,7 @@
 from django import forms
 from django.urls import reverse
 from django.test import TestCase
-from lessons.forms import MakeAdminForm
+from lessons.forms import OpenAccountForm
 from lessons.models import User
 import json
 
@@ -17,11 +17,11 @@ class MakeAdminFormTestCase(TestCase):
         with open('lessons/tests/fixtures/make_admin_form_input.json', 'r') as file:
             self.form_input=json.load(file)
 
-        self.url = reverse('make_admin')
+        self.url = reverse('open_account')
         self.director = User.objects.get(username="@director")
 
     def test_valid_make_admin_form_is_valid(self):
-        self.form = MakeAdminForm(data=self.form_input)
+        self.form = OpenAccountForm(data=self.form_input)
         self.assertTrue(self.form.is_valid())
 
     def test_make_admin_form_saves(self):

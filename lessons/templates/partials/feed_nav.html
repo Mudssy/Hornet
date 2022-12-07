@@ -16,12 +16,15 @@
     {% elif request.user.account_type == 3 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="{% url 'submit_payment' %}">Submit Payment</a>
-        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=1 %}">User List</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=2 %}">Teacher List</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=1 %}">Student List</a>
     {% elif request.user.account_type == 4 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="{% url 'submit_payment' %}">Submit Payment</a>
-        <a class="nav-link" aria-current="page" href="{% url 'make_admin' %}">Make Admin</a>
-        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=3 %}">View Admins</a>
-        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=1 %}">User List</a>
+        <a class="nav-link" aria-current="page" href="{% url 'open_account' %}">Open Account</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=4 %}">Director</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=3 %}">Admin List</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=2 %}">Teacher List</a>
+        <a class="nav-link" aria-current="page" href="{% url 'user_list' account_type=1 %}">Student List</a>
     {% endif %}
 </nav>

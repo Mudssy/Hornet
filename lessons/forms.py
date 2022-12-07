@@ -121,18 +121,18 @@ class RequestLessonsForm(forms.ModelForm):
             
         return cleaned_data
 
-class MakeAdminForm(forms.ModelForm):
+class OpenAccountForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.id is None:
-            self.helper = StandardForm.helper(self.Meta.fields, "submit", "Make admin", reverse("make_admin"), "POST")
+            self.helper = StandardForm.helper(self.Meta.fields, "submit", "Open Account", reverse("open_account"), "POST")
             self.title = "Create User"
             """ self.fields['is_staff'].widget = forms.HiddenInput()
             self.fields['is_staff'].initial = True
             self.fields['is_superuser'].widget = forms.HiddenInput()
             self.fields['is_superuser'].initial = False """
         else:
-            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_admin", kwargs={'user_id': self.instance.id}), "POST", self.instance.id)
+            self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_account", kwargs={'user_id': self.instance.id}), "POST", self.instance.id)
             self.title = "Edit User"
 
     class Meta:

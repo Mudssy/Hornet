@@ -4,7 +4,7 @@
 {% endcomment %}
 
 {% csrf_token %}
-<a href="{% url 'edit_admin' user_id=user.id %}" class="btn btn-primary bg-transparent text-white">
+<a href="{% url 'edit_account' user_id=user.id %}" class="btn btn-primary bg-transparent text-white">
     Edit Account
 </a>
 {% csrf_token %}
