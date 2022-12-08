@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 from lessons.models import User,LessonRequest, Invoice
 from django.urls import reverse
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout,Field,Submit,Hidden
+from crispy_forms.layout import Layout, Field, Submit, Hidden
 
 
 class SignUpForm(forms.ModelForm):
@@ -60,6 +60,7 @@ class LogInForm(forms.Form):
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
 class RequestLessonsForm(forms.ModelForm):
+    """Lesson request form, used for creating and editing lessons"""
     def __init__(self,*args, **kwargs):
         # Removing and saving this argument so it is not passed to the superclass init function
         if 'approve_permissions' in kwargs:
@@ -87,16 +88,16 @@ class RequestLessonsForm(forms.ModelForm):
         ## teacher choices needs to be updated in the innit incase teachers change
         self.fields["teacher"].choices = self.get_teacher_choices()
     
+    class Meta:
+        model = LessonRequest
+        fields = ["days_available","teacher","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
+
+
     def get_teacher_choices(self):
         teacher_objects = User.objects.filter(account_type = 2).values("id","username")
         teacher_choices = [(-1,"Any")]
         teacher_choices += [(teacher["id"], teacher["username"]) for teacher in teacher_objects.all()]
         return teacher_choices
-
-
-    class Meta:
-        model = LessonRequest
-        fields = ["days_available","teacher","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
 
     days_available = forms.MultipleChoiceField(
         widget = forms.CheckboxSelectMultiple, choices=LessonRequest.AvailableWeekly.choices, required=True
@@ -105,32 +106,32 @@ class RequestLessonsForm(forms.ModelForm):
     
     num_lessons = forms.IntegerField(min_value=1, max_value=20)
     lesson_gap_weeks = forms.ChoiceField(
-                        choices = LessonRequest.LessonGap.choices)
-    lesson_duration_hours= forms.IntegerField(min_value=1, max_value=3)
+                        choices=LessonRequest.LessonGap.choices)
+    lesson_duration_hours = forms.IntegerField(min_value=1, max_value=3)
     extra_requests = forms.CharField()
 
     def clean(self):
-        cleaned_data = super().clean() ##call the clean method
-        #convert the days available list to string to be stored easily in database
+        cleaned_data = super().clean()
+        # convert the days available list to string to be stored easily in database
         cleaned_data["days_available"] = "".join(cleaned_data["days_available"])
-        #if any teacher is requested set teacher to none
+
+        # if any teacher is requested set teacher to none
         if int(cleaned_data["teacher"]) == -1:
             cleaned_data["teacher"] = None
-        else: #otherwise set teacher by foreign key 
+        else: # otherwise set teacher by foreign key
             cleaned_data["teacher"] = User.objects.get(id = cleaned_data["teacher"])
-            
+
+        #NB: a random teacher is assigned on booking if none is specified
         return cleaned_data
 
 class OpenAccountForm(forms.ModelForm):
+    """General form used for editing accounts"""
     def __init__(self,*args,**kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.id is None:
             self.helper = StandardForm.helper(self.Meta.fields, "submit", "Open Account", reverse("open_account"), "POST")
             self.title = "Create User"
-            """ self.fields['is_staff'].widget = forms.HiddenInput()
-            self.fields['is_staff'].initial = True
-            self.fields['is_superuser'].widget = forms.HiddenInput()
-            self.fields['is_superuser'].initial = False """
+
         else:
             self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_account", kwargs={'user_id': self.instance.id}), "POST", self.instance.id)
             self.title = "Edit User"
@@ -162,7 +163,7 @@ class OpenAccountForm(forms.ModelForm):
         password_confirmation = self.cleaned_data.get('confirm_password')
         if new_password  != password_confirmation:
              self.add_error('confirm_password', 'passwords do not match')
-    
+
 
     
 
@@ -176,15 +177,8 @@ class SubmitPaymentForm(forms.ModelForm):
         model = Invoice
         fields = ["amount_paid"]
 
-    amount_paid= forms.IntegerField(min_value=0)
+    amount_paid = forms.IntegerField(min_value=0)
 
-
-    def clean(self):
-        super().clean()
-        new_password = self.cleaned_data.get('new_password')
-        password_confirmation = self.cleaned_data.get('confirm_password')
-        if new_password  != password_confirmation:
-             self.add_error('confirm_password', 'passwords do not match')
 
 class StandardForm(): # helper class to create django helper easily
     def helper(fields, submitName, submitValue,form_action,form_method, id=0):
@@ -197,7 +191,9 @@ class StandardForm(): # helper class to create django helper easily
         for field in fields: #loop over fields in each form
             helper.layout.append(
                 Field(field,css_class = "bg-transparent text-light mb-2")
-            )
+        )
+
         helper.layout.append(Submit(submitName,submitValue)) # give form a submit button 
-        helper.layout.append(Hidden('id', id)) #add a hidden id
+        helper.layout.append(Hidden('id', id)) # add a hidden id
+
         return helper
