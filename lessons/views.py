@@ -154,9 +154,9 @@ def edit_account(request, user_id):
                 user.is_staff = False
                 user.is_superuser = True
             form.save()
-            new_password = form.cleaned_data.get("new_password")
+            new_password = form.cleaned_data.get("new_password")  ## set the new password manually
             if new_password:
-                user.set_password(new_password)
+                user.set_password(new_password)  ##set_password() hashes the password
             
             user.save()
             
