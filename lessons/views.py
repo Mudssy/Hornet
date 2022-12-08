@@ -178,8 +178,12 @@ def edit_account(request, user_id):
             elif form.cleaned_data.get('account_type') == "4":
                 user.is_staff = False
                 user.is_superuser = True
-            user.save()
             form.save()
+            new_password = form.cleaned_data.get("new_password")
+            if new_password:
+                user.set_password(new_password)
+            
+            user.save()
             
             return redirect("user_list", account_type = user.account_type)
     else:
