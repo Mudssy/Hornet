@@ -12,7 +12,31 @@ class TestDeleteUserViewTestCase(TestCase):
         self.admin = User.objects.get(username="@administrator")
         self.director = User.objects.get(username="@director")
         self.student= User.objects.get(username="@johndoe")
+        self.teacher = User.objects.get(username="@teacher")
         self.url = reverse('delete_user', kwargs={'user_id': self.student.id})
+
+    def test_users_canot_delete_other_users(self):
+        before_count = User.objects.count()
+        self.client.login(username=self.student.username, password="Password123")
+        other_user = User.objects.get(username="@janedoe")
+        delete_url = reverse('delete_user', kwargs={'user_id': other_user.id})
+        response = self.client.post(delete_url)
+        redirect_url = reverse('feed')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        after_count = User.objects.count()
+        self.assertEqual(before_count, after_count)
+
+    def test_teachers_cannot_delete_users(self):
+        # same as above test but login as a teacher instead
+        before_count = User.objects.count()
+        self.client.login(username=self.teacher.username, password="Password123")
+        other_user = User.objects.get(username="@janedoe")
+        delete_url = reverse('delete_user', kwargs={'user_id': other_user.id})
+        response = self.client.post(delete_url)
+        redirect_url = reverse('feed')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+        after_count = User.objects.count()
+        self.assertEqual(before_count, after_count)
 
     def test_users_are_removed_from_database(self):
         self.client.login(username=self.director.username, password="Password123")

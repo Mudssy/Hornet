@@ -104,69 +104,6 @@ class LessonRequest(models.Model):
         null=True
     )
 
-# class BookedLesson(models.Model):
-#     # request from which this lesson is being created
-#     associated_lesson_request = models.ForeignKey(
-#         LessonRequest,
-#         on_delete=models.CASCADE,
-#         blank=False
-#     )
-
-#     class LessonGap(models.IntegerChoices):
-#         BIWEEKLY = 1
-#         WEEKLY = 2
-#         FORTNIGHTLY = 3
-#         MONTHLY = 4
-
-#     class DayOfLesson(models.IntegerChoices):
-#         Monday = 1
-#         Tuesday = 2
-#         Wednesday = 3
-#         Thursday = 4
-#         Friday = 5
-#         Saturday = 6
-#         Sunday = 7
-
-#     DAYS_OF_WEEK = (
-#         (0, 'Monday'),
-#         (1, 'Tuesday'),
-#         (2, 'Wednesday'),
-#         (3, 'Thursday'),
-#         (4, 'Friday'),
-#         (5, 'Saturday'),
-#         (6, 'Sunday'),
-#     )
-
-#     days_available = models.CharField(max_length=50, blank=False,default="1234567") #store available days in the week as string of numbers
-#                                                                 #eg '126' means available Monday,Tuesday,Saturday
-
-
-#     num_lessons = models.PositiveIntegerField(blank=False)
-
-#     lesson_gap_weeks = models.PositiveIntegerField(
-#         choices=LessonGap.choices,
-#         default=LessonGap.WEEKLY
-#     )
-
-#     lesson_duration_hours = models.PositiveIntegerField(blank=False)
-
-#     requestor = models.ForeignKey(
-#         User,
-#         on_delete=models.CASCADE,
-#         blank=False,
-#     )
-
-#     lesson_date = models.DateTimeField(
-#         auto_now=False,
-#         auto_now_add=True,
-#     )
-
-#     extra_requests = models.CharField(max_length=250, blank=True)
-
-#     teacher = models.CharField(max_length=50, blank=True)
-
-
-
 class BookedLesson(models.Model):
 
     start_time = models.DateTimeField(blank=False)
@@ -184,12 +121,6 @@ class BookedLesson(models.Model):
         on_delete=models.CASCADE,
         related_name='booked_teacher',
     )
-
-    
-
-
-
-    
 
 class Invoice(models.Model):
 

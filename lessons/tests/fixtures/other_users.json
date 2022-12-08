@@ -8,17 +8,18 @@
       "username": "@janedoe",
       "email": "janedoe@example.org",
       "password": "pbkdf2_sha256$260000$ypOt2XEuTDSPK1lK3DtnmK$YZn/l5T6PEnD4MtoHUJl4152q02Snb+Mke+s20+d7ZY=",
+      "account_type": 1,
       "is_active": true
     }
   },
     {
     "model": "lessons.User",
-    "pk": 3,
+    "pk": 20,
     "fields": {
       "first_name": "Teacher",
       "last_name": "Smith",
-      "username": "@teacher",
-      "email": "teachersmith@example.org",
+      "username": "@otherteacher",
+      "email": "otherteacher@example.org",
       "password": "pbkdf2_sha256$260000$ypOt2XEuTDSPK1lK3DtnmK$YZn/l5T6PEnD4MtoHUJl4152q02Snb+Mke+s20+d7ZY=",
       "account_type": 2,
       "is_active": true
