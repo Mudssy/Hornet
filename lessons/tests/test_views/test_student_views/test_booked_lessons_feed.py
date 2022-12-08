@@ -7,7 +7,7 @@ from lessons.models import User, LessonRequest, BookedLesson
 import datetime
 import json
 
-class BookedLesson(TestCase):
+class BookedLessonTestCase(TestCase):
     """Tests of the feed view."""
 
     fixtures=[
@@ -24,4 +24,22 @@ class BookedLesson(TestCase):
             self.form_input['teacher'] = str(self.teacher.id)
 
         self.url = reverse('booked_lessons')
-    
+        self.booked_lesson = BookedLesson.objects.get(id=99)
+
+    def test_booked_lesson_in_view(self):
+        self.client.login(username=self.student.username, password="Password123")
+        response = self.client.get(self.url)
+        object_list = list(response.context['lessons'])
+        self.assertTrue(
+            self.booked_lesson in object_list
+        )
+
+    def test_booked_lesson_shows_teacher(self):
+        self.client.login(username=self.student.username, password="Password123")
+        response = self.client.get(self.url)
+        self.assertContains(response, self.teacher.username)
+
+    def test_booked_lesson_shows_time(self):
+        self.client.login(username=self.student.username, password="Password123")
+        response = self.client.get(self.url)
+        self.assertContains(response, self.teacher.username)

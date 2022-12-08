@@ -14,12 +14,7 @@ class BookedLessonModelTestCase(TestCase):
         self.student = User.objects.get(username="@johndoe")
         self.teacher = User.objects.get(username="@teacher")
         self.request = LessonRequest.objects.get(requestor=self.student)
-        self.booked_lesson = BookedLesson.objects.create(
-            start_time = datetime.datetime.now(),
-            duration = self.request.lesson_duration_hours,
-            teacher = self.teacher,
-            student = self.student
-        )
+        self.booked_lesson = BookedLesson.objects.get(id=99)
 
     def test_booked_lesson_saved(self):
         lesson_count = BookedLesson.objects.filter(student=self.student).count()

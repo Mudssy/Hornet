@@ -3,7 +3,7 @@ from django import forms
 from django.urls import reverse
 from django.test import TestCase
 from lessons.forms import SignUpForm, RequestLessonsForm
-from lessons.models import User, LessonRequest, Invoice
+from lessons.models import User, LessonRequest, Invoice, BookedLesson
 import json
 
 class RequestFormTestCase(TestCase):
@@ -30,14 +30,12 @@ class RequestFormTestCase(TestCase):
         self.invoice_id = str(self.student.id).rjust(4, '0') + "-" + (str(student_invoice_id)).rjust(4, '0')
 
     def test_payment_history_created(self):
-        # the setup should run code that generates some payment history and log in
-
-        #checks that having one approved request
+        # checks that having one approved request
         response = self.client.get(self.url)
         self.assertContains(response, "Current Credit")
         payment_count = len(response.context['payments'])
 
-        #the empty string
+        # the empty string
         self.assertEqual(payment_count, 1)
 
         #approve the request
@@ -52,3 +50,4 @@ class RequestFormTestCase(TestCase):
 
 
         self.assertIn(payment_string, self.invoice_id)
+

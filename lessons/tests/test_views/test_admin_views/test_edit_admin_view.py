@@ -54,14 +54,14 @@ class TestEditAdminViewTestCase(TestCase):
         self.assertEqual(changed_admin.first_name, self.form_input['first_name'])
 
     def test_admin_password_saves(self):
+        old_p = self.admin.password
         new_p = "NewPassword123"
-        new_p_hash = 'pbkdf2_sha256$390000$3esLiMGTz4anKPFzChww4R$3KpwFBj/Qn12sqgcTod8lNYtTnX9mGxjhiQrCB/JV7E='
         self.form_input['new_password'] = new_p
         self.form_input['confirm_password'] = new_p
         self.client.login(username=self.director.username, password="Password123")
         self.client.post(self.url, self.form_input)
         update_admin = User.objects.get(id=self.admin.id)
-        self.assertEqual(update_admin.password, new_p_hash)
+        self.assertNotEqual(update_admin.password, old_p)
 
     def test_admin_edit_redirects_after_save(self):
         self.client.login(username=self.director.username, password="Password123")

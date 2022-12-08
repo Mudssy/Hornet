@@ -45,12 +45,6 @@ def log_out(request):
     logout(request)
     return redirect('home')
 
-def account_info(request):
-    if request.user.is_authenticated:
-        return render(request,"account_info.html")
-    else:
-        return redirect('log_in')
-
 @teacher_prohibited
 @administrator_prohibited
 def make_request(request):
@@ -166,6 +160,8 @@ def edit_account(request, user_id):
 
     return render(request, 'edit_account.html', {'form': form, 'user_id': id})
 
+@student_prohibited
+@teacher_prohibited
 def submit_payment(request):
     forms = []
     affected_form = None
@@ -218,6 +214,13 @@ class UserListView(ListView):
         object_list = self.model.objects.filter(account_type=self.account_type)
         return object_list
 
+
+def account_info(request):
+    if request.user.is_authenticated:
+        return render(request,"account_info.html")
+    else:
+        return redirect('log_in')
+
 @teacher_prohibited
 @administrator_prohibited
 def invoices(request):
@@ -242,6 +245,8 @@ def payment_history(request):
     payment_history_list = request.user.payment_history_csv.split(",")
     return render(request, 'payment_history.html', {'payments': payment_history_list})
 
+
+@teacher_prohibited
 def user_payment_history(request, user_id):
     user = User.objects.get(id=user_id)
     payment_history_list = user.payment_history_csv.split(",")

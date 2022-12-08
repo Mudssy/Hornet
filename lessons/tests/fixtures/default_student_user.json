@@ -12,6 +12,19 @@
     }
   },
   {
+    "model": "lessons.User",
+    "pk": 3,
+    "fields": {
+      "first_name": "Teacher",
+      "last_name": "Smith",
+      "username": "@teacher",
+      "email": "teachersmith@example.org",
+      "password": "pbkdf2_sha256$260000$ypOt2XEuTDSPK1lK3DtnmK$YZn/l5T6PEnD4MtoHUJl4152q02Snb+Mke+s20+d7ZY=",
+      "account_type": 2,
+      "is_active": true
+    }
+  },
+  {
     "model": "lessons.LessonRequest",
     "pk": 10,
     "fields": {
@@ -22,6 +35,16 @@
       "num_lessons": 1,
       "extra_requests": "this is an extra request",
       "request_time": "2022-12-07T15:15:18+0000"
+    }
+  },
+  {
+    "model": "lessons.BookedLesson",
+    "pk": 99,
+    "fields": {
+      "start_time": "2022-12-07T15:15:18+0000",
+      "duration": 1,
+      "student": 1,
+      "teacher": 3
     }
   }
 ]
