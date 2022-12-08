@@ -27,6 +27,32 @@ class RequestFormTestCase(TestCase):
         self.form = RequestLessonsForm(data=self.form_input)
         self.assertTrue(self.form.is_valid())
 
+    def test_form_no_teacher(self):
+        self.form_input['teacher'] = -1
+        form = RequestLessonsForm(self.form_input)
+        self.assertTrue(form.is_valid())
+
+    def test_form_allows_20_lessons(self):
+        self.form_input['num_lessons'] = 20
+        form=RequestLessonsForm(self.form_input)
+        self.assertTrue(form.is_valid())
+
+    def test_form_disallows_21_lessons(self):
+        self.form_input['num_lessons'] = 21
+        form=RequestLessonsForm(self.form_input)
+        self.assertFalse(form.is_valid())
+
+    def test_form_lesson_gap_cannot_be_random(self):
+        self.form_input['lesson_gap_weeks'] = 15135
+        form = RequestLessonsForm(self.form_input)
+        self.assertFalse(form.is_valid())
+
+    def test_form_cleans_days_available_list(self):
+        self.form_input['days_available'] = ['1','2','3']
+        form = RequestLessonsForm(self.form_input)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data.get('days_available'), '123')
+
     def test_form_saves(self):
         before_count = LessonRequest.objects.count()
         self.client.login(username=self.student.username, password="Password123")

@@ -76,7 +76,7 @@ class RequestLessonsForm(forms.ModelForm):
         else:
             action_string = reverse('edit_request',  kwargs={'request_id': self.instance.id})
             if approve_permissions:
-                self.helper = StandardForm.helper(self.Meta.fields,"submit", "Approve", action_string,"POST", self.instance.id)
+                self.helper = StandardForm.helper(self.Meta.fields,"submit", "Approve", action_string, "POST", self.instance.id)
                 self.helper.layout.append(
                     Submit("edit", "Edit")
                 )
@@ -129,10 +129,12 @@ class OpenAccountForm(forms.ModelForm):
     def __init__(self,*args,**kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.id is None:
+            # Open user accounts
             self.helper = StandardForm.helper(self.Meta.fields, "submit", "Open Account", reverse("open_account"), "POST")
             self.title = "Create User"
 
         else:
+            # Edit user accounts
             self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_account", kwargs={'user_id': self.instance.id}), "POST", self.instance.id)
             self.title = "Edit User"
             #self.fields["new_password"].required = False

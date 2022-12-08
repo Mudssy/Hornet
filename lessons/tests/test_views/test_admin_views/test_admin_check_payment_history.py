@@ -8,6 +8,7 @@ from lessons.helpers import create_invoice
 
 class PaymentHistoryFormTestCase(TestCase):
     
+    """Tests for payment history admin view"""
 
     fixtures = [
         'lessons/tests/fixtures/default_student_user.json',
@@ -26,14 +27,27 @@ class PaymentHistoryFormTestCase(TestCase):
         self.request.is_booked=True
         self.invoice = create_invoice(self.request)
 
+    def test_teacher_can_not_access_payment_history(self):
+        self.client.login(username=self.teacher.username, password="Password123")
+        response = self.client.get(self.url)
+        redirect_url = reverse('feed')
+        self.assertRedirects(response, redirect_url, status_code=302, target_status_code=200)
+
+    def test_director_can_access_history(self):
+        self.client.login(username=self.director.username, password="Password123")
+        response = self.client.get(self.url, {'user_id': self.student.id})
+
+        self.assertContains(response, self.student.balance)
     
     def test_user_payment_history_url(self):
+        self.client.login(username=self.admin.username, password="Password123")
         response = self.client.get(self.url, {'user_id': self.student.id})
 
         # this is as part of the invoice id
         self.assertContains(response, self.student.balance)
 
     def test_user_payment_history_updates(self):
+        self.client.login(username=self.admin.username, password="Password123")
         response = self.client.get(self.url, {'user_id': self.student.id})
 
         # this is as part of the invoice id
@@ -50,3 +64,4 @@ class PaymentHistoryFormTestCase(TestCase):
 
         # check this payment renders in history view
         self.assertEqual(before_payment + 1, after_payment)
+
