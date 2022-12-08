@@ -5,7 +5,13 @@ import datetime
 
 HOURLY_COST = 40
 
-
+def login_prohibited(view_function):
+    def modified_view_function(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('feed')
+        else:
+            return view_function(request, *args, **kwargs)
+    return modified_view_function
 
 def administrator_prohibited(view_function):
     def modified_view_function(request, *args, **kwargs):
@@ -40,6 +46,7 @@ def director_only(view_function):
     return modified_view_function
 
 def create_invoice(lesson_request):
+    """Takes a lesson request and creates an invoice object. Also updates student details"""
     if not isinstance(lesson_request, LessonRequest) or lesson_request.id is None or lesson_request.is_booked == False:
         return
 
@@ -60,12 +67,11 @@ def create_invoice(lesson_request):
     )
 
     student.balance -= invoice.total_price
-    student.save()
-
     record_string = f"Invoice id: {invoice.invoice_id}".ljust(20, " ") + f"-£{invoice.total_price}".ljust(5, " ") + f"Balance: {student.balance},"
     student.payment_history_csv = record_string + student.payment_history_csv
 
-    
+    student.save()
+
     return invoice
 
 
