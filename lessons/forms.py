@@ -135,8 +135,8 @@ class OpenAccountForm(forms.ModelForm):
         else:
             self.helper = StandardForm.helper(self.Meta.fields,"submit", "Submit", reverse("edit_account", kwargs={'user_id': self.instance.id}), "POST", self.instance.id)
             self.title = "Edit User"
-            #self.fields["new_password"].required = False
-            #self.fields["confirm_password"].required = False
+            self.fields["new_password"].required = False
+            self.fields["confirm_password"].required = False
 
     class Meta:
         model = User
