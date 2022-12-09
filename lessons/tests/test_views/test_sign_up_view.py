@@ -1,4 +1,4 @@
-"""Test of the sign up view"""
+
 from django.test import TestCase
 from lessons.forms import SignUpForm
 from django.urls import reverse
@@ -6,7 +6,7 @@ from lessons.models import User
 from django.contrib.auth.hashers import check_password
 
 class SignUpViewTestCase(TestCase):
-
+    """Test of the sign up view"""
     def setUp(self):
         self.url = reverse('sign_up')
         self.form_input = {
