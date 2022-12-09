@@ -40,7 +40,7 @@ class User(AbstractUser):
 
 class LessonRequest(models.Model):
 
-    class LessonGap(models.IntegerChoices):
+    class LessonGap(models.IntegerChoices):  ##these values should not be changed as they are required to book lesson and by the request form 
         BIWEEKLY = 1
         WEEKLY = 2
         FORTNIGHTLY = 4
@@ -54,6 +54,8 @@ class LessonRequest(models.Model):
         Friday = 5
         Saturday = 6
         Sunday = 7
+    
+        
 
     DAYS_OF_WEEK = (
         (0, 'Monday'),
@@ -64,6 +66,7 @@ class LessonRequest(models.Model):
         (5, 'Saturday'),
         (6, 'Sunday'),
     )
+
 
     # days of the week for which the student is available
     days_available = models.CharField(max_length=50, blank=False,default="1234567") #store available days in the week as string of numbers

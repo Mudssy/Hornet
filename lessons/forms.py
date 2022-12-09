@@ -3,7 +3,7 @@ from django.core.validators import RegexValidator
 from lessons.models import User,LessonRequest, Invoice
 from django.urls import reverse
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Submit, Hidden
+from crispy_forms.layout import Layout, Field, Submit, Hidden, Div, Row, Column, HTML
 
 
 class SignUpForm(forms.ModelForm):
@@ -71,8 +71,18 @@ class RequestLessonsForm(forms.ModelForm):
         super(RequestLessonsForm, self).__init__(*args, **kwargs)
         
 
+
+        self.availability_fields = []
+        for num,day in LessonRequest.AvailableWeekly.choices:
+            start_variable_name =  day.lower() + "_start_time"
+            end_variable_name = day.lower() + "_end_time"
+            self.fields[start_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time"}),required=False)
+            self.fields[end_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time"}),required = False)
+            self.availability_fields.append((day,start_variable_name,end_variable_name))
+
         if self.instance.id is None:
-            self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
+            #self.helper = StandardForm.helper(self.Meta.fields,"submit","Request","make_request","POST")
+            self.helper = self.create_request_helper("submit","Request","make_request","POST")
         else:
             action_string = reverse('edit_request',  kwargs={'request_id': self.instance.id})
             if approve_permissions:
@@ -87,6 +97,8 @@ class RequestLessonsForm(forms.ModelForm):
 
         ## teacher choices needs to be updated in the innit incase teachers change
         self.fields["teacher"].choices = self.get_teacher_choices()
+
+
     
     class Meta:
         model = LessonRequest
@@ -102,6 +114,7 @@ class RequestLessonsForm(forms.ModelForm):
     days_available = forms.MultipleChoiceField(
         widget = forms.CheckboxSelectMultiple, choices=LessonRequest.AvailableWeekly.choices, required=True
     )
+
     teacher = forms.ChoiceField()
     
     num_lessons = forms.IntegerField(min_value=1, max_value=20)
@@ -112,6 +125,21 @@ class RequestLessonsForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+
+        days_available = 0
+
+        for day, start_time,end_time in self.availability_fields:
+            if (cleaned_data[start_time] is not None and cleaned_data[end_time] is None) or (cleaned_data[start_time] is None and cleaned_data[end_time] is not None):
+                self.add_error(start_time,"Time not set correctly")
+            elif cleaned_data[start_time] is not None and cleaned_data[end_time] is not None:
+                if cleaned_data[start_time] >= cleaned_data[end_time]:
+                    self.add_error(start_time,"start time must be less than end time")
+                else:
+                    days_available +=1
+        
+        #if days_available < 2 / float(cleaned_data["lesson_gap_weeks"]):  #this makes sure user must pick more than one day for biweekly lessons
+        #    self.add_error("lesson_gap_weeks", "lesson gap is not possible")
+
         # convert the days available list to string to be stored easily in database
         cleaned_data["days_available"] = "".join(cleaned_data["days_available"])
 
@@ -123,6 +151,52 @@ class RequestLessonsForm(forms.ModelForm):
 
         #NB: a random teacher is assigned on booking if none is specified
         return cleaned_data
+    
+    def create_request_helper(self,submitName, submitValue,form_action,form_method, id=0):
+        helper = FormHelper()
+        helper.form_action = form_action
+        helper.form_method = form_method
+
+        helper.layout = Layout()
+        helper.layout.append(
+            Div(
+                Div(HTML("<h5>Days</h5>"),css_class="text-center col-2 d-flex align-items-center justify-content-center"),
+                Div(HTML("<h5>Start Time</h5>"),css_class="text-center col-2 d-flex align-items-center justify-content-center"),
+                Div(HTML("<h5>End Time</h5>"),css_class="text-center col-2 d-flex align-items-center justify-content-center"),
+                css_class = "row my-1"
+            ))
+        for day, start_time, end_time in self.availability_fields:
+            
+            helper.layout.append(
+            Div(
+                Div(HTML("<h5>" + day + "</h5>"),css_class="text-center col-2 d-flex align-items-center justify-content-center"), 
+                Div(Field(start_time),css_class="col-2"),
+                Div(Field(end_time),css_class="col-2"),
+                css_class = "row my-1"
+            ))
+        
+        for field in self.Meta.fields: #loop over fields in each form
+            helper.layout.append(
+                Field(field,css_class = "my-1")
+        )
+        
+        
+            
+            
+        
+
+        
+
+
+
+
+
+
+        helper.layout.append(Submit(submitName,submitValue)) # give form a submit button 
+        helper.layout.append(Hidden('id', id)) # add a hidden id
+
+        return helper
+        
 
 class OpenAccountForm(forms.ModelForm): 
     """General form used for editing accounts"""
@@ -199,3 +273,5 @@ class StandardForm(): # helper class to create django helper easily
         helper.layout.append(Hidden('id', id)) # add a hidden id
 
         return helper
+
+    
