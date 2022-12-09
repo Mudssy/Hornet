@@ -53,7 +53,7 @@ class TestEditAdminViewTestCase(TestCase):
         self.assertNotEqual(changed_admin.first_name, before_admin_name)
         self.assertEqual(changed_admin.first_name, self.form_input['first_name'])
 
-    def test_admin_password_saves(self):
+    def test_admin_password_saves(self):   ## test fails even tho it shouldnt 
         new_p = "NewPassword123"
         new_p_hash = 'pbkdf2_sha256$390000$3esLiMGTz4anKPFzChww4R$3KpwFBj/Qn12sqgcTod8lNYtTnX9mGxjhiQrCB/JV7E='
         self.form_input['new_password'] = new_p

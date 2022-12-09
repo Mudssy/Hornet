@@ -124,7 +124,7 @@ class RequestLessonsForm(forms.ModelForm):
         #NB: a random teacher is assigned on booking if none is specified
         return cleaned_data
 
-class OpenAccountForm(forms.ModelForm):
+class OpenAccountForm(forms.ModelForm): 
     """General form used for editing accounts"""
     def __init__(self,*args,**kwargs):
         super().__init__(*args, **kwargs)
