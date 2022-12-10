@@ -2,6 +2,7 @@ from django.shortcuts import redirect
 from django.conf import settings
 from .models import Invoice, LessonRequest, User, BookedLesson
 import datetime
+import random
 
 HOURLY_COST = 40
 
@@ -75,6 +76,7 @@ def create_invoice(lesson_request):
     return invoice
 
 
+
 def create_booked_lessons(lesson_request):
     if not isinstance(lesson_request, LessonRequest) or lesson_request.is_booked == False or lesson_request.id is None or lesson_request.num_lessons <= 0:
         return
@@ -82,7 +84,7 @@ def create_booked_lessons(lesson_request):
     counter = lesson_request.num_lessons
     teacher = lesson_request.teacher
     if teacher is None:
-        teacher = list(User.objects.filter(account_type=2))[0]
+        teacher = random.choice(list(User.objects.filter(account_type=2))) #get random teacher
 
     days_for_lessons = []
     for day in lesson_request.days_available:

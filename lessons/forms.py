@@ -76,8 +76,8 @@ class RequestLessonsForm(forms.ModelForm):
         for num,day in LessonRequest.AvailableWeekly.choices:
             start_variable_name =  day.lower() + "_start_time"
             end_variable_name = day.lower() + "_end_time"
-            self.fields[start_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time"},format=['%H:%M:%S']),required=False,input_formats=["%H:%M:%S"])
-            self.fields[end_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time"},format=['%H:%M:%S']),required = False,input_formats=["%H:%M:%S"])
+            self.fields[start_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time"},format=['%H:%M']),required=False,input_formats=["%H:%M"])
+            self.fields[end_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time"},format=['%H:%M']),required = False,input_formats=["%H:%M"])
             self.availability_fields.append((day,start_variable_name,end_variable_name))
 
         if self.instance.id is None:
@@ -103,7 +103,7 @@ class RequestLessonsForm(forms.ModelForm):
     
     class Meta:
         model = LessonRequest
-        fields = ["days_available","teacher","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
+        fields = ["teacher","num_lessons","lesson_gap_weeks","lesson_duration_hours","extra_requests"]
 
 
     def get_teacher_choices(self):
@@ -112,9 +112,6 @@ class RequestLessonsForm(forms.ModelForm):
         teacher_choices += [(teacher["id"], teacher["username"]) for teacher in teacher_objects.all()]
         return teacher_choices
 
-    days_available = forms.MultipleChoiceField(
-        widget = forms.CheckboxSelectMultiple, choices=LessonRequest.AvailableWeekly.choices, required=True
-    )
 
     teacher = forms.ChoiceField()
     
@@ -127,7 +124,8 @@ class RequestLessonsForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
 
-        days_available = 0
+        num_days_available= 0
+        days_available = ""
 
         for day, start_time,end_time in self.availability_fields:
             if (cleaned_data[start_time] is not None and cleaned_data[end_time] is None) or (cleaned_data[start_time] is None and cleaned_data[end_time] is not None):
@@ -136,13 +134,16 @@ class RequestLessonsForm(forms.ModelForm):
                 if cleaned_data[start_time] >= cleaned_data[end_time]:
                     self.add_error(start_time,"start time must be less than end time")
                 else:
-                    days_available +=1
+                    num_days_available +=1
+                    days_available += str(LessonRequest.AvailableWeekly[day])
+        if num_days_available == 0:
+            self.add_error(None, "No times selected")
         
-        #if days_available < 2 / float(cleaned_data["lesson_gap_weeks"]):  #this makes sure user must pick more than one day for biweekly lessons
-        #    self.add_error("lesson_gap_weeks", "lesson gap is not possible") #commented out rn so tests dont fail
+        if num_days_available < 2 / float(cleaned_data["lesson_gap_weeks"]):  #this makes sure user must pick more than one day for biweekly lessons
+            self.add_error("lesson_gap_weeks", "lesson gap is not possible")
 
-        # convert the days available list to string to be stored easily in database
-        cleaned_data["days_available"] = "".join(cleaned_data["days_available"])
+        # store days_available for the model 
+        cleaned_data["days_available"] = days_available
 
 
         # if any teacher is requested set teacher to none
