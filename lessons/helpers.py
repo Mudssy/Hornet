@@ -139,6 +139,22 @@ def create_request(form, user):
     LessonRequest.objects.create(
         requestor=user,
         days_available=form.cleaned_data.get("days_available"),
+        #availability times
+        monday_start_time = form.cleaned_data.get("monday_start_time"),
+        monday_end_time = form.cleaned_data.get("monday_end_time"),
+        tuesday_start_time = form.cleaned_data.get("tuesday_start_time"),
+        tuesday_end_time = form.cleaned_data.get("tuesday_end_time"),
+        wednesday_start_time = form.cleaned_data.get("wednesday_start_time"),
+        wednesday_end_time = form.cleaned_data.get("wednesday_end_time"),
+        thursday_start_time = form.cleaned_data.get("thursday_start_time"),
+        thursday_end_time = form.cleaned_data.get("thursday_end_time"),
+        friday_start_time = form.cleaned_data.get("friday_start_time"),
+        friday_end_time = form.cleaned_data.get("friday_end_time"),
+        saturday_start_time = form.cleaned_data.get("saturday_start_time"),
+        saturday_end_time = form.cleaned_data.get("saturday_end_time"),
+        sunday_start_time = form.cleaned_data.get("sunday_start_time"),
+        sunday_end_time = form.cleaned_data.get("sunday_end_time"),
+
         num_lessons=form.cleaned_data.get("num_lessons"),
         lesson_gap_weeks=form.cleaned_data.get("lesson_gap_weeks"),
         lesson_duration_hours=form.cleaned_data.get("lesson_duration_hours"),

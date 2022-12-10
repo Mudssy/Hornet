@@ -39,7 +39,7 @@ class User(AbstractUser):
     payment_history_csv = models.TextField(blank=True)
 
 class LessonRequest(models.Model):
-
+    
     class LessonGap(models.IntegerChoices):  ##these values should not be changed as they are required to book lesson and by the request form 
         BIWEEKLY = 1
         WEEKLY = 2
@@ -54,6 +54,23 @@ class LessonRequest(models.Model):
         Friday = 5
         Saturday = 6
         Sunday = 7
+    
+    monday_start_time = models.TimeField(blank=True,null=True)
+    monday_end_time = models.TimeField(blank=True,null=True)
+    tuesday_start_time = models.TimeField(blank=True,null=True)
+    tuesday_end_time = models.TimeField(blank=True,null=True)
+    wednesday_start_time = models.TimeField(blank=True,null=True)
+    wednesday_end_time = models.TimeField(blank=True,null=True)
+    thursday_start_time = models.TimeField(blank=True,null=True)
+    thursday_end_time = models.TimeField(blank=True,null=True)
+    friday_start_time = models.TimeField(blank=True,null=True)
+    friday_end_time = models.TimeField(blank=True,null=True)
+    saturday_start_time = models.TimeField(blank=True,null=True)
+    saturday_end_time = models.TimeField(blank=True,null=True)
+    sunday_start_time = models.TimeField(blank=True,null=True)
+    sunday_end_time = models.TimeField(blank=True,null=True)
+
+
     
         
 
@@ -107,6 +124,8 @@ class LessonRequest(models.Model):
         null=True
     )
 
+
+
 class BookedLesson(models.Model):
 
     start_time = models.DateTimeField(blank=False)
@@ -152,3 +171,5 @@ class Invoice(models.Model):
     amount_paid=models.PositiveIntegerField(blank=True, default=0)
     amount_outstanding=models.PositiveIntegerField(blank=True, default=0)
     is_paid=models.BooleanField(default=False)
+
+
