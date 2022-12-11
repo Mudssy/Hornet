@@ -139,7 +139,7 @@ def update_invoice(invoice, amount_paid):
 
     return invoice
 
-def create_request(form, user):
+def create_request(form, user):    #deprecated as form now saves its own data
     LessonRequest.objects.create(
         requestor=user,
         days_available=form.cleaned_data.get("days_available"),
@@ -166,6 +166,8 @@ def create_request(form, user):
         extra_requests=form.cleaned_data.get("extra_requests"),
         teacher = form.cleaned_data.get("teacher"),
     )
+    
+    
 
 
 def update_request(form, request):

@@ -76,8 +76,8 @@ class RequestLessonsForm(forms.ModelForm):
         for num,day in LessonRequest.AvailableWeekly.choices:
             start_variable_name =  day.lower() + "_start_time"
             end_variable_name = day.lower() + "_end_time"
-            self.fields[start_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time"},format=['%H:%M']),required=False,input_formats=["%H:%M"])
-            self.fields[end_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time"},format=['%H:%M']),required = False,input_formats=["%H:%M"])
+            self.fields[start_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time", "value":getattr(self.instance,start_variable_name)},format=['%H:%M','%H:%M:%S']),required=False,input_formats=["%H:%M",'%H:%M:%S'])
+            self.fields[end_variable_name] = forms.TimeField(label='', widget = forms.TimeInput(attrs={"type": "time","value":getattr(self.instance,end_variable_name)},format=['%H:%M','%H:%M:%S']),required = False,input_formats=["%H:%M",'%H:%M:%S'])
             self.availability_fields.append((day,start_variable_name,end_variable_name))
 
         if self.instance.id is None:
@@ -153,6 +153,25 @@ class RequestLessonsForm(forms.ModelForm):
 
         #NB: a random teacher is assigned on booking if none is specified
         return cleaned_data
+    
+    def save(self,user=None):   ##this now saved the form for both edit and new requests, user should be given if making a new request
+        super().save(commit=False)
+        if self.instance.id:
+            for field_name in self.cleaned_data:
+                setattr(self.instance,field_name,self.cleaned_data[field_name])
+            self.instance.save()
+        else:
+            self.cleaned_data["requestor"] = user
+            LessonRequest.objects.create(**self.cleaned_data)
+        
+        return self.instance
+            
+            
+
+
+
+
+
     
     
     

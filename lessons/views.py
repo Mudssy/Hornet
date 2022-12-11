@@ -54,7 +54,7 @@ def make_request(request):
             current_user = request.user
             form = RequestLessonsForm(request.POST)
             if form.is_valid():
-                create_request(form, current_user)
+                form.save(user = current_user)
                 return redirect("feed")
         else:
             return redirect('log_in')
