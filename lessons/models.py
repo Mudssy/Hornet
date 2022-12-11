@@ -55,20 +55,20 @@ class LessonRequest(models.Model):
         Saturday = 6
         Sunday = 7
 
-    monday_start_time = models.TimeField(blank=True,null=True)
-    monday_end_time = models.TimeField(blank=True,null=True)
-    tuesday_start_time = models.TimeField(blank=True,null=True)
-    tuesday_end_time = models.TimeField(blank=True,null=True)
-    wednesday_start_time = models.TimeField(blank=True,null=True)
-    wednesday_end_time = models.TimeField(blank=True,null=True)
-    thursday_start_time = models.TimeField(blank=True,null=True)
-    thursday_end_time = models.TimeField(blank=True,null=True)
-    friday_start_time = models.TimeField(blank=True,null=True)
-    friday_end_time = models.TimeField(blank=True,null=True)
-    saturday_start_time = models.TimeField(blank=True,null=True)
-    saturday_end_time = models.TimeField(blank=True,null=True)
-    sunday_start_time = models.TimeField(blank=True,null=True)
-    sunday_end_time = models.TimeField(blank=True,null=True)
+    monday_start_time = models.TimeField(blank=True, null=True)
+    monday_end_time = models.TimeField(blank=True, null=True)
+    tuesday_start_time = models.TimeField(blank=True, null=True)
+    tuesday_end_time = models.TimeField(blank=True, null=True)
+    wednesday_start_time = models.TimeField(blank=True, null=True)
+    wednesday_end_time = models.TimeField(blank=True, null=True)
+    thursday_start_time = models.TimeField(blank=True, null=True)
+    thursday_end_time = models.TimeField(blank=True, null=True)
+    friday_start_time = models.TimeField(blank=True, null=True)
+    friday_end_time = models.TimeField(blank=True, null=True)
+    saturday_start_time = models.TimeField(blank=True, null=True)
+    saturday_end_time = models.TimeField(blank=True, null=True)
+    sunday_start_time = models.TimeField(blank=True, null=True)
+    sunday_end_time = models.TimeField(blank=True, null=True)
 
 
 

@@ -88,7 +88,8 @@ def create_booked_lessons(lesson_request):
 
     days_for_lessons = []
     for day in lesson_request.days_available:
-        days_for_lessons.append(int(day) - 1)
+        if day.isdigit():
+            days_for_lessons.append(int(day) - 1)
 
     i = 0
     weeks_between_lessons = lesson_request.lesson_gap_weeks/2

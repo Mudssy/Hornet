@@ -42,16 +42,20 @@ class RequestFormTestCase(TestCase):
         form=RequestLessonsForm(self.form_input)
         self.assertFalse(form.is_valid())
 
-    def test_form_lesson_gap_cannot_be_random(self):
-        self.form_input['lesson_gap_weeks'] = 15135
+    def test_form_lesson_gap_can_be_monthly(self):
+        self.form_input['lesson_gap_weeks'] = 8
+        form = RequestLessonsForm(self.form_input)
+        self.assertTrue(form.is_valid())
+
+    def test_form_lesson_gap_cannot_be_7(self):
+        self.form_input['lesson_gap_weeks'] = 7
         form = RequestLessonsForm(self.form_input)
         self.assertFalse(form.is_valid())
 
-    def test_form_cleans_days_available_list(self):
-        self.form_input['days_available'] = ['1','2','3']
+    def test_form_computes_days_available_correctly(self):
         form = RequestLessonsForm(self.form_input)
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.cleaned_data.get('days_available'), '123')
+        self.assertEqual(form.cleaned_data["days_available"], '1')
 
     def test_form_saves(self):
         before_count = LessonRequest.objects.count()
@@ -71,9 +75,9 @@ class RequestFormTestCase(TestCase):
     def test_form_saves_correctly(self):
         self.client.login(username=self.student.username, password="Password123")
         self.client.post(self.url, self.form_input)
-        saved_form = LessonRequest.objects.get(requestor=self.student, days_available=12)
+        saved_form = LessonRequest.objects.get(requestor=self.student, monday_start_time='14:00')
         self.assertEqual(saved_form.requestor, self.student)
-        self.assertEqual(saved_form.days_available, '12')
+        self.assertEqual(saved_form.days_available, '1') #1 being monday
         self.assertEqual(saved_form.lesson_gap_weeks, 2)
         self.assertEqual(saved_form.num_lessons, self.form_input['num_lessons'])
         self.assertEqual(saved_form.lesson_duration_hours, self.form_input['lesson_duration_hours'])

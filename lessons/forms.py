@@ -92,7 +92,6 @@ class RequestLessonsForm(forms.ModelForm):
                 )
             else:
                 self.helper = self.create_request_helper("edit", "Edit", action_string, "POST", self.instance.id)
-                print(self.instance.monday_start_time)
 
         self.title = "Request lessons"
 
@@ -139,7 +138,7 @@ class RequestLessonsForm(forms.ModelForm):
         if num_days_available == 0:
             self.add_error(None, "No times selected")
         
-        if num_days_available < 2 / float(cleaned_data["lesson_gap_weeks"]):  #this makes sure user must pick more than one day for biweekly lessons
+        if not "lesson_gap_weeks" in cleaned_data or num_days_available < 2 / float(cleaned_data["lesson_gap_weeks"]):  #this makes sure user must pick more than one day for biweekly lessons
             self.add_error("lesson_gap_weeks", "lesson gap is not possible")
 
         # store days_available for the model 
