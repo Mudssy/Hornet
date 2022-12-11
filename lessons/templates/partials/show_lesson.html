@@ -14,10 +14,23 @@
                 <hr class="mt-0 mb-4">
                 <p>{{lesson.start_time}}</p>
             </div>
+            {% if request.user.account_type == 1%}
             <div class="card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
                 <h6 class="card-title">Teacher</h6>
                 <hr class="mt-0 mb-4">
                 <p>{{lesson.teacher}}</p>
+            </div>
+            {% elif request.user.account_type == 2%}
+            <div class="card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                <h6 class="card-title">Student</h6>
+                <hr class="mt-0 mb-4">
+                <p>{{lesson.student}}</p>
+            </div>
+            {% endif %}
+            <div class="card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                <h6 class="card-title">Day of Week</h6>
+                <hr class="mt-0 mb-4">
+                <p>{{lesson.day}}</p>
             </div>
         </div>
     </div>

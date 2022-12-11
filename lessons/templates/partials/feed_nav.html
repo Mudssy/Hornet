@@ -12,7 +12,7 @@
         <a class="nav-link" href="{% url 'invoices' %}">Invoices</a>
         <a class="nav-link" href="{% url 'payment_history' %}"> Payment History </a>
     {% elif request.user.account_type == 2%}
-        <a class="nav-link" aria-current="page" href="#">Lessons</a>
+        <a class="nav-link" aria-current="page" href="{% url 'booked_lessons' %}">Lessons</a>
     {% elif request.user.account_type == 3 %}
         <a class="nav-link" aria-current="page" href="{% url 'show_all_requests' %}">Open Requests</a>
         <a class="nav-link" aria-current="page" href="{% url 'submit_payment' %}">Submit Payment</a>

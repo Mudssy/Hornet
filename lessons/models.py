@@ -26,7 +26,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
 
     last_name = models.CharField(max_length=50)
-    
+
     account_type = PositiveSmallIntegerField(
         choices=Account.choices,
         default=Account.STUDENT
@@ -39,8 +39,8 @@ class User(AbstractUser):
     payment_history_csv = models.TextField(blank=True)
 
 class LessonRequest(models.Model):
-    
-    class LessonGap(models.IntegerChoices):  ##these values should not be changed as they are required to book lesson and by the request form 
+
+    class LessonGap(models.IntegerChoices):  ##these values should not be changed as they are required to book lesson and by the request form
         BIWEEKLY = 1
         WEEKLY = 2
         FORTNIGHTLY = 4
@@ -54,7 +54,7 @@ class LessonRequest(models.Model):
         Friday = 5
         Saturday = 6
         Sunday = 7
-    
+
     monday_start_time = models.TimeField(blank=True,null=True)
     monday_end_time = models.TimeField(blank=True,null=True)
     tuesday_start_time = models.TimeField(blank=True,null=True)
@@ -71,8 +71,8 @@ class LessonRequest(models.Model):
     sunday_end_time = models.TimeField(blank=True,null=True)
 
 
-    
-        
+
+
 
     DAYS_OF_WEEK = (
         (0, 'Monday'),
@@ -105,7 +105,7 @@ class LessonRequest(models.Model):
         blank=False,
         related_name='requestor',
     )
-    
+
     teacher = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -144,6 +144,8 @@ class BookedLesson(models.Model):
         related_name='booked_teacher',
     )
 
+    day = models.CharField(max_length=20, blank=True)
+
 class Invoice(models.Model):
 
     associated_student=models.ForeignKey(
@@ -171,5 +173,3 @@ class Invoice(models.Model):
     amount_paid=models.PositiveIntegerField(blank=True, default=0)
     amount_outstanding=models.PositiveIntegerField(blank=True, default=0)
     is_paid=models.BooleanField(default=False)
-
-

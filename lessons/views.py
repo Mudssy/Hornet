@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from django.utils.decorators import method_decorator
+from datetime import datetime
 
 # Create your views here.
 
@@ -85,7 +86,7 @@ class EditRequestView(DetailView):
     def post(self, request, request_id):
         form = RequestLessonsForm(request.POST, instance=self.lesson_request)
         should_book = 'submit' in request.POST
-        
+
         if not form.is_valid():
             form.add_error(None, "Some of these edits seem off")
             return render(request, 'edit_request.html', {'form': form, 'request_id': self.lesson_request.id})
@@ -139,7 +140,7 @@ def edit_account(request, user_id):
         form= OpenAccountForm(request.POST, instance=user)
         if form.is_valid():
             if form.cleaned_data.get('account_type') == "1" or form.cleaned_data.get('account_type') == "2":
-                user.is_staff = False 
+                user.is_staff = False
                 user.is_superuser = False
             elif form.cleaned_data.get('account_type') == "3":
                 user.is_staff = True
@@ -151,9 +152,9 @@ def edit_account(request, user_id):
             new_password = form.cleaned_data.get("new_password")  ## set the new password manually
             if new_password:
                 user.set_password(new_password)  ##set_password() hashes the password
-            
+
             user.save()
-            
+
             return redirect("user_list", account_type = user.account_type)
     else:
         form = OpenAccountForm(instance=user)
@@ -232,7 +233,10 @@ def invoices(request):
 
 def booked_lessons(request):
     user = request.user
-    lessons = BookedLesson.objects.filter(student=user)
+    if user.account_type == 1:
+        lessons = BookedLesson.objects.filter(student=user)
+    else:
+        lessons = BookedLesson.objects.filter(teacher=user)
     return render(request, 'booked_lessons.html', {'lessons':lessons})
 
 def delete_request(request, request_id):

@@ -96,7 +96,7 @@ def create_booked_lessons(lesson_request):
     while(counter > i):
 
         today_day_of_week = datetime.datetime.now().weekday()
-        request_day = days_for_lessons[0]   
+        request_day = days_for_lessons[0]
         time_to_requested_day = ((request_day - today_day_of_week) + 7) % 7
 
         # find the next value for boooking time at least one lesson_gap ahead, and on a day mentioned in days_available
@@ -109,11 +109,12 @@ def create_booked_lessons(lesson_request):
             student=lesson_request.requestor,
             teacher = teacher,
             start_time = booking_time,
-            duration = lesson_request.lesson_duration_hours
+            duration = lesson_request.lesson_duration_hours,
+            day = booking_time.strftime("%A")
         )
 
         i += 1
-    
+
 
 def update_invoice(invoice, amount_paid):
     if invoice.amount_outstanding < amount_paid:
