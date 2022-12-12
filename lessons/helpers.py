@@ -3,6 +3,7 @@ from django.conf import settings
 from .models import Invoice, LessonRequest, User, BookedLesson
 import datetime
 import random
+from django.db.models import Q
 
 HOURLY_COST = 40
 
@@ -115,6 +116,94 @@ def create_booked_lessons(lesson_request):
         )
 
         i += 1
+
+def next_day_from(current_date, day):
+    days = (day - current_date.weekday() + 7) % 7
+    return current_date + datetime.timedelta(days=days)
+
+def ceil_time_to_hour(time):
+    if time.minute > 0:
+         return time.replace(second=0, microsecond=0, minute=0, hour=time.hour) +datetime.timedelta(hours=1)
+    else:
+        return time
+
+def floor_time_to_hour(time):
+    return time.replace(second=0,microsecond=0, minute=0, hour=time.hour)
+
+def hourly_time_slots(start_time, end_time):
+    slots = []
+    for h in range(int((end_time - start_time).hour)):
+        slots.append(start_time+ datetime.timedelta(hours=h))
+    return slots
+        
+def create_new_booked_lessons(lesson_request):
+    if not isinstance(lesson_request, LessonRequest) or lesson_request.is_booked == False or lesson_request.id is None or lesson_request.num_lessons <= 0:
+        return
+    
+
+    days_and_times_for_lessons = []   ##stores eg(0,Monday,14:25:00,16:25:00)
+    for num,day in lesson_request.AvailableWeekly.choices:
+        if getattr(lesson_request,day.lower() + "_start_time") is not None:
+            days_and_times_for_lessons.append((
+                num-1,
+                day,
+                ceil_time_to_hour((lesson_request,day.lower()+"_start_time")),  #ceil time to next hour 
+                floor_time_to_hour(getattr(lesson_request,day.lower()+"_end_time")))) #floor time to hour
+
+    num_lessons_booked = 0
+    teacher = lesson_request.teacher
+    if teacher is None:
+        teacher = random.choice(list(User.objects.filter(account_type=2))) #get random teacher
+    
+    weeks_between_lessons = lesson_request.lesson_gap_weeks/2
+    next_date = datetime.date.today()
+
+    while(lesson_request.num_lessons > num_lessons_booked):
+
+
+        found_lesson_slot = False
+        for num,day,start_time,end_time in days_and_times_for_lessons:
+            next_date = next_day_from(next_date,num)
+            lessons_already_booked =  BookedLesson.objects.filter(teacher = teacher)
+
+            for hour in hourly_time_slots(start_time,end_time-datetime.timedelta(hours=lesson_request.lesson_duration_hours)):
+                time_slot_available = True
+                for interval in range(0,lesson_request.lesson_duration_hours):
+                    interval_date_time =datetime.datetime.combine(next_date,hour)+datetime.timedelta(hours=interval)
+
+                    for lesson_already_booked in lessons_already_booked:
+                        lesson_end_time = lesson_already_booked.start_time + datetime.timedelta(hours=lesson_already_booked.duration)
+                        if interval_date_time >= lesson_already_booked.start_time and interval_date_time < lesson_end_time:
+                            time_slot_available = False
+                            break
+
+                    if not time_slot_available:
+                        break
+                
+
+                
+                if time_slot_available:
+                        ## time slot is available
+                        book_date_time = datetime.datetime.combine(next_date,hour)
+                        found_lesson_slot = True
+                        break
+            
+            if found_lesson_slot:
+                booked_lesson = BookedLesson.objects.create(
+                    student = lesson_request.requestor,
+                    teacher =  teacher,
+                    start_time = book_date_time,
+                    duration = lesson_request.lesson_duration_hours,
+                )
+                num_lessons_booked += 1
+                current_date = current_date + datetime.timedelta(weeks=weeks_between_lessons)
+                break
+
+    
+        
+        
+
+
 
 
 def update_invoice(invoice, amount_paid):
