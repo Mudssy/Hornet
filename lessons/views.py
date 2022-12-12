@@ -3,13 +3,14 @@ from django.shortcuts import render, redirect
 from .models import LessonRequest, User, Invoice, BookedLesson
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm, OpenAccountForm
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, login_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only, update_request, create_booked_lessons
+from lessons.helpers import administrator_prohibited, login_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only, create_booked_lessons
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from django.utils.decorators import method_decorator
 from datetime import datetime
+from csv import reader
 
 # Create your views here.
 
@@ -263,15 +264,29 @@ def delete_request(request, request_id):
     return redirect('pending_requests')
 
 def payment_history(request):
-    payment_history_list = request.user.payment_history_csv.split(",")
-    return render(request, 'payment_history.html', {'payments': payment_history_list})
+    user = request.user
+    history_list = user.payment_history_csv.split(',')
+    payment_history_table = []
+    # decomposes payment_history_csv to a table that can be displayed in the view
+    i = 0
+    while i + 3 < len(history_list):
+        payment_history_table.append(history_list[i:i + 3])
+        i += 3
+    return render(request, 'payment_history.html', {'payments': payment_history_table})
 
 
 @teacher_prohibited
 def user_payment_history(request, user_id):
     user = User.objects.get(id=user_id)
-    payment_history_list = user.payment_history_csv.split(",")
-    return render(request, 'payment_history.html', {'payments': payment_history_list, 'user': user})
+    history_list = user.payment_history_csv.split(',')
+    payment_history_table = [[]]
+
+
+    i = 0
+    while i + 3 <= len(history_list):
+        payment_history_table.append(history_list[i:i+3])
+        i += 3
+    return render(request, 'payment_history.html', {'payments': payment_history_table, 'user': user})
 
 @student_prohibited
 @teacher_prohibited
