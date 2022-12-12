@@ -63,22 +63,9 @@ def make_request(request):
 
     return render(request, 'make_request.html', {'form':form})
 
-@teacher_prohibited
-def pending_requests(request):
-    user = request.user
-    requests = LessonRequest.objects.filter(requestor=user)
-    return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})
-
-@teacher_prohibited
-@student_prohibited
-def show_all_requests(request):
-    all_requests = LessonRequest.objects.all()
-    return render(request, 'show_all_requests.html', {'requests': all_requests})
-
-
 
 class EditRequestView(DetailView):
-    """General form for editing a """
+    """General form for editing a request, used by students and admins"""
     def dispatch(self, request, request_id):
         self.lesson_request = LessonRequest.objects.get(id=request_id)
         return super().dispatch(request, request_id)
@@ -161,33 +148,52 @@ def edit_account(request, user_id):
 
     return render(request, 'edit_account.html', {'form': form, 'user_id': id})
 
-@student_prohibited
-@teacher_prohibited
-def submit_payment(request):
-    forms = []
-    affected_form = None
 
-    if request.method=='POST':
-        invoice_id=request.POST.get('id')
-        invoice = Invoice.objects.get(invoice_id=invoice_id)
-        affected_form = SubmitPaymentForm(request.POST, instance=invoice)
-        amount_paid = int(request.POST.get('amount_paid'))
-        if amount_paid <= invoice.amount_outstanding:
-            update_invoice(invoice, amount_paid)
-            messages.add_message(request, messages.SUCCESS, f"Submitted {amount_paid} into {invoice.associated_student.username}'s account")
+
+
+class SubmitPayment(DetailView):
+    """View class for admin to submit payments into student accounts"""
+    def post(self, request):
+        # extract info from post request
+        edit_id = request.POST.get('id')
+        amount_paid = int(request.POST.get("amount_paid"))
+
+        candidate_invoice = Invoice.objects.get(invoice_id=edit_id)
+        all_invoices = filter(lambda x: candidate_invoice.invoice_id != x.invoice_id, Invoice.objects.all())
+
+        forms = []
+        for invoice in all_invoices:
+            forms.append(SubmitPaymentForm(instance = invoice))
+
+        # partial payment
+        if amount_paid < candidate_invoice.amount_outstanding:
+            update_invoice(candidate_invoice, amount_paid)
+            messages.add_message(request, messages.SUCCESS,
+                f"Submitted {amount_paid} into {candidate_invoice.associated_student.username}'s account")
+            forms.append(SubmitPaymentForm(request.POST, instance=candidate_invoice))
+        # full payment
+        elif amount_paid == candidate_invoice.amount_outstanding:
+            update_invoice(candidate_invoice, amount_paid)
+            messages.add_message(request, messages.SUCCESS,
+                f"Invoice id: {edit_id} for user: {candidate_invoice.associated_student.username} has been settled")
+
         else:
-            affected_form.add_error(None, "You can not pay more than is owed for a given invoice")
+            # erroneous payment
+            error_form = SubmitPaymentForm(request.POST, instance=candidate_invoice)
+            error_form.add_error('amount_paid', 'Payment exceeds amount outstanding')
+            messages.add_message(request, messages.ERROR,
+                                 f"Cannot pay over what is owed: \n"
+                                 f"Tried to pay {candidate_invoice.amount_outstanding} into invoice {edit_id} when {candidate_invoice.amount_outstanding} was owed")
+            forms.append(error_form)
 
-    forms.append(affected_form)
+        return render(request, 'submit_payment.html', {'forms': forms})
 
-    # apologies for the ugliness, this adds all instances of invoice without the one with an erroneous input
-    all_invoices = Invoice.objects.filter(is_paid=False)
-    for invoice in all_invoices:
-        if affected_form is None or not affected_form.instance.invoice_id == invoice.invoice_id:
-            form = SubmitPaymentForm(instance=(invoice))
-            forms.append(form)
+    def get(self, request):
+        forms = []
+        for invoice in Invoice.objects.all():
+            forms.append(SubmitPaymentForm(instance=invoice))
 
-    return render(request, 'submit_payment.html', {'forms': forms})
+        return render(request, 'submit_payment.html', {'forms': forms})
 
 
 
@@ -198,7 +204,6 @@ class UserListView(ListView):
     template_name='user_list.html'
 
     def dispatch(self, request, account_type):
-
         # ensure a user can never see a list of users with greater permissions than themselves
         if request.user.account_type == 4:
             # directors can see anyone
@@ -229,6 +234,18 @@ def invoices(request):
     balance = user.balance
     invoices = Invoice.objects.filter(associated_student=user)
     return render(request, 'invoices.html', {'invoices':invoices, 'balance':str(balance)})
+
+@teacher_prohibited
+def pending_requests(request):
+    user = request.user
+    requests = LessonRequest.objects.filter(requestor=user)
+    return render(request, 'pending_requests.html', {'requests':requests,'range': range(1,len(requests))})
+
+@teacher_prohibited
+@student_prohibited
+def show_all_requests(request):
+    all_requests = LessonRequest.objects.all()
+    return render(request, 'show_all_requests.html', {'requests': all_requests})
 
 
 def booked_lessons(request):

@@ -110,8 +110,7 @@ def create_booked_lessons(lesson_request):
             student=lesson_request.requestor,
             teacher = teacher,
             start_time = booking_time,
-            duration = lesson_request.lesson_duration_hours,
-            day = booking_time.strftime("%A")
+            duration = lesson_request.lesson_duration_hours
         )
 
         i += 1
