@@ -69,7 +69,7 @@ def create_invoice(lesson_request):
     )
 
     student.balance -= invoice.total_price
-    record_string = f"Invoice id: {invoice.invoice_id}".ljust(20, " ") + f"-£{invoice.total_price}".ljust(5, " ") + f"Balance: {student.balance},"
+    record_string = f"{invoice.invoice_id},-{invoice.total_price},{student.balance},"
     student.payment_history_csv = record_string + student.payment_history_csv
 
     student.save()
@@ -111,8 +111,7 @@ def create_booked_lessons(lesson_request):
             student=lesson_request.requestor,
             teacher = teacher,
             start_time = booking_time,
-            duration = lesson_request.lesson_duration_hours,
-            day = booking_time.strftime("%A")
+            duration = lesson_request.lesson_duration_hours
         )
 
         i += 1
@@ -222,7 +221,7 @@ def update_invoice(invoice, amount_paid):
 
     student = invoice.associated_student
     student.balance += amount_paid
-    record_string = f"Invoice id: {invoice.invoice_id}".ljust(20, " ") + f"+£{amount_paid}".ljust(5, " ") + f"Balance: {student.balance},"
+    record_string = f"{invoice.invoice_id},{amount_paid},{student.balance},"
     student.payment_history_csv = record_string + student.payment_history_csv
     student.save()
 
@@ -258,6 +257,3 @@ def create_request(form, user):    #deprecated as form now saves its own data
     
     
 
-
-def update_request(form, request):
-    pass

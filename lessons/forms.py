@@ -126,7 +126,7 @@ class RequestLessonsForm(forms.ModelForm):
         num_days_available= 0
         days_available = ""
 
-        for day, start_time,end_time in self.availability_fields:
+        for day, start_time, end_time in self.availability_fields:
             if (cleaned_data[start_time] is not None and cleaned_data[end_time] is None) or (cleaned_data[start_time] is None and cleaned_data[end_time] is not None):
                 self.add_error(start_time,"Time not set correctly")
             elif cleaned_data[start_time] is not None and cleaned_data[end_time] is not None:
@@ -154,7 +154,7 @@ class RequestLessonsForm(forms.ModelForm):
         #NB: a random teacher is assigned on booking if none is specified
         return cleaned_data
     
-    def save(self,user=None):   ##this now saved the form for both edit and new requests, user should be given if making a new request
+    def save(self, user=None):   ##this now saved the form for both edit and new requests, user should be given if making a new request
         super().save(commit=False)
         if self.instance.id:
             for field_name in self.cleaned_data:
@@ -166,14 +166,7 @@ class RequestLessonsForm(forms.ModelForm):
         
         return self.instance
             
-            
 
-
-
-
-
-    
-    
     
     def create_request_helper(self,submitName, submitValue,form_action,form_method, id=0):
         helper = FormHelper()
@@ -189,7 +182,6 @@ class RequestLessonsForm(forms.ModelForm):
                 css_class = "row my-1"
             ))
         for day, start_time, end_time in self.availability_fields:
-            
             helper.layout.append(
             Div(
                 Div(HTML("<h5>" + day + "</h5>"),css_class="text-center col-2 d-flex align-items-center justify-content-center"), 
@@ -266,7 +258,10 @@ class SubmitPaymentForm(forms.ModelForm):
         model = Invoice
         fields = ["amount_paid"]
 
-    amount_paid = forms.IntegerField(min_value=0)
+    def clean(self):
+        super().clean()
+
+    amount_paid = forms.IntegerField(min_value=0, initial=0)
 
 
 class StandardForm(): # helper class to create django helper easily
