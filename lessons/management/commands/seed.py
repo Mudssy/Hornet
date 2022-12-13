@@ -16,7 +16,7 @@ import random
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
-    SEED_COUNT = 2
+    SEED_COUNT = 100
     REQUESTS_PER_USER = 2
     def __init__(self):
         super().__init__()
@@ -58,6 +58,19 @@ class Command(BaseCommand):
             account_type=1
         )
 
+        # Approved and paid for request of John Doe
+        johndoe_request = LessonRequest.objects.create(
+            days_available=1,
+            num_lessons=2,
+            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
+            lesson_duration_hours=3,
+            requestor=johndoe,
+            extra_requests="Music theory, and some cello please.",
+        )
+        johndoe_invoice = self._approve_request(johndoe_request)
+        update_invoice(johndoe_invoice, johndoe_invoice.amount_outstanding)
+
+
         # Admin for seeder requirement
         petrapickles = User.objects.create_user(
             username='@PetraPickles',
@@ -94,8 +107,7 @@ class Command(BaseCommand):
             is_superuser=True
         )
 
-        print("The seed command is under construction, and may be unstable due to changing fields")
-
+    #function to create randomised request(s) for a given user
     def _create_request(self, user, count):
         day = count,
         lessons = 10 - count
