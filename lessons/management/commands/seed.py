@@ -11,6 +11,7 @@ version 2022.12.07
 from django.core.management.base import BaseCommand, CommandError
 from faker import Faker
 from lessons.models import User, LessonRequest
+from lessons.helpers import create_invoice, create_booked_lessons, update_invoice
 import random
 
 class Command(BaseCommand):
@@ -69,6 +70,18 @@ class Command(BaseCommand):
             is_superuser=False
         )
 
+        # Second admin for seeder requirement
+        addisonadmin = User.objects.create_user(
+            username='@AddisonAdmin',
+            first_name='Addison',
+            last_name='Admin',
+            email='addison.admin@example.org',
+            password=Command.PASSWORD,
+            account_type=3,
+            is_staff=True,
+            is_superuser=False
+        )
+
         #Director for seeder requirement
         martymajor = User.objects.create_user(
             username='@MartyMajor',
@@ -88,7 +101,8 @@ class Command(BaseCommand):
         lessons = 10 - count
         POSSIBLE_GAPS = [LessonRequest.LessonGap.BIWEEKLY, LessonRequest.LessonGap.WEEKLY, LessonRequest.LessonGap.FORTNIGHTLY, LessonRequest.LessonGap.MONTHLY]
         while count > 0:
-            LessonRequest.objects.create(
+            #creating the request with random numbers and faker data
+            request_temp = LessonRequest.objects.create(
                 days_available=random.randint(1,7),
                 num_lessons=random.randint(1,5),
                 lesson_gap_weeks=POSSIBLE_GAPS[random.randint(0,3)],
@@ -96,7 +110,21 @@ class Command(BaseCommand):
                 requestor=user,
                 extra_requests=self.faker.sentence(),
             )
+            #80% of the time, the requests are approved
+            if random.randint(1,10) < 8:
+                invoice_temp = self._approve_request(request_temp)
+                #equal chances of full, partial and no payment on the invoices of all approved requests
+                prob_var = random.randint(1,3)
+                match prob_var:
+                    case 1:
+                        update_invoice(invoice_temp, invoice_temp.amount_outstanding)
+                    case 2:
+                        update_invoice(invoice_temp, invoice_temp.amount_outstanding/random.randint(1,10))
+                    case 3:
+                        pass
+
             count -= 1
+
     # seeder creating student accounts
     def _create_student(self):
         first_name = self.faker.first_name()
@@ -119,3 +147,9 @@ class Command(BaseCommand):
     def _username(self, first_name, last_name):
         username = f'@{first_name}{last_name}'
         return username
+
+    def _approve_request(self, request):
+        request.is_booked = True
+        return_invoice = create_invoice(request)
+        create_booked_lessons(request)
+        return return_invoice
