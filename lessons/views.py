@@ -81,10 +81,9 @@ class EditRequestView(DetailView):
         else:
 
             # this will just bounce if the lesson sholdnt be booked
-            lessons_booked = create_booked_lessons(self.lesson_request)
-            if lessons_booked:
-                self.lesson_request.is_booked = lessons_booked
-                create_invoice(self.lesson_request)
+            self.lesson_request.is_booked = should_book
+            create_booked_lessons(self.lesson_request)
+            create_invoice(self.lesson_request)
 
             self.lesson_request.save()
             form.save()
