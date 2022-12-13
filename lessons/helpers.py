@@ -137,7 +137,7 @@ def hourly_time_slots(start_time, end_time):
     return slots
         
 def create_booked_lessons(lesson_request):
-    if not isinstance(lesson_request, LessonRequest) or lesson_request.is_booked == False or lesson_request.id is None or lesson_request.num_lessons <= 0:
+    if not isinstance(lesson_request, LessonRequest) or not lesson_request.is_booked or lesson_request.id is None or lesson_request.num_lessons <= 0:
         return False
     
 

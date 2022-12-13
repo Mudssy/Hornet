@@ -39,7 +39,7 @@ class FeedNavBarTestCase(TestCase):
     def test_administator_navbar_loads_correctly(self):
         self.client.login(username=self.administrator.username, password='Password123')
         response = self.client.get(self.url)
-        self.assertContains(response, 'Open Requests')
+        self.assertContains(response, 'Pending Requests')
         self.assertContains(response, 'Submit Payment')
         self.assertNotContains(response, 'Invoices')
 
