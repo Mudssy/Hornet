@@ -78,7 +78,7 @@ def create_invoice(lesson_request):
 
 
 
-def create_booked_lessons(lesson_request):
+def create_OLD_booked_lessons(lesson_request):
     if not isinstance(lesson_request, LessonRequest) or lesson_request.is_booked == False or lesson_request.id is None or lesson_request.num_lessons <= 0:
         return
 
@@ -122,7 +122,7 @@ def next_day_from(current_date, day):
 
 def ceil_time_to_hour(time):
     if time.minute > 0:
-         return time.replace(second=0, microsecond=0, minute=0, hour=time.hour) +datetime.timedelta(hours=1)
+         return time.replace(second=0, microsecond=0, minute=0, hour=time.hour+1)
     else:
         return time
 
@@ -131,13 +131,14 @@ def floor_time_to_hour(time):
 
 def hourly_time_slots(start_time, end_time):
     slots = []
-    for h in range(int((end_time - start_time).hour)):
-        slots.append(start_time+ datetime.timedelta(hours=h))
+    print(start_time,end_time)
+    for h in range(end_time.hour - start_time.hour):
+        slots.append(start_time.replace(hour=start_time.hour+h))
     return slots
         
-def create_new_booked_lessons(lesson_request):
+def create_booked_lessons(lesson_request):
     if not isinstance(lesson_request, LessonRequest) or lesson_request.is_booked == False or lesson_request.id is None or lesson_request.num_lessons <= 0:
-        return
+        return False
     
 
     days_and_times_for_lessons = []   ##stores eg(0,Monday,14:25:00,16:25:00)
@@ -146,8 +147,12 @@ def create_new_booked_lessons(lesson_request):
             days_and_times_for_lessons.append((
                 num-1,
                 day,
-                ceil_time_to_hour((lesson_request,day.lower()+"_start_time")),  #ceil time to next hour 
+                ceil_time_to_hour(getattr(lesson_request,day.lower()+"_start_time")),  #ceil time to next hour 
                 floor_time_to_hour(getattr(lesson_request,day.lower()+"_end_time")))) #floor time to hour
+    
+    if len(days_and_times_for_lessons) == 0:
+        return False
+        
 
     num_lessons_booked = 0
     teacher = lesson_request.teacher
@@ -161,11 +166,13 @@ def create_new_booked_lessons(lesson_request):
 
 
         found_lesson_slot = False
+
         for num,day,start_time,end_time in days_and_times_for_lessons:
             next_date = next_day_from(next_date,num)
             lessons_already_booked =  BookedLesson.objects.filter(teacher = teacher)
 
-            for hour in hourly_time_slots(start_time,end_time-datetime.timedelta(hours=lesson_request.lesson_duration_hours)):
+            time_slots_list = hourly_time_slots(start_time,end_time.replace(hour=end_time.hour - lesson_request.lesson_duration_hours + 1))
+            for hour in time_slots_list:
                 time_slot_available = True
                 for interval in range(0,lesson_request.lesson_duration_hours):
                     interval_date_time =datetime.datetime.combine(next_date,hour)+datetime.timedelta(hours=interval)
@@ -178,9 +185,7 @@ def create_new_booked_lessons(lesson_request):
 
                     if not time_slot_available:
                         break
-                
-
-                
+                                
                 if time_slot_available:
                         ## time slot is available
                         book_date_time = datetime.datetime.combine(next_date,hour)
@@ -195,14 +200,12 @@ def create_new_booked_lessons(lesson_request):
                     duration = lesson_request.lesson_duration_hours,
                 )
                 num_lessons_booked += 1
-                current_date = current_date + datetime.timedelta(weeks=weeks_between_lessons)
+                next_date = next_date + datetime.timedelta(weeks=weeks_between_lessons)
                 break
-
+            else:
+                next_date = next_date + datetime.timedelta(days=1)
     
-        
-        
-
-
+    return True
 
 
 def update_invoice(invoice, amount_paid):

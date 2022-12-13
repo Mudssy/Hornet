@@ -79,12 +79,14 @@ class EditRequestView(DetailView):
             form.add_error(None, "Some of these edits seem off")
             return render(request, 'edit_request.html', {'form': form, 'request_id': self.lesson_request.id})
         else:
-            self.lesson_request.is_booked = should_book
-            self.lesson_request.save()
 
             # this will just bounce if the lesson sholdnt be booked
-            create_booked_lessons(self.lesson_request)
-            create_invoice(self.lesson_request)
+            lessons_booked = create_booked_lessons(self.lesson_request)
+            if lessons_booked:
+                self.lesson_request.is_booked = lessons_booked
+                create_invoice(self.lesson_request)
+
+            self.lesson_request.save()
             form.save()
 
             return redirect('show_all_requests')
