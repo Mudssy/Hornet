@@ -14,33 +14,33 @@
 
                     <h6 class="card-title">Time Of Request</h6>
                     <hr class="mt-0 mb-4">
-                    <p>{{request.request_time}} {{request.id}}</p>
+                    <p>{{request.request_time}}</p>
                 </div>
                 <div class="card bg-transparent bg-opacity-75 border-0  mb-3 m-4 p-4">
-                    <h6 class="card-title">Days Available</h6>
-                    <hr class="mt-0 mb-4">
-                    
-                    {% if request.monday_start_time%}
-                        <p>Monday {{request.monday_start_time}} - {{request.monday_end_time}}</p>
-                    {% endif %}
-                    {% if request.tuesday_start_time%}
-                        <p>Tuesday {{request.tuesday_start_time}} - {{request.tuesday_end_time}}</p>
-                    {% endif %}
-                    {% if request.wednesday_start_time%}
-                        <p>Wednesday {{request.wednesday_start_time}} - {{request.wednesday_end_time}}</p>
-                    {% endif %}
-                    {% if request.thursday_start_time%}
-                        <p>Thursday {{request.thursday__start_time}} - {{request.thursday__end_time}}</p>
-                    {% endif %}
-                    {% if request.friday_start_time%}
-                        <p>Friday {{request.friday_start_time}} - {{request.friday_end_time}}</p>
-                    {% endif %}
-                    {% if request.saturday_start_time%}
-                        <p>Saturday {{request.saturday_start_time}} - {{request.saturday_end_time}}</p>
-                    {% endif %}
-                    {% if request.sunday_start_time%}
-                        <p>Sunday {{request.sunday_start_time}} - {{request.sunday_end_time}}</p>
-                    {% endif %}
+<!--                    <h6 class="card-title">Days Available</h6>-->
+<!--                    <hr class="mt-0 mb-4">-->
+<!--                    -->
+<!--                    {% if request.monday_start_time%}-->
+<!--                        <p>Monday {{request.monday_start_time}} - {{request.monday_end_time}}</p>-->
+<!--                    {% endif %}-->
+<!--                    {% if request.tuesday_start_time%}-->
+<!--                        <p>Tuesday {{request.tuesday_start_time}} - {{request.tuesday_end_time}}</p>-->
+<!--                    {% endif %}-->
+<!--                    {% if request.wednesday_start_time%}-->
+<!--                        <p>Wednesday {{request.wednesday_start_time}} - {{request.wednesday_end_time}}</p>-->
+<!--                    {% endif %}-->
+<!--                    {% if request.thursday_start_time%}-->
+<!--                        <p>Thursday {{request.thursday__start_time}} - {{request.thursday__end_time}}</p>-->
+<!--                    {% endif %}-->
+<!--                    {% if request.friday_start_time%}-->
+<!--                        <p>Friday {{request.friday_start_time}} - {{request.friday_end_time}}</p>-->
+<!--                    {% endif %}-->
+<!--                    {% if request.saturday_start_time%}-->
+<!--                        <p>Saturday {{request.saturday_start_time}} - {{request.saturday_end_time}}</p>-->
+<!--                    {% endif %}-->
+<!--                    {% if request.sunday_start_time%}-->
+<!--                        <p>Sunday {{request.sunday_start_time}} - {{request.sunday_end_time}}</p>-->
+<!--                    {% endif %}-->
 
 
                 </div>
@@ -49,45 +49,45 @@
                     <hr class="mt-0 mb-4">
                     <p>{{request.num_lessons}}</p>
                 </div>
-                <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-                    <h6 class="card-title">Student</h6>
-                    <hr class="mt-0 mb-4">
-                    <p>{{ request.associated_student }}</p>
-                </div>
 
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
                     <h6 class="card-title">Gap between lessons</h6>
                     <hr class="mt-0 mb-4">
-                    <p>{{request.lesson_gap_weeks}}</p>
+                    <p>{{request.lesson_gap_weeks}} weeks</p>
                 </div>
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-                    <h6 class="card-title">duration per lesson </h6>
+                    <h6 class="card-title"> Lesson Duration </h6>
                     <hr class="mt-0 mb-4">
-                    <p>{{request.lesson_duration_hours}}</p>
+                    <p>{{request.lesson_duration_hours}}h</p>
                 </div>
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-                    <h6 class="card-title">extra requests</h6>
+                    <h6 class="card-title"> Extra Requests</h6>
                     <hr class="mt-0 mb-4">
                     <p>{{request.extra_requests}}</p>
                 </div>
                 <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-                    <h6 class="card-title">Requested Teacher</h6>
+                    <h6 class="card-title">Teacher</h6>
                     <hr class="mt-0 mb-4">
+                    {% if request.teacher.username %}
                     <p>{{request.teacher.username}}</p>
+                    {% else %}
+                    <p>None specified</p>
+                    {% endif %}
                 </div>
-                <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-                        {% csrf_token %}
-                        {% if not request.is_booked %}
-                        <a href="{% url 'delete_request' request_id=request.id %}" class="btn btn-primary bg-transparent text-white">
-                            Delete
+                <div>
+                    <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                            {% csrf_token %}
+                            {% if not request.is_booked %}
+                            <a href="{% url 'delete_request' request_id=request.id %}" class="btn btn-primary bg-transparent text-white">
+                                Delete
+                            </a>
+                            {% endif %}
+                    </div>
+                    <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
+                        <a href="{% url 'edit_request' request_id=request.id %}" class="btn btn-primary bg-transparent text-white">
+                            Edit Request
                         </a>
-                        {% endif %}
-                    </form>
-                </div>
-                <div class=" card bg-transparent bg-opacity-75 border-0 mb-3 m-4 p-4">
-                    <a href="{% url 'edit_request' request_id=request.id %}" class="btn btn-primary bg-transparent text-white">
-                        Edit Request
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>

@@ -34,14 +34,14 @@
       "lesson_duration_hours": 1,
       "num_lessons": 1,
       "extra_requests": "this is an extra request",
-      "request_time": "2022-12-07T15:15:18+0000"
+      "request_time": "2022-12-07T15:15:18"
     }
   },
   {
     "model": "lessons.BookedLesson",
     "pk": 99,
     "fields": {
-      "start_time": "2022-12-07T15:15:18+0000",
+      "start_time": "2022-12-07T15:15:18",
       "duration": 1,
       "student": 1,
       "teacher": 3

@@ -144,8 +144,6 @@ class BookedLesson(models.Model):
         related_name='booked_teacher',
     )
 
-    day = models.CharField(max_length=20, blank=True)
-
 class Invoice(models.Model):
 
     associated_student=models.ForeignKey(

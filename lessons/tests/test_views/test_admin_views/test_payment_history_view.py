@@ -35,19 +35,14 @@ class RequestFormTestCase(TestCase):
         self.assertContains(response, "Current Credit")
         payment_count = len(response.context['payments'])
 
-        # the empty string
-        self.assertEqual(payment_count, 1)
+        self.assertEqual(payment_count, 0)
 
         #approve the request
         self.client.login(username=self.admin.username, password="Password123")
         self.client.post(reverse('edit_request', kwargs={'request_id': self.request.id}), self.form_input)
-        payment = response.context['payments']
-
-        # now the string with some history
-        self.assertEqual(len(payment), 1)
-        payment_string = "".join(payment)
-        self.assertIn(payment_string, 'Invoice id')
+        self.student = User.objects.get(username="@johndoe")
+        payment_string = self.student.payment_history_csv
 
 
-        self.assertIn(payment_string, self.invoice_id)
+        self.assertIn(self.invoice_id, payment_string)
 

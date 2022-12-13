@@ -7,7 +7,30 @@
 
 {% block feed_content %}
 <p><h3>Current Credit(£): {{user.balance}}</h3></p>
-  {% for payment in payments %}
-    <p>{{payment}}</p>
-  {% endfor %}
+
+<table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Invoice ID</th>
+      <th scope="col">Input Amount(£)</th>
+      <th scope="col">Balance</th>
+    </tr>
+  </thead>
+
+    <tbody>
+    {% for payment in payments %}
+    <tr class="table-success">
+      {% for value in payment %}
+      <td>{{value}}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+    </tbody>
+
+
+</table>
+
+
+
+
 {% endblock %}
