@@ -1,7 +1,7 @@
 {% comment %}
     Navbar which displays different items depending on a user's clearance.
     Users can be students (1), teachers (2), admin (3) or directors (4)
-    
+
     version 2022.12.07
 {% endcomment %}
 
@@ -22,8 +22,65 @@
             <a class="nav-link" href="{% url 'feed' %}">Feed</a>
           </li>
           {% if user.account_type == 1 %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="lessonsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Lessons
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark bg-black bg-opacity-50" aria-labelledby="lessonsDropdown">
+              <li><a class="dropdown-item" href="{% url 'booked_lessons' %}">Lessons</a></li>
+              <li><a class="dropdown-item" href="{% url 'make_request' %}">Make Requests</a></li>
+              <li><a class="dropdown-item" href="{% url 'pending_requests' %}">Pending Requests</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="paymentDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Payments
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark bg-black bg-opacity-50" aria-labelledby="paymentDropdown">
+              <li><a class="nav-link" href="{% url 'invoices' %}">Invoices</a></li>
+              <li><a class="nav-link" href="{% url 'payment_history' %}"> Payment History </a></li>
+            </ul>
+          </li>
+          {% elif  user.account_type == 2%}
           <li class = "nav-item">
-            <a class="nav-link" href="{% url 'make_request' %}">Requests</a>
+            <a class="nav-link" href="{% url 'booked_lessons' %}">Lessons</a>
+          </li>
+          {% elif  user.account_type == 3%}
+          <li class = "nav-item">
+            <a class="nav-link" href="{% url 'show_all_requests' %}">Pending Requests</a>
+          </li>
+          <li class = "nav-item">
+            <a class="nav-link" href="{% url 'submit_payment' %}">Submit Payment</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="usersDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Users
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark bg-black bg-opacity-50" aria-labelledby="usersDropdown">
+              <li><a class="nav-link" href="{% url 'user_list' account_type=2 %}">Teacher List</a></li>
+              <li><a class="nav-link" href="{% url 'user_list' account_type=1 %}">Student List</a></li>
+            </ul>
+          </li>
+          {% elif  user.account_type == 4%}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="usersDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Users
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark bg-black bg-opacity-50" aria-labelledby="usersDropdown">
+              <li><a class="nav-link" href="{% url 'user_list' account_type=4 %}">Director List</a></li>
+              <li><a class="nav-link" href="{% url 'user_list' account_type=3 %}">Admin List</a></li>
+              <li><a class="nav-link" href="{% url 'user_list' account_type=2 %}">Teacher List</a></li>
+              <li><a class="nav-link" href="{% url 'user_list' account_type=1 %}">Student List</a></li>
+            </ul>
+          </li>
+          <li class = "nav-item">
+            <a class="nav-link" href="{% url 'show_all_requests' %}">Pending Requests</a>
+          </li>
+          <li class = "nav-item">
+            <a class="nav-link" href="{% url 'submit_payment' %}">Submit Payment</a>
+          </li>
+          <li class = "nav-item">
+            <a class="nav-link" href="{% url 'open_account' %}">Create Account</a>
           </li>
           {% endif %}
         </ul>
