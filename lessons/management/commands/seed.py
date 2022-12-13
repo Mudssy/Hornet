@@ -152,4 +152,5 @@ class Command(BaseCommand):
         request.is_booked = True
         return_invoice = create_invoice(request)
         create_booked_lessons(request)
+        request.save()
         return return_invoice
