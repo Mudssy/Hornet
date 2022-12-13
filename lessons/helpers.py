@@ -172,6 +172,9 @@ def create_booked_lessons(lesson_request):
             lessons_already_booked =  BookedLesson.objects.filter(teacher = teacher)
 
             time_slots_list = hourly_time_slots(start_time,end_time.replace(hour=end_time.hour - lesson_request.lesson_duration_hours + 1))
+            if len(time_slots_list) == 0:
+                return False
+                
             for hour in time_slots_list:
                 time_slot_available = True
                 for interval in range(0,lesson_request.lesson_duration_hours):
