@@ -4,13 +4,14 @@ Database seeder for Lessons app.
 Seeds database with example users including a director, an administrator, a
 teacher and a student
 
-version 2022.12.07    
+version 2022.12.07
 """
 
 
 from django.core.management.base import BaseCommand, CommandError
 from faker import Faker
 from lessons.models import User, LessonRequest
+import random
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
@@ -45,40 +46,6 @@ class Command(BaseCommand):
         )
 
         self._create_request(user=self.user, count=Command.REQUESTS_PER_USER)
-
-        # Teacher for easier testing
-        teacher = User.objects.create_user(
-            username="@teacher",
-            first_name="teacher",
-            last_name="teacher",
-            email="teacher@gmail.com",
-            password=Command.PASSWORD,
-            account_type=2
-        )
-
-        # Admin for easier testing
-        admin = User.objects.create_user(
-            username="@admin",
-            first_name="admin",
-            last_name="admin",
-            email="admin@gmail.com",
-            password=Command.PASSWORD,
-            account_type=3,
-            is_staff=True,
-            is_superuser=False
-        )
-
-        # Director for easier testing
-        director = User.objects.create_user(
-            username='@director',
-            first_name="director",
-            last_name="director",
-            email="director@example.org",
-            password=Command.PASSWORD,
-            account_type=4,
-            is_staff=True,
-            is_superuser=True
-        )
 
         # Student for seeder requirement
         johndoe = User.objects.create_user(
@@ -116,21 +83,18 @@ class Command(BaseCommand):
 
         print("The seed command is under construction, and may be unstable due to changing fields")
 
-
-
-
-
     def _create_request(self, user, count):
         day = count,
         lessons = 10 - count
+        POSSIBLE_GAPS = [LessonRequest.LessonGap.BIWEEKLY, LessonRequest.LessonGap.WEEKLY, LessonRequest.LessonGap.FORTNIGHTLY, LessonRequest.LessonGap.MONTHLY]
         while count > 0:
             LessonRequest.objects.create(
-                days_available=str(count%7+1),
-                num_lessons=4,
-                lesson_gap_weeks=LessonRequest.LessonGap.FORTNIGHTLY,
-                lesson_duration_hours=1,
+                days_available=random.randint(1,7),
+                num_lessons=random.randint(1,5),
+                lesson_gap_weeks=POSSIBLE_GAPS[random.randint(0,3)],
+                lesson_duration_hours=random.randint(1,3),
                 requestor=user,
-                extra_requests='I like music',
+                extra_requests=self.faker.sentence(),
             )
             count -= 1
     # seeder creating student accounts
