@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from django.utils.decorators import method_decorator
-from datetime import datetime
+from datetime import datetime, timedelta
 from csv import reader
 
 # Create your views here.
@@ -257,7 +257,14 @@ def booked_lessons(request):
         lessons = BookedLesson.objects.filter(student=user)
     else:
         lessons = BookedLesson.objects.filter(teacher=user)
-    return render(request, 'booked_lessons.html', {'lessons':lessons})
+
+
+    # lessons should show in order of date, and lessons in the past should not be rendered
+    lesson_list = list(lessons)
+    lesson_list.sort(key=(lambda x: x.start_time))
+    lesson_list = filter((lambda x: x.start_time >= datetime.now()), lesson_list)
+    lesson_list = list(lesson_list)
+    return render(request, 'booked_lessons.html', {'lessons': lesson_list})
 
 def delete_request(request, request_id):
     request = LessonRequest.objects.get(id=request_id)

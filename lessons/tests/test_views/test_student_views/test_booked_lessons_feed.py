@@ -29,7 +29,7 @@ class BookedLessonTestCase(TestCase):
     def test_booked_lesson_in_view(self):
         self.client.login(username=self.student.username, password="Password123")
         response = self.client.get(self.url)
-        object_list = list(response.context['lessons'])
+        object_list = response.context['lessons']
         self.assertTrue(
             self.booked_lesson in object_list
         )

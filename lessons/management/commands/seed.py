@@ -13,6 +13,7 @@ from faker import Faker
 from lessons.models import User, LessonRequest
 from lessons.helpers import create_invoice, create_booked_lessons, update_invoice
 import random
+import datetime
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
@@ -23,6 +24,20 @@ class Command(BaseCommand):
         self.faker = Faker('en_GB')
     def handle(self, *args, **options):
         user_count=0
+
+        User.objects.create_user(
+            username='@TeacherTickles',
+            first_name='Teacher',
+            last_name='Tickles',
+            email='teacher.tickles@example.org',
+            password=Command.PASSWORD,
+            account_type=2,
+            is_staff=False,
+            is_superuser=False
+        )
+
+
+
         while user_count < Command.SEED_COUNT:
             print(f'Seeding user {user_count}', end='\r')
             curr_user = self._create_student()
@@ -91,32 +106,26 @@ class Command(BaseCommand):
             is_superuser=True
         )
 
-        User.objects.create_user(
-            username='@TeacherTickles',
-            first_name='Teacher',
-            last_name='Tickles',
-            email='teacher.tickles@example.org',
-            password=Command.PASSWORD,
-            account_type=2,
-            is_staff=False,
-            is_superuser=False
-        )
+
 
     #function to create randomised request(s) for a given user
     def _create_request(self, user, count):
 
         POSSIBLE_GAPS = [LessonRequest.LessonGap.BIWEEKLY, LessonRequest.LessonGap.WEEKLY, LessonRequest.LessonGap.FORTNIGHTLY, LessonRequest.LessonGap.MONTHLY]
         while count > 0:
+            rand_start = random.randint(9, 13)
+            rand_duration = random.randint(1,3)
             #creating the request with random numbers and faker data
             request_temp = LessonRequest.objects.create(
-                days_available=random.randint(1,7),
                 num_lessons=random.randint(1,5),
                 lesson_gap_weeks=POSSIBLE_GAPS[random.randint(0,3)],
-                lesson_duration_hours=random.randint(1,3),
+                lesson_duration_hours= rand_duration,
                 requestor=user,
                 extra_requests=self.faker.sentence(),
+                monday_start_time=datetime.time(hour=rand_start),
+                monday_end_time=datetime.time(hour=(rand_start + rand_duration))
             )
-            #80% of the time, the requests are approved
+            # 80% of the time, the requests are approved
             if random.randint(1,10) < 8:
                 invoice_temp = self._approve_request(request_temp)
                 #equal chances of full, partial and no payment on the invoices of all approved requests
