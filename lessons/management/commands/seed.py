@@ -91,6 +91,17 @@ class Command(BaseCommand):
             is_superuser=True
         )
 
+        User.objects.create_user(
+            username='@TeacherTickles',
+            first_name='Teacher',
+            last_name='Tickles',
+            email='teacher.tickles@example.org',
+            password=Command.PASSWORD,
+            account_type=2,
+            is_staff=False,
+            is_superuser=False
+        )
+
     #function to create randomised request(s) for a given user
     def _create_request(self, user, count):
 

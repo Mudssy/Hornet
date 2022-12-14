@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from .models import LessonRequest, User, Invoice, BookedLesson
 from lessons.forms import SignUpForm, LogInForm, RequestLessonsForm, SubmitPaymentForm, OpenAccountForm
 from django.http import HttpResponseForbidden
-from lessons.helpers import administrator_prohibited, login_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only, create_booked_lessons
+from lessons.helpers import administrator_prohibited, login_required, login_prohibited, teacher_prohibited, student_prohibited, create_invoice, update_invoice, create_request, director_only, create_booked_lessons
 from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
@@ -13,7 +13,7 @@ from datetime import datetime
 from csv import reader
 
 # Create your views here.
-
+@login_prohibited
 def sign_up(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -43,6 +43,7 @@ def log_in(request):
 
     return render(request,'log_in.html',{'form':form})
 
+@login_required
 def log_out(request):
     logout(request)
     return redirect('home')
@@ -67,6 +68,7 @@ def make_request(request):
 
 class EditRequestView(DetailView):
     """General form for editing a request, used by students and admins"""
+    @method_decorator(teacher_prohibited)
     def dispatch(self, request, request_id):
         self.lesson_request = LessonRequest.objects.get(id=request_id)
         self.permissions = self.request.user.account_type >= 3
@@ -85,7 +87,6 @@ class EditRequestView(DetailView):
             self.lesson_request.is_booked = should_book
             create_booked_lessons(self.lesson_request)
             create_invoice(self.lesson_request)
-
             self.lesson_request.save()
             form.save()
 

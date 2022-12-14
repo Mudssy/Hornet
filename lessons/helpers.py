@@ -39,6 +39,14 @@ def student_prohibited(view_function):
             return view_function(request, *args, **kwargs)
     return modified_view_function
 
+def login_required(view_function):
+    def modified_view_function(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('log_in')
+        else:
+            return view_function(request, *args, **kwargs)
+    return modified_view_function
+
 def director_only(view_function):
     def modified_view_function(request, *args, **kwargs):
         if request.user.account_type==4:
@@ -76,46 +84,6 @@ def create_invoice(lesson_request):
 
     return invoice
 
-
-
-def create_OLD_booked_lessons(lesson_request):
-    if not isinstance(lesson_request, LessonRequest) or lesson_request.is_booked == False or lesson_request.id is None or lesson_request.num_lessons <= 0:
-        return
-
-    counter = lesson_request.num_lessons
-    teacher = lesson_request.teacher
-    if teacher is None:
-        teacher = random.choice(list(User.objects.filter(account_type=2))) #get random teacher
-
-    days_for_lessons = []
-    for day in lesson_request.days_available:
-        if day.isdigit():
-            days_for_lessons.append(int(day) - 1)
-
-    i = 0
-    weeks_between_lessons = lesson_request.lesson_gap_weeks/2
-
-    while(counter > i):
-
-        today_day_of_week = datetime.datetime.now().weekday()
-        request_day = days_for_lessons[0]
-        time_to_requested_day = ((request_day - today_day_of_week) + 7) % 7
-
-        # find the next value for boooking time at least one lesson_gap ahead, and on a day mentioned in days_available
-        for j in range(7):
-            booking_time = datetime.datetime.today() + datetime.timedelta(weeks=i*weeks_between_lessons)  + datetime.timedelta(days=j)
-            if booking_time.weekday() in days_for_lessons:
-                break
-
-        booked_lesson = BookedLesson.objects.create(
-            student=lesson_request.requestor,
-            teacher = teacher,
-            start_time = booking_time,
-            duration = lesson_request.lesson_duration_hours
-        )
-
-        i += 1
-
 def next_day_from(current_date, day):
     days = (day - current_date.weekday() + 7) % 7
     return current_date + datetime.timedelta(days=days)
@@ -131,7 +99,6 @@ def floor_time_to_hour(time):
 
 def hourly_time_slots(start_time, end_time):
     slots = []
-    print(start_time,end_time)
     for h in range(end_time.hour - start_time.hour):
         slots.append(start_time.replace(hour=start_time.hour+h))
     return slots
@@ -142,7 +109,7 @@ def create_booked_lessons(lesson_request):
     
 
     days_and_times_for_lessons = []   ##stores eg(0,Monday,14:25:00,16:25:00)
-    for num,day in lesson_request.AvailableWeekly.choices:
+    for num, day in lesson_request.AvailableWeekly.choices:
         if getattr(lesson_request,day.lower() + "_start_time") is not None:
             days_and_times_for_lessons.append((
                 num-1,

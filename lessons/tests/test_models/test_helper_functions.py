@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
-from lessons.models import LessonRequest, User, Invoice
-from lessons.helpers import create_invoice, update_invoice
+from lessons.models import LessonRequest, User, Invoice, BookedLesson
+from lessons.helpers import create_invoice, update_invoice, create_booked_lessons
 from lessons.forms import SignUpForm, RequestLessonsForm
 
 class MakeRequestTest(TestCase):
@@ -14,8 +14,10 @@ class MakeRequestTest(TestCase):
 
     def setUp(self):
         self.student = User.objects.get(username="@johndoe")
+        self.teacher = User.objects.get(username="@teacher")
         self.admin = User.objects.get(username="@administrator")
         self.request = LessonRequest.objects.get(requestor=self.student)
+        self.request.teacher = self.teacher
         self.lesson_price = self.request.num_lessons * self.request.lesson_duration_hours * 40
 
 
@@ -68,5 +70,12 @@ class MakeRequestTest(TestCase):
         self.assertRaises(ValueError, update_invoice, invoice, invoice.amount_outstanding + 1)
         after = Invoice.objects.count()
         self.assertEqual(before, after)
+
+    def test_correct_amount_of_booked_lessons_created(self):
+        lesson_count = BookedLesson.objects.count()
+        self.request.is_booked = True
+        self.assertTrue(create_booked_lessons(self.request))
+        after_lesson_count = BookedLesson.objects.count()
+        self.assertEqual(lesson_count + self.request.num_lessons, after_lesson_count)
         
 
