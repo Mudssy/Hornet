@@ -5,6 +5,7 @@ from django.urls import reverse
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit, Hidden, Div, Row, Column, HTML
 
+#forms
 
 class SignUpForm(forms.ModelForm):
     def __init__(self,*args, **kwargs):
