@@ -69,10 +69,11 @@ class EditRequestView(DetailView):
     """General form for editing a request, used by students and admins"""
     def dispatch(self, request, request_id):
         self.lesson_request = LessonRequest.objects.get(id=request_id)
+        self.permissions = self.request.user.account_type >= 3
         return super().dispatch(request, request_id)
 
     def post(self, request, request_id):
-        form = RequestLessonsForm(request.POST, instance=self.lesson_request)
+        form = RequestLessonsForm(request.POST, instance=self.lesson_request, approve_permissions=self.permissions)
         should_book = 'submit' in request.POST
 
         if not form.is_valid():
@@ -91,8 +92,7 @@ class EditRequestView(DetailView):
             return redirect('show_all_requests')
 
     def get(self, request, request_id):
-        permissions = self.request.user.account_type >= 3
-        self.form = RequestLessonsForm(instance=self.lesson_request, approve_permissions=permissions)
+        self.form = RequestLessonsForm(instance=self.lesson_request, approve_permissions=self.permissions)
         return render(request, 'edit_request.html', {'form': self.form})
 
 @director_only

@@ -16,7 +16,7 @@ import random
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
-    SEED_COUNT = 100
+    SEED_COUNT = 20
     REQUESTS_PER_USER = 2
     def __init__(self):
         super().__init__()
@@ -31,22 +31,6 @@ class Command(BaseCommand):
         print('User seeding complete')
 
 
-        first_name = 'John'
-        last_name = 'Smith'
-        email = self._email(first_name, last_name)
-        username = self._username(first_name, last_name)
-
-        # Seed data handbook accounts
-        self.user = User.objects.create_user(
-            username=self._username(first_name, last_name),
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=Command.PASSWORD,
-            account_type=1
-        )
-
-        self._create_request(user=self.user, count=Command.REQUESTS_PER_USER)
 
         # Student for seeder requirement
         johndoe = User.objects.create_user(
@@ -109,8 +93,7 @@ class Command(BaseCommand):
 
     #function to create randomised request(s) for a given user
     def _create_request(self, user, count):
-        day = count,
-        lessons = 10 - count
+
         POSSIBLE_GAPS = [LessonRequest.LessonGap.BIWEEKLY, LessonRequest.LessonGap.WEEKLY, LessonRequest.LessonGap.FORTNIGHTLY, LessonRequest.LessonGap.MONTHLY]
         while count > 0:
             #creating the request with random numbers and faker data
@@ -127,13 +110,10 @@ class Command(BaseCommand):
                 invoice_temp = self._approve_request(request_temp)
                 #equal chances of full, partial and no payment on the invoices of all approved requests
                 prob_var = random.randint(1,3)
-                match prob_var:
-                    case 1:
-                        update_invoice(invoice_temp, invoice_temp.amount_outstanding)
-                    case 2:
-                        update_invoice(invoice_temp, invoice_temp.amount_outstanding/random.randint(1,10))
-                    case 3:
-                        pass
+                if prob_var == 1:
+                    update_invoice(invoice_temp, invoice_temp.amount_outstanding)
+                elif prob_var == 2:
+                    update_invoice(invoice_temp, invoice_temp.amount_outstanding/random.randint(1,10))
 
             count -= 1
 

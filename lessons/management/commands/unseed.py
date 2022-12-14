@@ -13,5 +13,5 @@ from lessons.models import User
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        User.objects.filter(is_staff=False).delete()
+        User.objects.all().delete()
         print("Unseeded Database.")
