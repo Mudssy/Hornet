@@ -4,17 +4,19 @@ Database seeder for Lessons app.
 Seeds database with example users including a director, an administrator, a
 teacher and a student
 
-version 2022.12.07    
+version 2022.12.07
 """
 
 
 from django.core.management.base import BaseCommand, CommandError
 from faker import Faker
 from lessons.models import User, LessonRequest
+from lessons.helpers import create_invoice, create_booked_lessons, update_invoice
+import random
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
-    SEED_COUNT = 2
+    SEED_COUNT = 20
     REQUESTS_PER_USER = 2
     def __init__(self):
         super().__init__()
@@ -29,56 +31,6 @@ class Command(BaseCommand):
         print('User seeding complete')
 
 
-        first_name = 'John'
-        last_name = 'Smith'
-        email = self._email(first_name, last_name)
-        username = self._username(first_name, last_name)
-
-        # Seed data handbook accounts
-        self.user = User.objects.create_user(
-            username=self._username(first_name, last_name),
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=Command.PASSWORD,
-            account_type=1
-        )
-
-        self._create_request(user=self.user, count=Command.REQUESTS_PER_USER)
-
-        # Teacher for easier testing
-        teacher = User.objects.create_user(
-            username="@teacher",
-            first_name="teacher",
-            last_name="teacher",
-            email="teacher@gmail.com",
-            password=Command.PASSWORD,
-            account_type=2
-        )
-
-        # Admin for easier testing
-        admin = User.objects.create_user(
-            username="@admin",
-            first_name="admin",
-            last_name="admin",
-            email="admin@gmail.com",
-            password=Command.PASSWORD,
-            account_type=3,
-            is_staff=True,
-            is_superuser=False
-        )
-
-        # Director for easier testing
-        director = User.objects.create_user(
-            username='@director',
-            first_name="director",
-            last_name="director",
-            email="director@example.org",
-            password=Command.PASSWORD,
-            account_type=4,
-            is_staff=True,
-            is_superuser=True
-        )
 
         # Student for seeder requirement
         johndoe = User.objects.create_user(
@@ -90,12 +42,37 @@ class Command(BaseCommand):
             account_type=1
         )
 
+        # Approved and paid for request of John Doe
+        johndoe_request = LessonRequest.objects.create(
+            days_available=1,
+            num_lessons=2,
+            lesson_gap_weeks=LessonRequest.LessonGap.WEEKLY,
+            lesson_duration_hours=3,
+            requestor=johndoe,
+            extra_requests="Music theory, and some cello please.",
+        )
+        johndoe_invoice = self._approve_request(johndoe_request)
+        update_invoice(johndoe_invoice, johndoe_invoice.amount_outstanding)
+
+
         # Admin for seeder requirement
         petrapickles = User.objects.create_user(
             username='@PetraPickles',
             first_name='Petra',
             last_name='Pickles',
             email='petra.pickles@example.org',
+            password=Command.PASSWORD,
+            account_type=3,
+            is_staff=True,
+            is_superuser=False
+        )
+
+        # Second admin for seeder requirement
+        addisonadmin = User.objects.create_user(
+            username='@AddisonAdmin',
+            first_name='Addison',
+            last_name='Admin',
+            email='addison.admin@example.org',
             password=Command.PASSWORD,
             account_type=3,
             is_staff=True,
@@ -114,25 +91,32 @@ class Command(BaseCommand):
             is_superuser=True
         )
 
-        print("The seed command is under construction, and may be unstable due to changing fields")
-
-
-
-
-
+    #function to create randomised request(s) for a given user
     def _create_request(self, user, count):
-        day = count,
-        lessons = 10 - count
+
+        POSSIBLE_GAPS = [LessonRequest.LessonGap.BIWEEKLY, LessonRequest.LessonGap.WEEKLY, LessonRequest.LessonGap.FORTNIGHTLY, LessonRequest.LessonGap.MONTHLY]
         while count > 0:
-            LessonRequest.objects.create(
-                days_available=str(count%7+1),
-                num_lessons=4,
-                lesson_gap_weeks=LessonRequest.LessonGap.FORTNIGHTLY,
-                lesson_duration_hours=1,
+            #creating the request with random numbers and faker data
+            request_temp = LessonRequest.objects.create(
+                days_available=random.randint(1,7),
+                num_lessons=random.randint(1,5),
+                lesson_gap_weeks=POSSIBLE_GAPS[random.randint(0,3)],
+                lesson_duration_hours=random.randint(1,3),
                 requestor=user,
-                extra_requests='I like music',
+                extra_requests=self.faker.sentence(),
             )
+            #80% of the time, the requests are approved
+            if random.randint(1,10) < 8:
+                invoice_temp = self._approve_request(request_temp)
+                #equal chances of full, partial and no payment on the invoices of all approved requests
+                prob_var = random.randint(1,3)
+                if prob_var == 1:
+                    update_invoice(invoice_temp, invoice_temp.amount_outstanding)
+                elif prob_var == 2:
+                    update_invoice(invoice_temp, invoice_temp.amount_outstanding/random.randint(1,10))
+
             count -= 1
+
     # seeder creating student accounts
     def _create_student(self):
         first_name = self.faker.first_name()
@@ -155,3 +139,10 @@ class Command(BaseCommand):
     def _username(self, first_name, last_name):
         username = f'@{first_name}{last_name}'
         return username
+
+    def _approve_request(self, request):
+        request.is_booked = True
+        return_invoice = create_invoice(request)
+        create_booked_lessons(request)
+        request.save()
+        return return_invoice
