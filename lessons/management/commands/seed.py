@@ -17,7 +17,7 @@ import datetime
 
 class Command(BaseCommand):
     PASSWORD = "Password123"
-    SEED_COUNT = 20
+    SEED_COUNT = 100
     TEACHER_COUNT = 10
     REQUESTS_PER_USER = 2
     def __init__(self):
