@@ -35,6 +35,16 @@ class Command(BaseCommand):
             is_staff=False,
             is_superuser=False
         )
+        User.objects.create_user(
+            username='@TeacherSam',
+            first_name='Sam',
+            last_name='Smith',
+            email='sam.teacher@example.org',
+            password=Command.PASSWORD,
+            account_type=2,
+            is_staff=False,
+            is_superuser=False
+        )
 
 
 
