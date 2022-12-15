@@ -18,35 +18,31 @@ import datetime
 class Command(BaseCommand):
     PASSWORD = "Password123"
     SEED_COUNT = 20
+    TEACHER_COUNT = 10
     REQUESTS_PER_USER = 2
     def __init__(self):
         super().__init__()
         self.faker = Faker('en_GB')
     def handle(self, *args, **options):
         user_count=0
+        teacher_count = 0
 
         User.objects.create_user(
-            username='@TeacherTickles',
-            first_name='Teacher',
-            last_name='Tickles',
-            email='teacher.tickles@example.org',
-            password=Command.PASSWORD,
-            account_type=2,
-            is_staff=False,
-            is_superuser=False
-        )
-        User.objects.create_user(
-            username='@TeacherSam',
-            first_name='Sam',
-            last_name='Smith',
-            email='sam.teacher@example.org',
+            username='@NormaNoe',
+            first_name='Norma',
+            last_name='Noe',
+            email='norma.noe@example.org',
             password=Command.PASSWORD,
             account_type=2,
             is_staff=False,
             is_superuser=False
         )
 
-
+        while teacher_count < Command.TEACHER_COUNT:
+            print(f'Seeding teacher {teacher_count}', end='\r')
+            curr_user = self._create_teacher()
+            teacher_count += 1
+        print('Teacher seeding complete')
 
         while user_count < Command.SEED_COUNT:
             print(f'Seeding user {user_count}', end='\r')
@@ -54,6 +50,8 @@ class Command(BaseCommand):
             self._create_request(curr_user, count=Command.REQUESTS_PER_USER)
             user_count += 1
         print('User seeding complete')
+
+        
 
 
 
@@ -159,6 +157,21 @@ class Command(BaseCommand):
             last_name=last_name,
             email=email,
             password=Command.PASSWORD,
+        )
+        return user
+
+    def _create_teacher(self):
+        first_name = self.faker.first_name()
+        last_name = self.faker.last_name()
+        email = self._email(first_name, last_name)
+        username = self._username(first_name, last_name)
+        user = User.objects.create_user(
+            username,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            password=Command.PASSWORD,
+            account_type=2,
         )
         return user
 
